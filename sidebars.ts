@@ -5,12 +5,11 @@ const sidebars: SidebarsConfig = {
     {
       type: 'category',
       label: 'Getting Started',
-      items: ['intro', 'getting-started/overview', 'getting-started/local-development'],
-    },
-    {
-      type: 'category',
-      label: 'Concepts',
+      collapsible: false,
       items: [
+        'intro',
+        'getting-started/overview',
+        'getting-started/local-development',
         'concepts/nl2sql-pipeline',
         'concepts/rag-few-shot',
         'concepts/semantic-key-value-mappings',
@@ -19,11 +18,13 @@ const sidebars: SidebarsConfig = {
     {
       type: 'category',
       label: 'Architecture',
+      collapsible: false,
       items: ['architecture/langgraph-pipeline', 'architecture/mcp-integration'],
     },
     {
       type: 'category',
       label: 'Runtime Operations',
+      collapsed: true,
       items: [
         'runtime/startup-grace',
         'runtime/readiness-liveness',
@@ -34,16 +35,19 @@ const sidebars: SidebarsConfig = {
     {
       type: 'category',
       label: 'API Reference',
+      collapsed: true,
       items: ['api/health-readiness', 'api/artifact-versions'],
     },
     {
       type: 'category',
       label: 'ADRs',
+      collapsed: true,
       items: ['adr/index', 'adr/runtime-boundaries'],
     },
     {
       type: 'category',
       label: 'Troubleshooting',
+      collapsed: true,
       items: ['troubleshooting/startup-blocked'],
     },
   ],

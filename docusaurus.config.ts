@@ -79,11 +79,6 @@ const config: Config = {
           position: 'right',
           className: 'navbarGetStarted',
         },
-        {
-          href: 'https://github.com/xsffsx/20260416-nl2sql-docs',
-          label: 'GitHub',
-          position: 'right',
-        },
       ],
     },
     footer: {
