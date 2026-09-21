@@ -9,7 +9,14 @@ The graph coordinates intent, retrieval, schema linking, generation, validation,
 
 ![Knowledge-grounded NL2SQL flow](pathname:///img/architecture/nl2sql-knowledge-grounded.drawio.svg)
 
-The diagram source remains editable in the repository at `docs/20260301_langgraph-nl2sql/nl2sql-knowledge-grounded.drawio`.
+:::tip Diagram source and downloads
+
+- [View or edit the source `.drawio` file in GitHub](https://github.com/xsffsx/20260416-nl2sql-docs/blob/main/docs/20260301_langgraph-nl2sql/nl2sql-knowledge-grounded.drawio)
+- [Download the PNG preview](pathname:///img/architecture/nl2sql-knowledge-grounded.drawio.png)
+
+The SVG is the page preview; the `.drawio` file in `main` remains the editable source of truth.
+
+:::
 
 ## Design boundary
 
