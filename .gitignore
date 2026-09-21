@@ -1,0 +1,12 @@
+node_modules/
+.docusaurus/
+build/
+.cache-loader/
+.env
+.env.*
+!.env.example
+
+# The repository root ignores diagram exports globally; this site publishes these two assets.
+!static/img/architecture/
+!static/img/architecture/*.drawio.svg
+!static/img/architecture/*.png

@@ -1,0 +1,30 @@
+:root {
+  --ifm-color-primary: #2563eb;
+  --ifm-color-primary-dark: #1d4ed8;
+  --ifm-color-primary-darker: #1e40af;
+  --ifm-color-primary-darkest: #1e3a8a;
+  --ifm-color-primary-light: #3b82f6;
+  --ifm-color-primary-lighter: #60a5fa;
+  --ifm-color-primary-lightest: #93c5fd;
+  --ifm-code-font-size: 92%;
+}
+
+.heroBanner {
+  background: linear-gradient(135deg, #eff6ff 0%, #f8fafc 58%, #ecfeff 100%);
+}
+
+[data-theme='dark'] .heroBanner {
+  background: linear-gradient(135deg, #172554 0%, #0f172a 58%, #164e63 100%);
+}
+
+.heroSubtitle {
+  max-width: 44rem;
+  margin: 0 auto 1.5rem;
+}
+
+.featureCard {
+  height: 100%;
+  border: 1px solid var(--ifm-color-emphasis-200);
+  border-radius: 12px;
+  padding: 1.25rem;
+}
