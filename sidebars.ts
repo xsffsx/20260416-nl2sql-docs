@@ -2,11 +2,10 @@ import type {SidebarsConfig} from '@docusaurus/plugin-content-docs';
 
 const sidebars: SidebarsConfig = {
   docs: [
-    'intro',
     {
       type: 'category',
       label: 'Getting Started',
-      items: ['getting-started/overview', 'getting-started/local-development'],
+      items: ['intro', 'getting-started/overview', 'getting-started/local-development'],
     },
     {
       type: 'category',

@@ -56,13 +56,28 @@ const config: Config = {
   themeConfig: {
     image: 'img/nl2sql-social-card.svg',
     navbar: {
-      title: 'NL2SQL Docs',
+      title: 'NL2SQL',
       items: [
         {
-          type: 'docSidebar',
-          sidebarId: 'docs',
-          position: 'left',
-          label: 'Documentation',
+          label: 'Demos',
+          to: '/docs/architecture/langgraph-pipeline',
+          position: 'right',
+        },
+        {
+          label: 'Changelog',
+          href: 'https://github.com/xsffsx/20260416-nl2sql-docs/commits/master',
+          position: 'right',
+        },
+        {
+          label: 'Community',
+          href: 'https://github.com/xsffsx/20260416-nl2sql-docs/issues',
+          position: 'right',
+        },
+        {
+          label: 'Get Started',
+          to: '/docs/getting-started/overview',
+          position: 'right',
+          className: 'navbarGetStarted',
         },
         {
           href: 'https://github.com/xsffsx/20260416-nl2sql-docs',

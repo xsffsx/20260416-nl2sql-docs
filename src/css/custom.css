@@ -1,12 +1,238 @@
 :root {
-  --ifm-color-primary: #2563eb;
-  --ifm-color-primary-dark: #1d4ed8;
-  --ifm-color-primary-darker: #1e40af;
-  --ifm-color-primary-darkest: #1e3a8a;
-  --ifm-color-primary-light: #3b82f6;
-  --ifm-color-primary-lighter: #60a5fa;
-  --ifm-color-primary-lightest: #93c5fd;
+  --ifm-color-primary: #5a43ef;
+  --ifm-color-primary-dark: #4c35df;
+  --ifm-color-primary-darker: #3f2cc8;
+  --ifm-color-primary-darkest: #30219d;
+  --ifm-color-primary-light: #705cf3;
+  --ifm-color-primary-lighter: #8b7bf7;
+  --ifm-color-primary-lightest: #b2a7fb;
+  --ifm-font-family-base: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --ifm-heading-font-family: var(--ifm-font-family-base);
   --ifm-code-font-size: 92%;
+  --ifm-navbar-height: 64px;
+}
+
+body {
+  color: #242329;
+  letter-spacing: -0.01em;
+}
+
+.navbar {
+  border-bottom: 1px solid #eeeef3;
+  box-shadow: none;
+  padding: 0 3rem;
+}
+
+.navbar__inner {
+  max-width: 1184px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.navbar__brand {
+  margin-right: 2rem;
+}
+
+.navbar__title {
+  font-size: 1.35rem;
+  font-weight: 750;
+  letter-spacing: -0.04em;
+}
+
+.navbar__link {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.navbarGetStarted {
+  background: #6f60ee;
+  border-radius: 999px;
+  color: #fff !important;
+  margin-left: 0.6rem;
+  padding: 0.65rem 1rem !important;
+}
+
+.navbarGetStarted:hover {
+  background: #5a43ef;
+}
+
+.docsSectionNav {
+  background: #fff;
+  border-bottom: 1px solid #f0eff4;
+}
+
+.docsSectionNav__inner {
+  align-items: center;
+  display: flex;
+  gap: 2rem;
+  height: 48px;
+  margin: 0 auto;
+  max-width: 1184px;
+  overflow-x: auto;
+  white-space: nowrap;
+  width: 100%;
+}
+
+.docsSectionNav__link {
+  align-items: center;
+  color: #4c4a54;
+  display: flex;
+  font-size: 0.9rem;
+  height: 48px;
+  position: relative;
+}
+
+.docsSectionNav__link:hover,
+.docsSectionNav__link[aria-current='page'] {
+  color: #25222d;
+  text-decoration: none;
+}
+
+.docsSectionNav__link:hover::after,
+.docsSectionNav__link[aria-current='page']::after {
+  background: var(--ifm-color-primary);
+  bottom: 0;
+  content: '';
+  height: 2px;
+  left: 0;
+  position: absolute;
+  right: 0;
+}
+
+.theme-doc-sidebar-container {
+  border-right: 0;
+}
+
+.theme-doc-sidebar-menu {
+  padding: 1.5rem 1rem 2rem 0.75rem;
+}
+
+.menu__link {
+  border-radius: 12px;
+  font-size: 0.9rem;
+  padding: 0.55rem 1rem;
+}
+
+.menu__link--active {
+  background: #eeecfc;
+  color: #503fe2;
+  font-weight: 600;
+}
+
+.theme-doc-markdown {
+  max-width: 660px;
+}
+
+[class*='docItemContainer_'] {
+  max-width: 600px;
+  padding-left: 3rem;
+  padding-right: 1rem;
+}
+
+.theme-doc-markdown h1 {
+  font-size: 2.7rem;
+  letter-spacing: -0.055em;
+  line-height: 1.1;
+}
+
+.theme-doc-markdown h2 {
+  letter-spacing: -0.035em;
+}
+
+.docsLanding {
+  padding: 2.5rem 0 4rem;
+}
+
+.docsLanding__eyebrow {
+  color: #5a43ef;
+  font-size: 0.92rem;
+  font-weight: 650;
+  margin-bottom: 0.7rem;
+}
+
+.docsLanding h1 {
+  font-size: 2.25rem;
+  letter-spacing: -0.06em;
+  line-height: 1.08;
+  margin-bottom: 0.8rem;
+}
+
+.docsLanding__lead {
+  color: #4c4a54;
+  font-size: 1.25rem;
+  line-height: 1.55;
+  margin-bottom: 2.5rem;
+  max-width: 36rem;
+}
+
+.docsLanding > p:not(.docsLanding__lead) {
+  color: #4c4a54;
+  font-size: 1.02rem;
+  line-height: 1.7;
+  margin-bottom: 2rem;
+}
+
+.docsLanding__cards {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.docsLanding__card {
+  border: 1px solid #dedde5;
+  border-radius: 16px;
+  color: inherit;
+  min-height: 158px;
+  padding: 1.35rem 1.5rem;
+  transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+
+.docsLanding__card:hover {
+  border-color: #9d91f5;
+  box-shadow: 0 10px 24px rgb(38 29 93 / 8%);
+  color: inherit;
+  text-decoration: none;
+  transform: translateY(-2px);
+}
+
+.docsLanding__icon {
+  color: #5a43ef;
+  display: block;
+  font-size: 1.35rem;
+  font-weight: 700;
+  height: 2rem;
+}
+
+.docsLanding__card h2 {
+  font-size: 1.05rem;
+  margin: 0 0 0.35rem;
+}
+
+.docsLanding__card p {
+  color: #615f69;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin: 0;
+}
+
+@media (max-width: 996px) {
+  .navbar {
+    padding: 0 1rem;
+  }
+
+  .docsSectionNav__inner {
+    gap: 1.25rem;
+    padding: 0 1rem;
+  }
+
+  .docsLanding__cards {
+    grid-template-columns: 1fr;
+  }
+
+  [class*='docItemContainer_'] {
+    max-width: none;
+    padding-left: 1rem;
+  }
 }
 
 .heroBanner {
