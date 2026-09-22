@@ -22,9 +22,10 @@ Common paths:
 - No active snapshot: publish or activate the required artifact.
 - Schema RAG blocked: repair the active snapshot or embedding/materialization dependency.
 - QA Smoke failed: inspect the per-call MCP details and retry after repair.
-- `phase=grace`: use the Dashboard and publish path before `graceDeadlineAt`.
+- `startupDecision=continue`: the backend is serving; repair the project diagnostic through the UI and publish path.
+- `startupDecision=fast-fail`: inspect the global dependency or imported-project QA failure in the final startup checklist.
 - Process exited non-zero: inspect the final startup checklist and Kubernetes restart count.
 
 :::tip
-The Dashboard and publish APIs remain the recovery surface during the grace window. Normal Ask/NL2SQL execution remains protected by Runtime Readiness.
+The Dashboard and publish APIs remain available for non-fatal project setup diagnostics. Normal Ask/NL2SQL execution remains protected by Runtime Readiness.
 :::

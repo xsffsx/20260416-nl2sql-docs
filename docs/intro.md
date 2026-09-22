@@ -30,7 +30,7 @@ import Link from '@docusaurus/Link';
       <h2>Quick Start</h2>
       <p>Run the first knowledge-grounded query locally.</p>
     </Link>
-    <Link className="docsLanding__card" to="/docs/architecture/langgraph-pipeline">
+    <Link className="docsLanding__card" to="/docs/architecture/overview">
       <span className="docsLanding__icon" aria-hidden="true">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
           <rect x="4" y="5" width="16" height="5" rx="1" />

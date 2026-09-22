@@ -12,7 +12,7 @@ const config: Config = {
   organizationName: 'xsffsx',
   projectName: '20260416-nl2sql-docs',
   deploymentBranch: 'gh-pages',
-  trailingSlash: false,
+  trailingSlash: true,
 
   onBrokenLinks: 'throw',
   onDuplicateRoutes: 'throw',
@@ -60,7 +60,7 @@ const config: Config = {
       items: [
         {
           label: 'Demos',
-          to: '/docs/architecture/langgraph-pipeline',
+          to: '/docs/architecture/overview',
           position: 'right',
         },
         {
@@ -88,8 +88,8 @@ const config: Config = {
           title: 'Documentation',
           items: [
             {label: 'Getting Started', to: '/docs/getting-started/overview'},
-            {label: 'Architecture', to: '/docs/architecture/langgraph-pipeline'},
-            {label: 'Runtime Operations', to: '/docs/runtime/startup-grace'},
+            {label: 'Architecture', to: '/docs/architecture/overview'},
+            {label: 'Runtime Operations', to: '/docs/runtime/startup-readiness'},
           ],
         },
         {

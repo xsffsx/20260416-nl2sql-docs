@@ -96,15 +96,31 @@ body {
 
 .docsSectionNav__link {
   align-items: center;
-  color: #4c4a54;
+  color: #aaa8b5;
   display: flex;
   font-size: 0.9rem;
   height: 48px;
   position: relative;
+  text-decoration-color: #cbc9d4;
+  text-decoration-line: line-through;
+  text-decoration-thickness: 1px;
 }
 
-.docsSectionNav__link:hover,
-.docsSectionNav__link[aria-current='page'] {
+.docsSectionNav__link--core {
+  color: #25222d;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.docsSectionNav__link:not(.docsSectionNav__link--core):hover,
+.docsSectionNav__link:not(.docsSectionNav__link--core)[aria-current='page'] {
+  color: #9795a5;
+  text-decoration-color: #c1bfcb;
+  text-decoration-line: line-through;
+}
+
+.docsSectionNav__link--core:hover,
+.docsSectionNav__link--core[aria-current='page'] {
   color: #25222d;
   text-decoration: none;
 }
@@ -136,6 +152,30 @@ body {
   border-radius: 12px;
   font-size: 0.9rem;
   padding: 0.55rem 1rem;
+}
+
+.theme-doc-sidebar-menu .menu__link {
+  color: #aaa8b5;
+  text-decoration-line: line-through;
+  text-decoration-color: #cbc9d4;
+  text-decoration-thickness: 1px;
+}
+
+.theme-doc-sidebar-menu .menu__link[href$='/docs/architecture/overview/'],
+.theme-doc-sidebar-menu .menu__link[href$='/docs/concepts/why_wdv_nl2sql/'],
+.theme-doc-sidebar-menu .menu__link[href$='/docs/getting-started/create-import-model/'],
+.theme-doc-sidebar-item-category:has(> .menu__list > li > .menu__link[href$='/docs/architecture/overview/']) > .menu__list-item-collapsible > .menu__link,
+.theme-doc-sidebar-item-category:has(> .menu__list > li > .menu__link[href$='/docs/concepts/why_wdv_nl2sql/']) > .menu__list-item-collapsible > .menu__link {
+  color: #242329;
+  text-decoration-line: none;
+}
+
+.theme-doc-sidebar-menu .menu__link--active {
+  color: #6b5ee8;
+}
+
+.theme-doc-sidebar-menu [class*='categoryLink_'].menu__link--active {
+  color: #242329;
 }
 
 .menu__link--active {
@@ -246,6 +286,64 @@ body:has(.docsLanding) .theme-doc-breadcrumbs {
   table-layout: fixed;
 }
 
+.dataFlowValue {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.dataFlowValue__source,
+.dataFlowValue__target {
+  background: var(--ifm-color-emphasis-100);
+  border: 1px solid var(--ifm-color-emphasis-200);
+  border-radius: 0.55rem;
+  color: var(--ifm-color-emphasis-800);
+  display: inline-block;
+  line-height: 1.35;
+  padding: 0.45rem 0.6rem;
+}
+
+.dataFlowValue__arrow {
+  color: var(--ifm-color-primary);
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.traceKeyword {
+  background-color: transparent;
+}
+
+.traceKeyword--asia {
+  background-color: #dff7f1;
+  color: #087f5b;
+}
+
+.traceKeyword--us {
+  background-color: #eee8ff;
+  color: #5f3dc4;
+}
+
+.traceKeyword--allocation {
+  background-color: #fff3bf;
+  color: #a15c00;
+}
+
+[data-theme='dark'] .traceKeyword--asia {
+  background-color: #064e3b;
+  color: #99f6e4;
+}
+
+[data-theme='dark'] .traceKeyword--us {
+  background-color: #312e81;
+  color: #ddd6fe;
+}
+
+[data-theme='dark'] .traceKeyword--allocation {
+  background-color: #713f12;
+  color: #fde68a;
+}
+
 .pipelineContractTable th:first-child,
 .pipelineContractTable td:first-child {
   width: 16%;
@@ -351,6 +449,72 @@ body:has(.docsLanding) .theme-doc-breadcrumbs {
   color: inherit;
   text-decoration: underline;
   text-decoration-color: var(--ifm-color-emphasis-400);
+}
+
+.workflowCaption {
+  background: #fbfbfe;
+  border: 1px solid #ecebf4;
+  border-radius: 16px;
+  margin: 0.9rem 0 1.8rem;
+  padding: 1.1rem 1.2rem 1.2rem;
+}
+
+.workflowCaption__eyebrow {
+  color: #8581a8;
+  font-size: 0.72rem;
+  font-weight: 750;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.35rem;
+  text-transform: uppercase;
+}
+
+.workflowCaption__lead {
+  color: #303052;
+  font-size: 1.08rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 0 0 0.35rem;
+}
+
+.workflowCaption__body {
+  color: #65647a;
+  line-height: 1.55;
+  margin: 0;
+}
+
+.workflowCaption__roles {
+  display: grid;
+  gap: 0.7rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: 1rem;
+}
+
+.workflowCaption__role {
+  background: #fdfdff;
+  border-left: 3px solid #c9c6e6;
+  border-radius: 0 10px 10px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.65rem 0.75rem;
+}
+
+.workflowCaption__role strong {
+  color: #3d3b53;
+  font-size: 0.88rem;
+}
+
+.workflowCaption__role span {
+  color: #85839a;
+  font-size: 0.78rem;
+}
+
+.workflowCaption__keyword {
+  background: #f0eff9;
+  border-radius: 4px;
+  color: #706c98 !important;
+  font-weight: 700;
+  padding: 0.12em 0.3em;
 }
 
 .docsLanding {
@@ -555,6 +719,10 @@ body:has(.docsLanding) .theme-doc-breadcrumbs {
 }
 
 @media (max-width: 600px) {
+  .workflowCaption__roles {
+    grid-template-columns: 1fr;
+  }
+
   .docsLanding__cards {
     grid-template-columns: 1fr;
   }

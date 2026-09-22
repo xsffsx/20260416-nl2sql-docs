@@ -19,7 +19,7 @@ Returns a lightweight process/listener health response. It must remain cheap and
 GET /api/config/startup-readiness
 ```
 
-Returns the aggregate phase, grace deadline, per-project readiness, QA Smoke result, and blocker evidence.
+Returns the aggregate phase, canonical `startupDecision`, global runtime evidence, per-project readiness, QA Smoke result, and blocker evidence.
 
 ## Project runtime readiness
 

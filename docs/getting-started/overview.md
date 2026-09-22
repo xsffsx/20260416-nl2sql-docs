@@ -19,7 +19,7 @@ This project provides a knowledge-grounded NL2SQL runtime for project-scoped dat
 
 ## First reading path
 
-1. Read the [NL2SQL pipeline](../concepts/nl2sql-pipeline).
-2. Review [RAG and few-shot evidence](../concepts/rag-few-shot).
-3. Run the local stack using [Local Development](./local-development).
-4. Use the [Runtime Readiness API](../api/health-readiness) before debugging a query.
+1. Read the [NL2SQL pipeline](../../concepts/nl2sql-pipeline).
+2. Review [RAG and few-shot evidence](../../concepts/rag-few-shot).
+3. Run the local stack using [Local Development](../local-development).
+4. Use the [Runtime Readiness API](../../api/health-readiness) before debugging a query.

@@ -7,7 +7,7 @@ const sections = [
   ['Admin', '/docs/runtime/readiness-liveness'],
   ['Embedding', '/docs/architecture/mcp-integration'],
   ['Reference', '/docs/api/health-readiness'],
-  ['NL2SQL Core', '/docs/architecture/langgraph-pipeline'],
+  ['NL2SQL Core', '/docs/architecture/overview'],
   ['Recipes', '/docs/concepts/rag-few-shot'],
   ['API', '/docs/api/health-readiness'],
 ];
@@ -19,7 +19,11 @@ export default function NavbarLayoutWrapper(props: Record<string, unknown>): Rea
       <nav className="docsSectionNav" aria-label="Documentation sections">
         <div className="docsSectionNav__inner">
           {sections.map(([label, to]) => (
-            <Link key={label} className="docsSectionNav__link" to={to}>
+            <Link
+              key={label}
+              className={`docsSectionNav__link${label === 'NL2SQL Core' ? ' docsSectionNav__link--core' : ''}`}
+              to={to}
+            >
               {label}
             </Link>
           ))}

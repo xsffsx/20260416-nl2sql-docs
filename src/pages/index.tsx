@@ -27,7 +27,7 @@ function Home(): ReactNode {
             <Link className="button button--secondary button--lg" to="/docs/getting-started/overview">
               Get Started
             </Link>{' '}
-            <Link className="button button--outline button--lg" to="/docs/architecture/langgraph-pipeline">
+            <Link className="button button--outline button--lg" to="/docs/architecture/overview">
               View Architecture
             </Link>
           </div>
