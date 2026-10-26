@@ -1,0 +1,27 @@
+{
+  "question": "Which year recorded the most consumption of gas paid in CZK?",
+  "score": 0.0,
+  "details": {
+    "reason": "Complete results differ from Gold SQL; BIRD Soft F1 = 0.6666666666666666",
+    "BIRD_Soft_F1": 0.6666666666666666,
+    "actual_sql": "SELECT SUBSTRING(date, 1, 4) AS year, SUM(consumption) AS total_consumption FROM yearmonth GROUP BY SUBSTRING(date, 1, 4) ORDER BY total_consumption DESC LIMIT 1;",
+    "gold_sql": "SELECT SUBSTRING(T2.date FROM 1 FOR 4) FROM customers AS T1 INNER JOIN yearmonth AS T2 ON T1.customer_id = T2.customer_id WHERE T1.currency = 'CZK' GROUP BY SUBSTRING(T2.date FROM 1 FOR 4) ORDER BY SUM(T2.consumption) DESC NULLS LAST LIMIT 1",
+    "actual_result": [
+      [
+        "2013",
+        {
+          "type": "Decimal",
+          "value": "3008566555.28"
+        }
+      ]
+    ],
+    "gold_result": [
+      [
+        "2013"
+      ]
+    ],
+    "sql_error": null,
+    "scorer_ms": 103.26949999580393,
+    "max_parallel_workers_per_gather": 0
+  }
+}

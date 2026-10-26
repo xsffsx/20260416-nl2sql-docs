@@ -1,0 +1,374 @@
+"""RPC client for workers to invoke SDK functions via backend's WebSocket connections."""
+
+import asyncio
+import json
+import logging
+import threading
+from typing import Any, Dict
+
+import redis.asyncio as redis
+
+from rhesis.backend.app.config.settings import get_redis_settings
+
+logger = logging.getLogger(__name__)
+
+# ---------------------------------------------------------------------------
+# Thread-local RPC client
+# ---------------------------------------------------------------------------
+# With the coroutine/thread Celery pool each worker thread runs its tests on one
+# persistent event loop (see execution/shared.py:run_on_thread_loop).  redis.asyncio
+# clients are tied to the event loop they were created on, so caching one per thread
+# avoids the cost of creating a new connection + PING on every single test invocation
+# (the old per-call pattern).  The cache is keyed by thread but validated against the
+# running loop, because a caller is free to hand this thread a different loop.
+_tls = threading.local()
+
+
+async def get_rpc_client() -> "SDKRpcClient":
+    """Return the thread-local SDKRpcClient, initializing it on first access.
+
+    Rebuilds when the running loop is not the one the cached client was created
+    on. A thread is not guaranteed to keep one loop for its lifetime -- a caller
+    using ``asyncio.run()`` per call gets a fresh loop each time -- and a client
+    carried across a closed loop holds dead connections that fail every command
+    with "Event loop is closed".
+    """
+    loop = asyncio.get_running_loop()
+
+    def _usable(c: "SDKRpcClient | None") -> bool:
+        # A client built on a loop that has since been replaced holds dead
+        # connections; every command on it fails with "Event loop is closed".
+        return c is not None and c._redis is not None and c._loop is loop
+
+    client: "SDKRpcClient | None" = getattr(_tls, "rpc_client", None)
+    if _usable(client):
+        return client
+
+    # Serialize initialization. Without this the check above and the store below
+    # straddle an await, so at batch start every concurrent test builds its own
+    # client and opens its own Redis connection; the last writer wins and the
+    # rest leak, since close() is never called. Measured 14 orphaned connections
+    # at batch_concurrency=15.
+    lock = getattr(_tls, "rpc_init_lock", None)
+    if lock is None or getattr(_tls, "rpc_init_lock_loop", None) is not loop:
+        lock = asyncio.Lock()
+        _tls.rpc_init_lock = lock
+        _tls.rpc_init_lock_loop = loop
+
+    async with lock:
+        client = getattr(_tls, "rpc_client", None)
+        if _usable(client):
+            return client
+
+        # A stale-loop client is dropped rather than closed: aclose() would run on
+        # the dead loop. Its sockets linger until GC, and redis-py's __del__ only
+        # closes them when a loop is running, so this genuinely leaks a connection.
+        # Warn rather than swallow it: with a persistent per-thread loop this should
+        # never fire, so if it appears in production some caller is churning loops
+        # and the leak is worth chasing.
+        if client is not None and client._redis is not None:
+            logger.warning(
+                "RPC client was built on a stale event loop; rebuilding and "
+                "abandoning its connections. A caller is creating a new loop per "
+                "call -- use execution/shared.py:run_on_thread_loop instead."
+            )
+
+        client = SDKRpcClient()
+        await client.initialize()
+        client._loop = loop
+        _tls.rpc_client = client
+        return client
+
+
+class SDKRpcClient:
+    """Client for workers to make RPC calls to SDK functions via Redis."""
+
+    def __init__(self):
+        """Initialize RPC client."""
+        self._redis = None
+        # The loop this client's connections are bound to; see get_rpc_client().
+        self._loop = None
+
+    async def initialize(self):
+        """
+        Initialize Redis connection for RPC.
+
+        Raises:
+            RuntimeError: If Redis connection fails
+        """
+        try:
+            redis_url = get_redis_settings().broker_url
+            logger.info("🔌 Initializing RPC client with Redis")
+            self._redis = await redis.from_url(redis_url, decode_responses=True)
+            logger.info("✅ RPC client connected to Redis successfully")
+            # Test the connection
+            await self._redis.ping()
+            logger.info("✅ Redis PING successful")
+        except Exception as e:
+            logger.error(f"❌ Failed to connect to Redis for SDK RPC: {e}", exc_info=True)
+            raise RuntimeError(f"Redis connection failed: {e}")
+
+    async def close(self):
+        """Close Redis connection and reset state so get_rpc_client() will reinitialize."""
+        if self._redis:
+            await self._redis.aclose()
+            self._redis = None
+        self._loop = None
+        _tls.rpc_client = None
+
+    async def is_connected(self, project_id: str, environment: str) -> bool:
+        """
+        Check if SDK client is connected.
+
+        Args:
+            project_id: Project identifier
+            environment: Environment name
+
+        Returns:
+            True if SDK client is connected, False otherwise
+        """
+        if not self._redis:
+            logger.error("RPC client Redis connection not initialized")
+            return False
+
+        try:
+            environment = environment.lower()
+            key = f"ws:routing:{project_id}:{environment}"
+            exists = await self._redis.exists(key)
+            return exists > 0
+        except Exception as e:
+            logger.error(f"Exception checking SDK connection status: {e}")
+            return False
+
+    async def send_and_await_result(
+        self,
+        project_id: str,
+        environment: str,
+        test_run_id: str,
+        function_name: str,
+        inputs: Dict[str, Any],
+        timeout: float = 30.0,
+        execute_extras: Dict[str, Any] | None = None,
+    ) -> Dict[str, Any]:
+        """
+        Send RPC request to backend with direct worker routing and await result.
+
+        Args:
+            project_id: Project identifier
+            environment: Environment name
+            test_run_id: Unique test run identifier
+            function_name: SDK function to invoke
+            inputs: Function inputs
+            timeout: Timeout in seconds (default: 30.0)
+
+        Returns:
+            Result dictionary with one of:
+            - {"status": "success", "output": {...}, "duration_ms": float}
+            - {"status": "error", "error": str, "duration_ms": float}
+            - {"error": "timeout"}
+            - {"error": "sdk_disconnected"}
+            - {"error": "send_failed", "details": str}
+        """
+        environment = environment.lower()
+        connection_id = f"{project_id}:{environment}"
+        routing_key = f"ws:routing:{connection_id}"
+        request = {
+            "request_id": test_run_id,
+            "project_id": project_id,
+            "environment": environment,
+            "function_name": function_name,
+            "inputs": inputs,
+        }
+        if execute_extras:
+            request.update(execute_extras)
+        dispatch_context = f"({function_name})"
+        logger.debug(f"Sending RPC request to {request}")
+        return await self._send_and_await(
+            routing_key=routing_key,
+            request=request,
+            run_id=test_run_id,
+            timeout=timeout,
+            disconnected_details=f"No connection for {connection_id}",
+            dispatch_log_context=dispatch_context,
+        )
+
+    # --- Metric dispatch ---
+
+    async def send_and_await_metric_result(
+        self,
+        project_id: str,
+        environment: str,
+        metric_run_id: str,
+        metric_name: str,
+        inputs: Dict[str, Any],
+        timeout: float = 30.0,
+    ) -> Dict[str, Any]:
+        """Send metric RPC request routed via project:env.
+
+        The receiving worker resolves the target WebSocket locally.
+        """
+        environment = environment.lower()
+        routing_key = f"ws:routing:{project_id}:{environment}"
+        request = {
+            "request_id": metric_run_id,
+            "request_type": "execute_metric",
+            "project_id": project_id,
+            "environment": environment,
+            "metric_name": metric_name,
+            "inputs": inputs,
+        }
+
+        logger.debug(f"Sending RPC request to {request}")
+        return await self._send_and_await(
+            routing_key=routing_key,
+            request=request,
+            run_id=metric_run_id,
+            timeout=timeout,
+            disconnected_details=f"No connection for {project_id}:{environment}",
+        )
+
+    async def send_and_await_metric_by_connection(
+        self,
+        connection_id: str,
+        metric_run_id: str,
+        metric_name: str,
+        inputs: Dict[str, Any],
+        timeout: float = 30.0,
+    ) -> Dict[str, Any]:
+        """Send a metric RPC request routed by connection_id.
+
+        Uses ``ws:conn:{connection_id}`` to discover which worker
+        holds the connection, then dispatches the request directly.
+
+        Returns:
+            Result dictionary or error dict.
+        """
+        conn_key = f"ws:conn:{connection_id}"
+        request = {
+            "request_id": metric_run_id,
+            "request_type": "execute_metric",
+            "connection_id": connection_id,
+            "metric_name": metric_name,
+            "inputs": inputs,
+        }
+        dispatch_context = f"via connection {connection_id}"
+        return await self._send_and_await(
+            routing_key=conn_key,
+            request=request,
+            run_id=metric_run_id,
+            timeout=timeout,
+            disconnected_details=f"No worker for connection {connection_id}",
+            dispatch_log_context=dispatch_context,
+        )
+
+    async def send_and_await_metric_by_org(
+        self,
+        organization_id: str,
+        metric_run_id: str,
+        metric_name: str,
+        inputs: Dict[str, Any],
+        timeout: float = 30.0,
+    ) -> Dict[str, Any]:
+        """Org-scoped metric dispatch.
+
+        Resolves ``ws:metric:{organization_id}:{metric_name}`` -> ``connection_id``
+        in Redis, then forwards through :meth:`send_and_await_metric_by_connection`
+        which handles the worker lookup and direct dispatch.
+
+        Used when the SDK is connected without a ``project_id``
+        (metrics-only registration). The Redis key is written by the
+        backend at registration time and refreshed by the connection's
+        heartbeat loop.
+
+        Returns:
+            Result dictionary or error dict.
+        """
+        if not self._redis:
+            logger.error("Redis not initialized for RPC call")
+            return {"error": "send_failed", "details": "Redis not initialized"}
+
+        metric_key = f"ws:metric:{organization_id}:{metric_name}"
+        try:
+            connection_id = await self._redis.get(metric_key)
+        except Exception as e:
+            logger.error(f"Failed to check routing for {metric_key}: {e}")
+            return {"error": "send_failed", "details": f"Failed to check routing: {e}"}
+
+        if not connection_id:
+            logger.error(f"SDK connection unavailable for {metric_key}")
+            return {
+                "error": "sdk_disconnected",
+                "details": (
+                    f"No SDK registered metric '{metric_name}' for organization {organization_id}"
+                ),
+            }
+
+        return await self.send_and_await_metric_by_connection(
+            connection_id=connection_id,
+            metric_run_id=metric_run_id,
+            metric_name=metric_name,
+            inputs=inputs,
+            timeout=timeout,
+        )
+
+    async def _send_and_await(
+        self,
+        routing_key: str,
+        request: Dict[str, Any],
+        run_id: str,
+        timeout: float,
+        disconnected_details: str,
+        dispatch_log_context: str = "",
+    ) -> Dict[str, Any]:
+        """Shared Redis RPC dispatch + response wait flow."""
+        if not self._redis:
+            logger.error("Redis not initialized for RPC call")
+            return {"error": "send_failed", "details": "Redis not initialized"}
+
+        try:
+            worker_id = await self._redis.get(routing_key)
+        except Exception as e:
+            logger.error(f"Failed to check routing for {routing_key}: {e}")
+            return {"error": "send_failed", "details": f"Failed to check routing: {e}"}
+
+        if not worker_id:
+            logger.error(f"SDK connection unavailable for {routing_key}")
+            return {"error": "sdk_disconnected", "details": disconnected_details}
+
+        worker_channel = f"ws:rpc:{worker_id}"
+        response_channel = f"ws:rpc:response:{run_id}"
+        pubsub = self._redis.pubsub()
+
+        try:
+            await pubsub.subscribe(response_channel)
+            await self._redis.rpush(worker_channel, json.dumps(request))
+            logger.debug(
+                f"Routed RPC request {run_id} to worker {worker_id} {dispatch_log_context}"
+            )
+
+            async def _wait_for_response() -> Dict[str, Any]:
+                async for message in pubsub.listen():
+                    if message["type"] == "message":
+                        result = json.loads(message["data"])
+                        await pubsub.unsubscribe(response_channel)
+                        if not isinstance(result, dict):
+                            logger.warning(f"Unexpected response payload type: {type(result)!r}")
+                            return {
+                                "error": "send_failed",
+                                "details": "Invalid response payload format",
+                            }
+                        if "status" not in result and "error" not in result:
+                            logger.warning(f"Unexpected response format: {result}")
+                        return result
+                return {"error": "send_failed", "details": "Response stream ended unexpectedly"}
+
+            return await asyncio.wait_for(_wait_for_response(), timeout=timeout)
+        except asyncio.TimeoutError:
+            logger.error(f"RPC request timed out after {timeout}s: {run_id}")
+            await pubsub.unsubscribe(response_channel)
+            return {"error": "timeout"}
+        except Exception as e:
+            logger.error(f"Error during RPC call for {run_id}: {e}")
+            return {"error": "send_failed", "details": str(e)}
+        finally:
+            await pubsub.close()

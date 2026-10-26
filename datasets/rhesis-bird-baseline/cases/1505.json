@@ -1,0 +1,23 @@
+{
+  "question": "Among the customers who paid in euro, how many of them have a monthly consumption of over 1000?",
+  "score": 0.0,
+  "details": {
+    "reason": "Complete results differ from Gold SQL; BIRD Soft F1 = 0.0",
+    "BIRD_Soft_F1": 0.0,
+    "actual_sql": "SELECT COUNT(DISTINCT ym.customer_id) AS euro_customers_with_monthly_consumption_over_1000\nFROM yearmonth ym\nJOIN customers c\n  ON c.customer_id = ym.customer_id\nWHERE c.currency = 'EUR'\n  AND ym.consumption > 1000;",
+    "gold_sql": "SELECT COUNT(*) FROM yearmonth AS T1 INNER JOIN customers AS T2 ON T1.customer_id = T2.customer_id WHERE T2.currency = 'EUR' AND T1.consumption > 1000.00",
+    "actual_result": [
+      [
+        391
+      ]
+    ],
+    "gold_result": [
+      [
+        2730
+      ]
+    ],
+    "sql_error": null,
+    "scorer_ms": 55.04674999974668,
+    "max_parallel_workers_per_gather": 0
+  }
+}

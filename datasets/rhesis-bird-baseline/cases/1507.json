@@ -1,0 +1,41 @@
+{
+  "question": "Please list the disparate time of the transactions taken place in the gas stations from chain no. 11.",
+  "score": 1.0,
+  "details": {
+    "reason": "Complete results match Gold SQL; BIRD Soft F1 = 1.0",
+    "BIRD_Soft_F1": 1.0,
+    "actual_sql": "SELECT DISTINCT t.time\nFROM transactions_1k t\nJOIN gasstations g ON g.gas_station_id = t.gas_station_id\nWHERE g.chain_id = 11\nORDER BY t.time;",
+    "gold_sql": "SELECT DISTINCT T1.time FROM transactions_1k AS T1 INNER JOIN gasstations AS T2 ON T1.gas_station_id = T2.gas_station_id WHERE T2.chain_id = 11",
+    "actual_result": [
+      [
+        {
+          "type": "time",
+          "value": "11:55:00"
+        }
+      ],
+      [
+        {
+          "type": "time",
+          "value": "14:29:00"
+        }
+      ]
+    ],
+    "gold_result": [
+      [
+        {
+          "type": "time",
+          "value": "11:55:00"
+        }
+      ],
+      [
+        {
+          "type": "time",
+          "value": "14:29:00"
+        }
+      ]
+    ],
+    "sql_error": null,
+    "scorer_ms": 3.8494580003316514,
+    "max_parallel_workers_per_gather": 0
+  }
+}

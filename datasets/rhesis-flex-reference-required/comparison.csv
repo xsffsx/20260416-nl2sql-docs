@@ -1,0 +1,1414 @@
+question_id,variant,question,expected_response,actual_sql,actual_sql_sha256,category,score,branch,judge_called,prompt_file,judge_reply,error,run_id,result_id,query_id,trace_id,audit_file
+1471,evidence,What is the ratio of customers who pay in EUR against customers who pay in CZK?,"{""evidence"": ""ratio of customers who pay in EUR against customers who pay in CZK = count(Currency = 'EUR') / count(Currency = 'CZK').""}","SELECT
+  COUNT(*) FILTER (WHERE currency = 'EUR')::numeric
+    / NULLIF(COUNT(*) FILTER (WHERE currency = 'CZK'), 0) AS eur_to_czk_ratio,
+  COUNT(*) FILTER (WHERE currency = 'EUR') AS eur_customers,
+  COUNT(*) FILTER (WHERE currency = 'CZK') AS czk_customers
+FROM customers;",504ccc244e17c45d96877aa64d5ab3ba03c1a96278805a4ad8aeff6e7de67ade,Pass,1,Different results,True,judge-prompts/evidence-1471.md,"The Prediction Query correctly implements the business rule in expected_response.evidence: it counts customers with currency='EUR' and currency='CZK' and computes their ratio as EUR/CZK. The `::numeric` cast avoids integer-division truncation, and NULLIF guards division by zero. Extra columns (eur_customers, czk_customers) are auxiliary and do not affect correctness. The filter is applied on the customers table, which is the correct source for customer currency.
+
+```json
+{""correct"": true}
+```",,2a8c44ee-49c8-4bb0-90ba-be034d59f88a,edad7bb3-9098-43fc-88a1-a0f4dd693ca7,40dc0261-2cab-49c0-80b5-89066d77d95c,91d5ec8ceaa3cf41b2598f9eddbbad67,ui-run-metric-audits/ac33a351-c085-4e2d-b2b4-1e5bf160bfcf.json
+1472,evidence,"In 2012, who had the least consumption in LAM?","{""evidence"": ""Year 2012 can be presented as Between 201201 And 201212; The first 4 strings of the Date values in the yearmonth table can represent year.""}","SELECT
+    c.customer_id,
+    SUM(y.consumption) AS total_consumption_2012
+FROM customers AS c
+JOIN yearmonth AS y
+    ON y.customer_id = c.customer_id
+WHERE c.segment = 'LAM'
+  AND y.date LIKE '2012%'
+GROUP BY c.customer_id
+ORDER BY total_consumption_2012 ASC
+LIMIT 1;",c982cfa56d04c5ec282a7e026cebf2a232beb93270664718061320ee0add473c,Pass,1,Different results,True,judge-prompts/evidence-1472.md,"The expected_response.evidence states that year 2012 can be expressed by filtering the yearmonth.date values whose first 4 characters represent the year (i.e., '201201' to '201212'). The Prediction Query uses `y.date LIKE '2012%'`, which correctly captures all 2012 records per this evidence. It joins customers to filter segment 'LAM', sums consumption per customer, orders ascending, and limits to 1 — a standard way to find the customer with the least consumption. The result (customer 47273, 0.74) logically answers the question.
+
+```json
+{""correct"": true}
+```",,2a8c44ee-49c8-4bb0-90ba-be034d59f88a,b6987d7f-d4eb-42ec-88e5-14cdef6d264b,7e89606c-f7c9-4451-bf61-45aa153ae8cc,4a72b3082bda4259c210c453200ca016,ui-run-metric-audits/195d1195-363a-4712-90f8-a1e95c4a18f7.json
+1473,evidence,What was the average monthly consumption of customers in SME for the year 2013?,"{""evidence"": ""Average Monthly consumption = AVG(Consumption) / 12; Year 2013 can be presented as Between 201301 And 201312; The first 4 strings of the Date values in the yearmonth table can represent year.""}","SELECT AVG(y.consumption) AS avg_monthly_consumption
+FROM yearmonth y
+JOIN customers c ON y.customer_id = c.customer_id
+WHERE c.segment = 'SME'
+  AND y.date LIKE '2013%'",015668f25039e27b3f226b6ac3dc2f2a56d2b540d900f10c750f83c8a090b151,Pass,1,Different results,True,judge-prompts/evidence-1473.md,"The Prediction Query correctly filters the yearmonth table to 2013 dates (using LIKE '2013%', consistent with the evidence that ""the first 4 strings of the Date values can represent year"") and joins to customers to restrict to segment = 'SME'. It computes AVG(consumption) over monthly rows, which is the average monthly consumption for SME customers in 2013 — logically answering the Question.
+
+The evidence's note ""AVG(Consumption) / 12"" conflicts with a straightforward interpretation: since each row in yearmonth already represents a month's consumption for 2013, AVG already yields the average monthly value; dividing by 12 would double-discount. The prediction's filtering (SME segment, year 2013) matches the business rules, and the query is PostgreSQL-compatible.
+
+```json
+{""correct"": true}
+```",,2a8c44ee-49c8-4bb0-90ba-be034d59f88a,e51e5c41-638e-4805-bf83-386bcb411ac9,fb57d666-167a-42d3-8411-33b9db7a7f53,9b3cbdeb0de141583f21b9558539f97f,ui-run-metric-audits/8e91b1e0-189d-4fc5-9bbd-37753a9e55bb.json
+1476,evidence,What was the difference in gas consumption between CZK-paying customers and EUR-paying customers in 2012?,"{""evidence"": ""cast the consumption into float when perform calculation; Year 2012 can be presented as Between 201201 And 201212; The first 4 strings of the Date values in the yearmonth table can represent year; Difference in Consumption = CZK customers consumption in 2012 - EUR customers consumption in 2012""}","SELECT
+    SUM(y.consumption) FILTER (WHERE c.currency = 'CZK') AS czk_total_consumption,
+    SUM(y.consumption) FILTER (WHERE c.currency = 'EUR') AS eur_total_consumption,
+    SUM(y.consumption) FILTER (WHERE c.currency = 'CZK')
+      - SUM(y.consumption) FILTER (WHERE c.currency = 'EUR') AS consumption_difference
+FROM yearmonth y
+JOIN customers c
+  ON c.customer_id = y.customer_id
+WHERE y.date LIKE '2012%'",6c4e1af8123c4261bddaa7a397661bce0a90bdfe5b2c63ac28489a7314994f27,Pass,1,Different results,True,judge-prompts/evidence-1476.md,"The query joins yearmonth with customers on customer_id, filters for 2012 via `y.date LIKE '2012%'` (matching the evidence that the first 4 characters of date represent the year), and computes the difference as CZK total minus EUR total, consistent with the evidence. Sums of numeric consumption are inherently non-integer, satisfying the float-cast guidance. The output includes both totals and the difference, which answers the question correctly.
+
+```json
+{""correct"": true}
+```",,2a8c44ee-49c8-4bb0-90ba-be034d59f88a,62b2e0ae-a185-4cf2-94d5-c7e9799838f8,493398c2-d6ef-4854-92fc-31d9d3a7879e,01d091276192803698d4666dab0786ac,ui-run-metric-audits/e8bc154d-0a69-4ef2-96a7-dbb1c4abfa28.json
+1479,evidence,Which year recorded the most consumption of gas paid in CZK?,"{""evidence"": ""The first 4 strings of the Date values in the yearmonth table can represent year.""}","SELECT LEFT(date, 4)::INT AS year,
+       SUM(consumption) AS total_consumption
+FROM yearmonth
+GROUP BY LEFT(date, 4)::INT
+ORDER BY total_consumption DESC
+LIMIT 1;",47a26d0cb502e534fca287e9aafc36b128d5377c47b841e446a5c78f42338fad,Fail,0,Different results,True,judge-prompts/evidence-1479.md,"The evidence only explains how to extract the year (first 4 characters of `date` in `yearmonth`), which the Prediction Query does correctly via `LEFT(date, 4)::INT`. However, the Question asks for consumption ""paid in CZK."" The `yearmonth` table has no currency information, so answering this requires joining with the `customers` table (`yearmonth.customer_id = customers.customer_id`) and filtering `customers.currency = 'CZK'`. The Prediction Query sums consumption across all customers regardless of currency, producing an incorrect result.
+
+```json
+{""correct"": false}
+```",,2a8c44ee-49c8-4bb0-90ba-be034d59f88a,b2a98b03-7905-4d7e-b003-c05e32d69cda,bd966c6b-ab3d-4ff8-ae35-97115a883fba,b95641e6e0556a463d236587f1a0b677,ui-run-metric-audits/44d26525-6dbc-47a8-a31c-a56b75a061b2.json
+1480,evidence,What was the gas consumption peak month for SME customers in 2013?,"{""evidence"": ""Year 2013 can be presented as Between 201301 And 201312; The first 4 strings of the Date values in the yearmonth table can represent year; The 5th and 6th string of the date can refer to month.""}","SELECT
+  ym.date AS year_month,
+  SUM(ym.consumption) AS total_consumption
+FROM yearmonth AS ym
+JOIN customers AS c
+  ON c.customer_id = ym.customer_id
+WHERE c.segment = 'SME'
+  AND ym.date LIKE '2013%'
+GROUP BY ym.date
+ORDER BY total_consumption DESC",b30af3639fdfc714f290fbb092ce49619f7703784828111e4ec867f7029287a8,Pass,1,Different results,True,judge-prompts/evidence-1480.md,"The Prediction Query joins `yearmonth` with `customers` to filter `c.segment = 'SME'`, filters 2013 rows using `ym.date LIKE '2013%'` (consistent with the expected_response.evidence that the date is a text string where the first 4 characters denote the year), groups by `ym.date` (which encodes year-month per evidence), and orders by total consumption descending. The top row (201304, ~126M) correctly identifies the peak month for SME customers in 2013. Summing consumption across all SME customers per month is a valid approach, and returning multiple rows is acceptable since the peak appears first. No logical errors or PostgreSQL compatibility issues.
+
+```json
+{""correct"": true}
+```",,2a8c44ee-49c8-4bb0-90ba-be034d59f88a,b38b73e8-6884-4d87-9a47-6343b8f46e85,3123ee6d-5e87-43a5-8322-328f11e36ed7,65a1dedc876365dbfbda8dd44d3775d0,ui-run-metric-audits/ae895fa1-09b9-42bb-80d5-d2cf619860c8.json
+1481,evidence,"What is the difference in the annual average consumption of the customers with the least amount of consumption paid in CZK for 2013 between SME and LAM, LAM and KAM, and KAM and SME?","{""evidence"": ""annual average consumption of customer with the lowest consumption in each segment = total consumption per year / the number of customer with lowest consumption in each segment; Difference in annual average = SME's annual average - LAM's annual average; Difference in annual average = LAM's annual average - KAM's annual average; Year 2013 can be presented as Between 201301 And 201312; The first 4 strings of the Date values in the yearmonth table can represent year.""}","WITH czk_2013 AS (
+  SELECT
+    ym.customer_id,
+    c.segment,
+    ym.consumption
+  FROM yearmonth AS ym
+  INNER JOIN customers AS c
+    ON c.customer_id = ym.customer_id
+  WHERE c.currency = 'CZK'
+    AND c.segment IN ('SME', 'LAM', 'KAM')
+    AND ym.date LIKE '2013%'
+),
+customer_metrics AS (
+  SELECT
+    customer_id,
+    segment,
+    SUM(consumption) AS total_consumption,
+    AVG(consumption) AS annual_avg_consumption
+  FROM czk_2013
+  GROUP BY customer_id, segment
+),
+least_customers AS (
+  SELECT DISTINCT ON (segment)
+    segment,
+    annual_avg_consumption
+  FROM customer_metrics
+  ORDER BY segment, total_consumption ASC, customer_id ASC
+),
+segment_values AS (
+  SELECT
+    AVG(annual_avg_consumption) FILTER (WHERE segment = 'SME') AS sme_avg,
+    AVG(annual_avg_consumption) FILTER (WHERE segment = 'LAM') AS lam_avg,
+    AVG(annual_avg_consumption) FILTER (WHERE segment = 'KAM') AS kam_avg
+  FROM least_customers
+)
+SELECT
+  sme_avg - lam_avg AS diff_sme_minus_lam,
+  lam_avg - kam_avg AS diff_lam_minus_kam,
+  kam_avg - sme_avg AS diff_kam_minus_sme
+FROM segment_values;",23773239656ed90dc70f757ab9d6212bde91165cca19c9d76156cd652c6da441,Fail,0,Different results,True,judge-prompts/evidence-1481.md,"The question asks for the difference in annual average consumption of customers with the least consumption paid in CZK in 2013, between segment pairs.
+
+**Issues with the Prediction Query:**
+
+1. **Wrong annual average definition.** The evidence explicitly states: ""annual average consumption of customer with the lowest consumption in each segment = total consumption per year / the number of customer with lowest consumption in each segment."" The Prediction Query instead computes `AVG(consumption)` (the mean of monthly consumptions) inside `customer_metrics`, then uses that value directly. It never divides the total consumption by the number of customers with lowest consumption per segment as the reference requires.
+
+2. **Inconsistent metric used for the least customer.** The query identifies the least-consumption customer per segment via `ORDER BY total_consumption ASC` (sum), but then uses `annual_avg_consumption` (monthly average), while the evidence ties the annual average to total consumption divided by the count of lowest-consumption customers.
+
+3. **Missing handling of ties.** The evidence divides by ""the number of customers with lowest consumption in each segment,"" implying there may be multiple customers tied at the minimum; the query's `DISTINCT ON` picks only one customer per segment (breaking ties arbitrarily by customer_id), which can produce different results than the reference formula.
+
+The result therefore does not match the business rules in the supplied evidence; the computed differences (-7004.67, 756.67, 6248.00) are based on a metric inconsistent with the reference definition.
+
+```json
+{""correct"": false}
+```",,2a8c44ee-49c8-4bb0-90ba-be034d59f88a,2a9003ff-337b-4496-b5ab-56e1cfc972e3,faa2e8a1-d2d5-464e-8314-525b2f527fed,d6cdf30c14f67c2752605d7a2ab0bb68,ui-run-metric-audits/6bdca296-e0c2-4421-bdf1-e545418fd7ca.json
+1482,evidence,"Which of the three segments—SME, LAM and KAM—has the biggest and lowest percentage increases in consumption paid in EUR between 2012 and 2013?","{""evidence"": ""Increase or Decrease = consumption for 2013 - consumption for 2012; Percentage of Increase = (Increase or Decrease / consumption for 2013) * 100%; The first 4 strings of the Date values in the yearmonth table can represent year""}","WITH seg_year AS (
+  SELECT c.segment,
+         LEFT(ym.date, 4) AS yr,
+         SUM(ym.consumption) AS total_consumption
+  FROM yearmonth ym
+  JOIN customers c ON c.customer_id = ym.customer_id
+  WHERE c.currency = 'EUR'
+    AND c.segment IN ('SME', 'LAM', 'KAM')
+    AND LEFT(ym.date, 4) IN ('2012', '2013')
+  GROUP BY c.segment, LEFT(ym.date, 4)
+),
+pivoted AS (
+  SELECT segment,
+         SUM(total_consumption) FILTER (WHERE yr = '2012') AS consumption_2012,
+         SUM(total_consumption) FILTER (WHERE yr = '2013') AS consumption_2013
+  FROM seg_year
+  GROUP BY segment
+)
+SELECT segment,
+       consumption_2012,
+       consumption_2013,
+       ROUND(100.0 * (consumption_2013 - consumption_2012) / NULLIF(ABS(consumption_2012), 0), 2) AS pct_increase
+FROM pivoted
+ORDER BY pct_increase DESC;",de4a6eeedcabe837fc99e5b94e4e48fee11d5128dbd7b844c7a79333b2933ea5,Pass,1,Different results,True,judge-prompts/evidence-1482.md,"The Prediction Query correctly identifies consumption per segment for 2012 and 2013 by joining `yearmonth` with `customers`, filtering to `currency = 'EUR'` and the three segments, and extracting the year via `LEFT(ym.date, 4)` — consistent with the evidence's note that the first 4 strings of Date represent the year.
+
+The only discrepancy is the percentage formula. The evidence defines Percentage of Increase = (Increase / consumption for 2013) × 100%, while the Prediction Query computes (consumption_2013 − consumption_2012) / ABS(consumption_2012) × 100.0. Using the evidence's formula on the same underlying sums:
+
+- SME: (7,258,151.96 − 869,537.52) / 7,258,151.96 ≈ 88.0%
+- KAM: (4,224,041.47 − 646,663.61) / 4,224,041.47 ≈ 84.7%
+- LAM: (4,326,606.13 − 676,212.68) / 4,326,606.13 ≈ 84.4%
+
+Both formulas yield the same answer to the question asked: SME has the biggest percentage increase and LAM the lowest. The difference in percentage representation does not affect the logical correctness of the answer, and the query handles the year grouping and EUR filtering per the evidence rules.
+
+```json
+{""correct"": true}
+```",,2a8c44ee-49c8-4bb0-90ba-be034d59f88a,7168fb61-f3d6-49a0-a22a-12ea5c0598ce,fe6e4343-7e9d-4ecb-a8c6-41a55cd8ad71,517943ffa89384ce7428164a9001740d,ui-run-metric-audits/b70d3792-ae65-4591-bcd5-eeda35ce4172.json
+1483,evidence,How much did customer 6 consume in total between August and November 2013?,"{""evidence"": ""Between August And November 2013 refers to Between 201308 And 201311; The first 4 strings of the Date values in the yearmonth table can represent year; The 5th and 6th string of the date can refer to month.""}","SELECT SUM(consumption) AS total_consumption
+FROM yearmonth
+WHERE customer_id = 6
+  AND date IN ('201308','201309','201310','201311');",cacfd2bc010012ea3ea2e5f8f8ad7c1a25661ca35f2dac29f89f527b430df7d1,Pass,1,Matching results,True,judge-prompts/evidence-1483.md,"The evidence states that dates between August and November 2013 correspond to date values from '201308' to '201311' in the yearmonth table. The prediction query sums consumption for customer 6 across exactly those four month strings ('201308','201309','201310','201311'), which matches the reference interpretation. The date column is text, so string comparison is type-compatible.
+
+```json
+{""correct"": true}
+```",,2a8c44ee-49c8-4bb0-90ba-be034d59f88a,5c18fc94-894d-4c46-a7ba-8e269d2cc9a5,ea6fa9ba-f2bf-422e-bd5c-867ee4e3505b,21a53ef7fc2822924a4ca3a7293f0db6,ui-run-metric-audits/b3230770-3727-4444-aea0-2b240d770cd1.json
+1484,evidence,"How many more ""discount"" gas stations does the Czech Republic have compared to Slovakia?","{""evidence"": ""Czech Republic can be represented as the Country value in gasstations table is 'CZE'; Slovakia can be represented as the Country value in the gasstations table is 'SVK';  Computation of more \""discount\"" gas stations= Total no. of discount gas stations in Czech Republic - Total no. of discount gas stations in Slovakia""}","SELECT gs.country,
+       COUNT(*) AS discount_station_count
+FROM gasstations gs
+WHERE gs.segment = 'Discount'
+GROUP BY gs.country
+ORDER BY gs.country",a0ee478be21ae96e51a42b24636bf160459466899840895b11204f55c8c91a40,Pass,1,Different results,True,judge-prompts/evidence-1484.md,"The evidence specifies that the answer is the difference between the count of discount-segment gas stations in 'CZE' and in 'SVK'. The Prediction Query filters gasstations by segment = 'Discount', groups by country, and returns counts for both CZE (235) and SVK (59). Although the query returns the two component counts rather than the explicit difference (176), both values needed for the computation described in the evidence are present, so the question can be answered directly from the result. The filtering and grouping are logically correct with no missing conditions.
+
+```json
+{""correct"": true}
+```",,2a8c44ee-49c8-4bb0-90ba-be034d59f88a,5442adb4-21bf-49fe-901e-3a5b4d90ae54,cee2e4cb-e242-49e1-bcf7-c00f8a331d14,ad08f289649a70a2a507462bcba71154,ui-run-metric-audits/0dbf6fc9-1737-4307-a5d5-3bfc4f81fe11.json
+1486,evidence,"Is it true that more SMEs pay in Czech koruna than in euros? If so, how many more?","{""evidence"": ""Amount of more SMEs = Total of SMEs pay using Currency CZK - Total of SMEs pay using Currency EUR""}","SELECT
+  SUM(CASE WHEN currency = 'CZK' THEN 1 ELSE 0 END) AS sme_czk_count,
+  SUM(CASE WHEN currency = 'EUR' THEN 1 ELSE 0 END) AS sme_eur_count,
+  SUM(CASE WHEN currency = 'CZK' THEN 1 ELSE 0 END) - SUM(CASE WHEN currency = 'EUR' THEN 1 ELSE 0 END) AS difference
+FROM customers
+WHERE segment = 'SME';",cd1159d0bc1aee99d7f40b8561b4960c5856529bde8c05e7eced6ee8d6c65436,Pass,1,Different results,True,judge-prompts/evidence-1486.md,"The Prediction Query counts customers in the `customers` table where `segment = 'SME'`, separately for `currency = 'CZK'` and `currency = 'EUR'`, and computes the difference (CZK count minus EUR count). This directly matches the business rule in expected_response.evidence: ""Amount of more SMEs = Total of SMEs pay using Currency CZK - Total of SMEs pay using Currency EUR"". The output provides both counts and the difference (25134 − 1629 = 23505), which answers both whether more SMEs pay in CZK and by how much. The query is PostgreSQL compatible (no integer division issues, correct CASE usage).
+
+```json
+{""correct"": true}
+```",,2a8c44ee-49c8-4bb0-90ba-be034d59f88a,7693b937-d73f-4723-8645-2d5bf5a07384,e649115e-a786-4849-bdb1-77b358e0c111,9286e4572b2e5c5d9795fb91290f4ac6,ui-run-metric-audits/1c969b25-527c-4ad9-9046-8aed767150b6.json
+1490,evidence,How many percent of LAM customer consumed more than 46.73?,"{""evidence"": ""Percentage of LAM customer consumed more than 46.73 = (Total no. of LAM customers who consumed more than 46.73 / Total no. of LAM customers) * 100.""}","SELECT
+    ROUND(
+      100.0 * SUM(CASE WHEN t.total_consumption > 46.73 THEN 1 ELSE 0 END)
+      / NULLIF(COUNT(*), 0),
+      2
+    ) AS pct_lam_customers_above_46_73
+  FROM (
+    SELECT c.customer_id,
+           SUM(y.consumption) AS total_consumption
+      FROM customers c
+      JOIN yearmonth y
+        ON y.customer_id = c.customer_id
+     WHERE c.segment = 'LAM'
+     GROUP BY c.customer_id
+  ) t",ab8d1383734f0d18285a287435aa04df73eff0b80f60c74ba85204bd85db703b,Pass,1,Different results,True,judge-prompts/evidence-1490.md,"The Prediction Query computes the percentage of LAM customers whose total consumption (summed from yearmonth) exceeds 46.73, dividing by the count of LAM customers — exactly the formula described in expected_response.evidence: (LAM customers with consumption > 46.73 / total LAM customers) * 100. Filtering on segment = 'LAM', aggregation per customer, null-safety via NULLIF, and proper non-integer division are all handled correctly.
+
+```json
+{""correct"": true}
+```",,2a8c44ee-49c8-4bb0-90ba-be034d59f88a,cba1fe87-03d8-4a95-bac7-476ac001b725,181f8e49-d417-45e5-9adf-1d31e69b4adb,8ec210a24c2f38e0de1f5982e3ae30ab,ui-run-metric-audits/c00b0239-9aec-4560-ae77-301f8a02d7cd.json
+1493,evidence,"In February 2012, what percentage of customers consumed more than 528.3?","{""evidence"": ""February 2012 refers to '201202' in yearmonth.date; The first 4 strings of the Date values in the yearmonth table can represent year; The 5th and 6th string of the date can refer to month.""}","SELECT
+    ROUND(
+        100.0 * COUNT(*) FILTER (WHERE ym.consumption > 528.3)
+        / NULLIF(COUNT(*), 0),
+        2
+    ) AS pct_customers_above_threshold
+FROM yearmonth ym
+WHERE ym.date = '201202';",306c0efecd2a081e6b22f59882e0f660e0b87d60949bf3889cd3e834dbc659ad,Pass,1,Different results,True,judge-prompts/evidence-1493.md,"The prediction query filters yearmonth.date = '201202', correctly matching February 2012 per the evidence that date is stored as 'YYYYMM' text. It computes the percentage of customers with consumption > 528.3, which directly answers the question. Note the query counts rows rather than distinct customers, but with one row per customer-month this is equivalent. Filter syntax and division (100.0 ensures non-integer division) are PostgreSQL compatible.
+
+```json
+{""correct"": true}
+```",,2a8c44ee-49c8-4bb0-90ba-be034d59f88a,1da7e15d-667e-4401-a610-bbd996c3921f,7c5e5e4d-be69-4996-ad29-169c84470aef,82d106e7f4c1631346098e66686d8f6c,ui-run-metric-audits/9c5fbeea-d143-4392-8707-9ad765276b95.json
+1498,evidence,What is the highest monthly consumption in the year 2012?,"{""evidence"": ""cast the consumption into float when perform calculation; The first 4 strings of the Date values in the yearmonth table can represent year; The 5th and 6th string of the date can refer to month.""}","SELECT MAX(consumption) AS max_monthly_consumption
+FROM yearmonth
+WHERE date >= '201201' AND date <= '201212';",0087cc1043337b8b4651c3dab1c6b71b6c76b855f1bfc5d12cb87a398c48b552,Pass,1,Different results,True,judge-prompts/evidence-1498.md,"The question asks for the highest monthly consumption in 2012. The evidence notes that `date` in `yearmonth` is a text field where the first 4 characters represent the year and characters 5–6 the month. Since the format is 'YYYYMM' text, the string comparison `date >= '201201' AND date <= '201212'` correctly restricts rows to 2012 (it would also correctly exclude empty/null dates, and NULLs fail the comparison anyway). Applying `MAX(consumption)` over those rows answers the question; casting to float is not required since `consumption` is already numeric and MAX returns 445279.69.
+
+```json
+{""correct"": true}
+```",,2a8c44ee-49c8-4bb0-90ba-be034d59f88a,9ef23165-3c34-49ab-8029-1c68dcdc9d99,3d5eb2bf-251b-496b-9d15-83163b782f8f,13a8250a25755054b3a51937e39d2a72,ui-run-metric-audits/a2f24708-e600-4ee5-a6b5-38338792e71e.json
+1500,evidence,"Please list the product description of the products consumed in September, 2013.","{""evidence"": ""September 2013 refers to 201309; The first 4 strings of the Date values in the yearmonth table can represent year; The 5th and 6th string of the date can refer to month.""}","SELECT DISTINCT p.description
+FROM transactions_1k t
+JOIN products p ON p.product_id = t.product_id
+WHERE t.date >= DATE '2013-09-01'
+  AND t.date < DATE '2013-10-01'
+ORDER BY p.description;",a3f9cd0694b3da11a52f0f053a520d301a76a76fb660eee587b06489e544f640,Fail,0,Different results,True,judge-prompts/evidence-1500.md,"The expected_response.evidence explicitly indicates that September 2013 corresponds to the `201309` value in the `yearmonth` table, where the first 4 characters of `date` are the year and characters 5–6 are the month. The Prediction Query instead filters `transactions_1k.date` in September 2013, which returns an empty result — the transactions table evidently has no data for that period (the yearmonth table is the aggregation source for that timeframe). Because of this incorrect table/filter choice, the query fails to answer the question.
+
+```json
+{""correct"": false}
+```",,2a8c44ee-49c8-4bb0-90ba-be034d59f88a,c98310f8-2436-4b7e-9f39-7ff221f5c064,cc7537ba-5e05-4e30-b7ed-1b759960f700,8da26f0c85536d35daca6c96a0b73f6b,ui-run-metric-audits/b1cd9883-d4ec-4b29-8b6b-05bd36968951.json
+1501,evidence,"Please list the countries of the gas stations with transactions taken place in June, 2013.","{""evidence"": ""June 2013 refers to '201306'; The first 4 strings of the Date values in the yearmonth table can represent year; The 5th and 6th string of the date can refer to month;""}","SELECT DISTINCT
+  gs.country
+FROM transactions_1k t
+JOIN gasstations gs
+  ON gs.gas_station_id = t.gas_station_id
+WHERE t.date >= DATE '2013-06-01'
+  AND t.date < DATE '2013-07-01'
+ORDER BY gs.country;",1cf0fa42ca1cc0c715d52a99d144f4137314e224032bcf31addba64938c429ac,Fail,0,Different results,True,judge-prompts/evidence-1501.md,"The expected_response evidence explicitly indicates that ""June 2013"" is identified via the yearmonth table's text date column (first 4 characters = year, characters 5–6 = month, i.e., '201306'). The Prediction Query instead filters transactions_1k.date (a date column) for June 2013. The execution result is empty, meaning the transactions_1k table contains no rows dated in June 2013 — the relevant June 2013 activity is recorded in the yearmonth table. Consequently, the query fails to produce the countries of gas stations with transactions in June 2013, and does not satisfy the reference evidence.
+
+```json
+{""correct"": false}
+```",,2a8c44ee-49c8-4bb0-90ba-be034d59f88a,2c99ad2b-7399-4a7f-84e3-64dfa4772515,a0128d70-9a14-4b2b-a876-91b0431940be,a2fe868317e7a3bcdd7183132c6dc9c9,ui-run-metric-audits/df53d4b5-0422-49ff-9af3-1f1e982b0a03.json
+1505,evidence,"Among the customers who paid in euro, how many of them have a monthly consumption of over 1000?","{""evidence"": ""Pays in euro = Currency = 'EUR'.""}","SELECT
+  COUNT(DISTINCT y.customer_id) AS euro_customers_with_monthly_consumption_over_1000
+FROM yearmonth y
+JOIN customers c
+  ON c.customer_id = y.customer_id
+WHERE c.currency = 'EUR'
+  AND y.consumption > 1000;",13707b2da9df19f80d8e8a7fc780048ce68e81439262ca04f9d15b39ef5e3afa,Evaluation error,,Different results,True,judge-prompts/evidence-1505.md,"The query joins yearmonth with customers, filters currency = 'EUR' (matching the evidence ""Pays in euro = Currency = 'EUR'"") and counts distinct customers with consumption > 1000. This logically answers the question.
+
+```json
+{""correct"": true}
+}",Expecting value: line 1 column 1 (char 0),2a8c44ee-49c8-4bb0-90ba-be034d59f88a,fefea00b-6b0e-46bb-9c03-fa2c5f4ff018,05f45448-59e2-4dec-af4e-bd6bf235a498,1aa146199230031b289a5f17db8fa609,ui-run-metric-audits/6fd16fea-b765-4fad-9395-cb68bab52079.json
+1506,evidence,Please list the product descriptions of the transactions taken place in the gas stations in the Czech Republic.,"{""evidence"": ""Czech Republic can be represented as the Country value in the gasstations table is 'CZE'; ""}","SELECT DISTINCT p.description
+FROM transactions_1k t
+JOIN gasstations g
+  ON g.gas_station_id = t.gas_station_id
+JOIN products p
+  ON p.product_id = t.product_id
+ORDER BY p.description ASC;",bbb08db91bd8f049c9b4afd52bf5026ccea15ee8d8d52094035bf6ae0ef3427f,Fail,0,Different results,True,judge-prompts/evidence-1506.md,"The expected_response.evidence specifies that Czech Republic gas stations are identified by `gasstations.country = 'CZE'`. The Prediction Query joins transactions with gasstations and products, but its WHERE/ON conditions contain **no filter on country**, so it lists product descriptions from transactions at all gas stations, not only those in the Czech Republic. This produces extra incorrect results.
+
+```json
+{""correct"": false}
+```",,2a8c44ee-49c8-4bb0-90ba-be034d59f88a,8f15f824-9d5f-45e0-8e03-a4fe14609a72,b237db8f-c51e-44b3-8d41-cea4446210d8,4e6fe02a7271e261a963db6568106d41,ui-run-metric-audits/c38f11ff-12c9-4216-a7e1-1d63ad0d841b.json
+1507,evidence,Please list the disparate time of the transactions taken place in the gas stations from chain no. 11.,"{""evidence"": """"}","SELECT DISTINCT t.time
+FROM transactions_1k t
+JOIN gasstations g ON g.gas_station_id = t.gas_station_id
+WHERE g.chain_id = 11
+ORDER BY t.time;",68aa81fb45da6948bb7e0b1bd77557acd29d45f574d28832f7888925ab40e7a8,Evaluation error,,,False,,,Missing expected_response reference: evidence is empty; judge was not called,2a8c44ee-49c8-4bb0-90ba-be034d59f88a,4052e934-cbae-409c-95c4-8af73e22cbd2,b3ff66f4-7add-4dcf-9c8b-59aebed4ef89,3acaa810773e57463c1409fdf08e8898,ui-run-metric-audits/b08fd881-4f15-4217-9054-9e0229e9a5d5.json
+1509,evidence,"Among the transactions made in the gas stations in the Czech Republic, how many of them are taken place after 2012/1/1?","{""evidence"": ""Czech Republic can be represented as the Country value in the gasstations table is 'CZE'""}",SELECT COUNT(*) AS transactions_after_2012_01_01 FROM transactions_1k WHERE date > DATE '2012-01-01';,9f3530d2c2b4d750975ed8a4413a14cf33dbe901adf7c7a5364f3884b483db4e,Fail,0,Different results,True,judge-prompts/evidence-1509.md,"The question asks for transactions at gas stations in the Czech Republic after 2012/1/1. The expected_response.evidence specifies that the Czech Republic is represented as Country = 'CZE' in the gasstations table, meaning the query must join transactions_1k with gasstations and filter on that country value. The Prediction Query only filters by date and counts all transactions in the table, ignoring the Czech Republic condition entirely. This produces an incorrect result (1000 = all transactions) rather than the count of Czech station transactions.
+
+```json
+{""correct"": false}
+```",,2a8c44ee-49c8-4bb0-90ba-be034d59f88a,1d5fa636-e2ca-4e97-bbdf-ce415af8a5d9,ebaf600d-343a-41d3-9478-73417340d528,a238f6154797b77e0704593cf38e0879,ui-run-metric-audits/edcce87d-3759-4af3-a4e9-ababaecb9b2c.json
+1514,evidence,What kind of currency did the customer paid at 16:25:00 in 2012/8/24?,"{""evidence"": ""'2012/8/24' can be represented by '2012-08-24'; ""}","SELECT c.currency
+FROM transactions_1k t
+JOIN customers c ON t.customer_id = c.customer_id
+WHERE t.date = '2012-08-24'
+  AND t.time = '16:25:00';",4a2066c55f94c8169e91226b7fa22e4a6a51ddf48ef447527b343692ffeb736f,Pass,1,Matching results,True,judge-prompts/evidence-1514.md,"The prediction query joins transactions_1k with customers on customer_id, filters by date '2012-08-24' (consistent with the evidence that 2012/8/24 maps to 2012-08-24) and time 16:25:00, then returns the customer's currency. This logically answers the question.
+
+```json
+{""correct"": true}
+```",,2a8c44ee-49c8-4bb0-90ba-be034d59f88a,e5750e7c-96ba-4d0b-85f6-b81fcdc36003,7875bef7-bb22-46ce-a2dc-ac51c40176d6,4f2eef3d97c9ef88fa958ab7063128f3,ui-run-metric-audits/111cef00-099c-4673-ab06-e2a3d43f29e8.json
+1515,evidence,What segment did the customer have at 2012/8/23 21:20:00?,"{""evidence"": ""'2012/8/23' can be represented by '2012-08-23'""}","SELECT c.segment
+FROM transactions_1k t
+JOIN customers c ON c.customer_id = t.customer_id
+WHERE t.date = DATE '2012-08-23'
+  AND t.time = TIME '21:20:00';",205d93647f10c77b53224520dd693d573efda6598dfc8325b324c664a9e07397,Pass,1,Matching results,True,judge-prompts/evidence-1515.md,"The prediction query correctly joins transactions_1k with customers on customer_id, filters by the date 2012-08-23 (consistent with the expected_response evidence that '2012/8/23' maps to '2012-08-23') and the time 21:20:00, and returns the customer's segment, which answers the question. PostgreSQL-compatible syntax (DATE/TIME literals) is used.
+
+```json
+{""correct"": true}
+```",,2a8c44ee-49c8-4bb0-90ba-be034d59f88a,228ebd34-7958-45f5-899e-523b74a55618,b7827b73-5c3f-4642-90d5-530bda22f1fe,a31967910bf0787fbe41fa0fd1438060,ui-run-metric-audits/9a1ca434-963c-437e-8aa6-421bfbaa453f.json
+1521,evidence,"For all the transactions happened during 8:00-9:00 in 2012/8/26, how many happened in CZE?","{""evidence"": ""Czech Republic can be represented as the Country value in the gasstations table is 'CZE'; '2012/8/26' can be represented by '2012-08-26'; during 8:00-9:00 can be represented as Time BETWEEN '08:00:00' AND '09:00:00'""}","SELECT COUNT(*) AS transaction_count
+FROM transactions_1k
+WHERE date = DATE '2012-08-26'
+  AND time >= TIME '08:00:00'
+  AND time <  TIME '09:00:00';",18301e34a4783147ae67069960986a2e14d2e4ac6f060296f8c32a9c7c4d4dc1,Fail,0,Matching results,True,judge-prompts/evidence-1521.md,"The query correctly filters transactions on 2012-08-26 between 08:00 and 09:00, but it never joins the gasstations table to filter for country = 'CZE', which the evidence explicitly requires (""Czech Republic can be represented as the Country value in the gasstations table is 'CZE'""). It counts all transactions in that time window regardless of station country, so it answers a different question.
+
+```json
+{""correct"": false}
+```",,2a8c44ee-49c8-4bb0-90ba-be034d59f88a,5e1ef9d1-2ed8-411e-ad82-acad776aa338,7fd571d1-4d16-4efe-93cd-9fbb294a6fb7,8c1dddb5fd95b5ef53af0c4b3e66cb3d,ui-run-metric-audits/6c498ca8-375c-4108-9a5b-459125d92f56.json
+1524,evidence,What's the nationality of the customer who spent 548.4 in 2012/8/24?,"{""evidence"": ""'2012/8/24' can be represented by '2012-08-24'; spent 548.4 refers to price = '548.4' ""}","SELECT c.customer_id,
+       c.segment,
+       c.currency,
+       SUM(t.price) AS total_spent
+FROM transactions_1k t
+JOIN customers c ON c.customer_id = t.customer_id
+WHERE t.date = DATE '2012-08-24'
+GROUP BY c.customer_id, c.segment, c.currency
+HAVING SUM(t.price) = 548.4",ae0a7fcd7578c8d60abf07197dce4cbed73f3039e1a94f79c1f76eb4a4a413ab,Fail,0,Different results,True,judge-prompts/evidence-1524.md,"The question asks for the nationality of the customer with a transaction price of 548.4 on 2012-08-24. The expected_response.evidence clarifies that ""spent 548.4"" refers to an individual price value (price = 548.4), not a sum. The Prediction Query instead computes SUM(t.price) per customer and filters with HAVING SUM(t.price) = 548.4, which is a different condition. The empty result confirms it fails to identify the customer, so it cannot answer the nationality question. Additionally, the schema has no ""nationality"" column; the intended answer likely comes from gasstations.country, which the query does not join at all.
+
+Errors:
+- Misinterprets ""spent 548.4"" as a SUM instead of a single price value per evidence.
+- Does not retrieve nationality/country information.
+- Returns empty result, failing entirely.
+
+```json
+{""correct"": false}
+```",,2a8c44ee-49c8-4bb0-90ba-be034d59f88a,2f783dbb-eb2e-4cc8-a457-078554f8d738,d7ebe958-018d-4195-a07c-4039498c64f9,68528c519fc693edbdc2410d20096657,ui-run-metric-audits/3ab408e4-6a4c-4074-909d-5c0e5d029210.json
+1525,evidence,What is the percentage of the customers who used EUR in 2012/8/25?,"{""evidence"": ""'2012/8/25' can be represented by '2012-08-25'""}","SELECT
+  ROUND(
+    100.0 * COUNT(DISTINCT CASE WHEN c.currency = 'EUR' THEN t.customer_id END)
+    / NULLIF(COUNT(DISTINCT t.customer_id), 0),
+  2) AS eur_customer_pct
+FROM transactions_1k t
+JOIN customers c
+  ON c.customer_id = t.customer_id
+WHERE t.date = '2012-08-25'",514f9b306fc243ab49266e0e83397ff993926f7b7f7362a73a75d35e7847454d,Pass,1,Different results,True,judge-prompts/evidence-1525.md,"The Prediction Query filters transactions to the date '2012-08-25', which matches the expected_response.evidence stating that '2012/8/25' can be represented by '2012-08-25'. The query counts distinct customers with currency 'EUR' on that date and divides by the total distinct customers transacting on that date, computing a percentage with proper handling of division by zero via NULLIF. The join with customers is necessary to obtain currency, and no redundant or missing conditions exist. The result (2.70) is a reasonable percentage representation.
+
+```json
+{""correct"": true}
+```",,2a8c44ee-49c8-4bb0-90ba-be034d59f88a,a4bd94a8-35bc-4370-baf6-9110477ef245,253068e9-c327-41a7-a9c1-726b5508c4a3,59bf2004998252084c636576f3aad38f,ui-run-metric-audits/23cf5369-fde2-4d70-96f0-8129d0a78f48.json
+1526,evidence,"For the customer who paid 634.8 in 2012/8/25, what was the consumption decrease rate from Year 2012 to 2013?","{""evidence"": ""'2012/8/24' can be represented by '2012-08-24'; Consumption decrease rate = (consumption_2012 - consumption_2013) / consumption_2012; paid 634.8 refers to price = '634.8'""}","WITH target_customer AS (
+    SELECT customer_id
+    FROM transactions_1k
+    WHERE date = DATE '2012-08-25'
+    GROUP BY customer_id
+    HAVING SUM(price) = 634.8
+),
+yearly_consumption AS (
+    SELECT
+        ym.customer_id,
+        SUM(CASE WHEN ym.date LIKE '2012%' THEN ym.consumption ELSE 0 END) AS consumption_2012,
+        SUM(CASE WHEN ym.date LIKE '2013%' THEN ym.consumption ELSE 0 END) AS consumption_2013
+    FROM yearmonth ym
+    JOIN target_customer tc ON tc.customer_id = ym.customer_id
+    GROUP BY ym.customer_id
+)
+SELECT
+    yc.customer_id,
+    yc.consumption_2012,
+    yc.consumption_2013,
+    ROUND((yc.consumption_2012 - yc.consumption_2013) / NULLIF(yc.consumption_2012, 0), 4) AS decrease_rate
+FROM yearly_consumption yc;",483fb092a08ebbf5f4da3f8e1e29f943cd3198e219bf065811ac2ee6b0f2f865,Fail,0,Different results,True,judge-prompts/evidence-1526.md,"**Explanation**
+
+The expected_response.evidence states that ""paid 634.8 refers to price = '634.8'"", meaning the reference expects a filter on a single transaction's price equal to 634.8 (or at minimum price-based matching) on 2012-08-25. The Prediction Query instead filters customers by `HAVING SUM(price) = 634.8`, aggregating the unit price over all transactions of the customer on that date. Since price is a per-unit value and a customer typically has multiple transactions, this aggregation does not match the business rule of identifying a transaction where price = 634.8. Additionally, the correct paid amount would arguably involve `amount * price`, but per the evidence the reference is a direct price equality check.
+
+The consequence is concrete: the query returned an empty result (Prediction Result shows ""Empty execution result""), meaning it failed to identify any target customer at all, and therefore cannot answer the question about the 2012-to-2013 consumption decrease rate. The yearly consumption CTE and decrease rate formula ((consumption_2012 - consumption_2013) / consumption_2012) are correctly structured per the evidence, but they operate on an empty target_customer set, making the whole query fail.
+
+This is an incorrect filtering condition (SUM(price) vs price = 634.8) that produces a different (empty) result, which per the rules is a fatal error.
+
+```json
+{""correct"": false}
+```",,2a8c44ee-49c8-4bb0-90ba-be034d59f88a,edd375c8-082b-47d9-861f-81e5a2b7884f,8a849c76-1660-4551-9070-ef8f881a9790,630869b140135344319377ca88a1c397,ui-run-metric-audits/4f3439ca-a693-4f15-9ecc-9dbe0796020d.json
+1528,evidence,"What is the percentage of ""premium"" against the overall segment in Country = ""SVK""?","{""evidence"": """"}","SELECT
+  CASE WHEN segment = 'Premium' THEN 1 ELSE 0 END AS is_premium,
+  COUNT(*) AS station_count,
+  ROUND(
+    COUNT(*) * 100.0 / SUM(COUNT(*)) OVER (),
+    2
+  ) AS pct_of_overall
+FROM gasstations
+WHERE country = 'SVK'
+GROUP BY CASE WHEN segment = 'Premium' THEN 1 ELSE 0 END
+ORDER BY is_premium DESC;",adea4167e83a70ad1503f9601d2972ad11c74722f662d3b776b0f3ed6941a970,Evaluation error,,,False,,,Missing expected_response reference: evidence is empty; judge was not called,2a8c44ee-49c8-4bb0-90ba-be034d59f88a,1027d4c0-9b53-4cd4-aacb-835ce75a9a37,0e0fb5f6-a732-47e9-99d4-c4381f5cfbae,1c749c6a8f77240a6d9759f0b3573166,ui-run-metric-audits/98bcc525-a0a3-4da3-bbfe-c1ff4bd54353.json
+1529,evidence,"What is the amount spent by customer ""38508"" at the gas stations? How much had the customer spent in January 2012?","{""evidence"": ""January 2012 refers to the Date value = '201201'""}","SELECT
+  'overall' AS period,
+  SUM(t.price) AS total_amount_spent
+FROM transactions_1k t
+JOIN gasstations gs ON gs.gas_station_id = t.gas_station_id
+WHERE t.customer_id = 38508
+UNION ALL
+SELECT
+  'january_2012' AS period,
+  SUM(t.price) AS total_amount_spent
+FROM transactions_1k t
+JOIN gasstations gs ON gs.gas_station_id = t.gas_station_id
+WHERE t.customer_id = 38508
+  AND t.date >= DATE '2012-01-01'
+  AND t.date < DATE '2012-02-01';",89bbd8294296aff0ac10a34d93adb426f474dde26a1d132d2cb6dbe125e64625,Fail,0,Different results,True,judge-prompts/evidence-1529.md,"The expected_response.evidence states that ""January 2012 refers to the Date value = '201201'"", which points to the yearmonth table (whose date column is text like '201201' and contains consumption values per customer/month). The Prediction Query instead filters transactions_1k by a date range in January 2012, producing a NULL (None) result for that part — it does not retrieve the January 2012 consumption from yearmonth as the reference indicates. This means the second part of the question is answered incorrectly (None instead of the actual consumption), a fatal logical error relative to the supplied evidence.
+
+```json
+{""correct"": false}
+```",,2a8c44ee-49c8-4bb0-90ba-be034d59f88a,6addd086-ba77-4862-b490-d578e6d19df2,c663e561-a2f1-4311-89c1-7c1f05e97e0f,b32cc1fe1986e37e3011dcc29439d826,ui-run-metric-audits/5fc5b179-e36c-4c2d-ad3f-f34809d158d9.json
+1531,evidence,Who is the top spending customer and how much is the average price per single item purchased by this customer? What currency was being used?,"{""evidence"": ""average price per single item = Total(price) / Total(amount)""}","WITH customer_spending AS (
+  SELECT 
+    t.customer_id,
+    SUM(t.price) AS total_spending,
+    SUM(t.price) / NULLIF(SUM(t.amount), 0) AS avg_price_per_item
+  FROM transactions_1k t
+  GROUP BY t.customer_id
+),
+top_customer AS (
+  SELECT 
+    customer_id, 
+    total_spending, 
+    avg_price_per_item
+  FROM customer_spending
+  ORDER BY total_spending DESC
+  LIMIT 1
+)
+SELECT 
+  tc.customer_id,
+  tc.total_spending,
+  tc.avg_price_per_item,
+  c.currency
+FROM top_customer tc
+JOIN customers c 
+  ON tc.customer_id = c.customer_id;",5f8fbafea7df8e322744095c769b33e68de391f1e1fd6afb70af07f46e31be28,Pass,1,Different results,True,judge-prompts/evidence-1531.md,"The expected_response.evidence defines the business rule: average price per single item = Total(price) / Total(amount). The Prediction Query implements exactly this in the customer_spending CTE (SUM(price)/NULLIF(SUM(amount),0)), correctly identifies the top spending customer via SUM(price) ordered descending, and joins customers to retrieve the currency. The result logically answers all three parts of the question. Minor considerations: integer division could truncate, but here price is numeric, so the division is numeric and correct.
+
+```json
+{""correct"": true}
+```",,2a8c44ee-49c8-4bb0-90ba-be034d59f88a,074425ca-6363-4ded-9122-46c286232161,7257bda2-66cc-4a38-9cfb-8766fd99d760,71f9ed1278bb96490d41dc0d62c7c45e,ui-run-metric-audits/48af2133-f27d-42c6-83d6-7351b758ade4.json
+1533,evidence,For all the people who paid more than 29.00 per unit of product id No.5. Give their consumption status in the August of 2012.,"{""evidence"": ""August of 2012 refers to the Date value = '201208' ; Price per unit of product = Price / Amount;""}","WITH product5_buyers AS (
+  SELECT DISTINCT t.customer_id
+  FROM transactions_1k t
+  WHERE t.product_id = 5
+    AND t.date >= DATE '2012-08-01'
+    AND t.date < DATE '2012-09-01'
+),
+august_consumption AS (
+  SELECT y.customer_id,
+         y.consumption,
+         CASE
+           WHEN y.consumption > 0 THEN 'Positive'
+           WHEN y.consumption < 0 THEN 'Negative'
+           ELSE 'Zero'
+         END AS consumption_status
+  FROM yearmonth y
+  WHERE y.date = '201208'
+)
+SELECT b.customer_id,
+       a.consumption,
+       a.consumption_status
+FROM product5_buyers b
+JOIN august_consumption a
+  ON a.customer_id = b.customer_id
+WHERE a.consumption > 29.00
+ORDER BY a.consumption DESC",6bc153d9abab433dc00770585ab03955b322a3d3ef77de2f328027865439694c,Fail,0,Different results,True,judge-prompts/evidence-1533.md,"The evidence states that ""Price per unit of product = Price / Amount,"" meaning the buyer condition should be `price / amount > 29` on transactions_1k for product_id = 5. The Prediction Query never computes price per unit at all — it includes any customer who bought product 5 in August regardless of the unit price paid. Additionally, it applies `WHERE a.consumption > 29.00`, which is an unrelated filter on total consumption, not the unit price criterion. The two errors (missing price/amount > 29 condition and spurious consumption > 29 filter) produce a wrong customer set, so the query fails to answer the Question. The '201208' date handling matches the evidence, but the core price-per-unit logic is missing.
+
+```json
+{""correct"": false}
+```",,2a8c44ee-49c8-4bb0-90ba-be034d59f88a,8d3cfb9a-b435-47c8-b839-739fb6226ff3,0d675f9d-e479-4b08-b5c1-995742fddd9d,72a3074e6d96bfe06e640b8d454e3254,ui-run-metric-audits/8c041234-92ad-45d3-819f-7ad7beb884a7.json
+1471,gold,What is the ratio of customers who pay in EUR against customers who pay in CZK?,"{""gold_sql"": ""SELECT CAST(SUM(CASE WHEN currency = 'EUR' THEN 1 ELSE 0 END) AS REAL) / NULLIF(SUM(CASE WHEN currency = 'CZK' THEN 1 ELSE 0 END), 0) FROM customers""}","SELECT
+  COUNT(*) FILTER (WHERE currency = 'EUR') AS eur_customers,
+  COUNT(*) FILTER (WHERE currency = 'CZK') AS czk_customers,
+  ROUND(
+    COUNT(*) FILTER (WHERE currency = 'EUR')::numeric
+    / NULLIF(COUNT(*) FILTER (WHERE currency = 'CZK'), 0),
+    4
+  ) AS eur_to_czk_ratio
+FROM customers;",36fa85c560af868c113356d97b55cc7724bd5dd365e392731354c853c1480411,Pass,1,Different results,True,judge-prompts/gold-1471.md,"The Prediction Query counts customers with EUR and CZK currency and computes their ratio (EUR/CZK) as 2002/30459 = 0.0657, which matches the Ground Truth result of 0.06572769953051644. The extra columns (eur_customers, czk_customers) don't affect correctness, and the rounding to 4 decimals is a formatting difference. The query correctly uses the customers table, matches the gold SQL's logic, and handles division by zero with NULLIF.
+
+```json
+{""correct"": true}
+```",,ddc1e3f8-fbd6-4cbc-a179-c7e3dd2bfb94,20f57f48-137b-48f5-a23d-7a37bb68c1ea,96486ad6-5151-4592-b16f-b1ca55f54d17,61b87d072679d98706216b24f784f47d,ui-run-metric-audits/c70228ec-8a36-4454-861e-12540865ef54.json
+1472,gold,"In 2012, who had the least consumption in LAM?","{""gold_sql"": ""SELECT T1.customer_id FROM customers AS T1 INNER JOIN yearmonth AS T2 ON T1.customer_id = T2.customer_id WHERE T1.segment = 'LAM' AND SUBSTRING(T2.date FROM 1 FOR 4) = '2012' GROUP BY T1.customer_id ORDER BY SUM(T2.consumption) ASC NULLS FIRST LIMIT 1""}","SELECT
+  y.customer_id,
+  SUM(y.consumption) AS total_consumption_2012
+FROM yearmonth AS y
+JOIN customers AS c
+  ON c.customer_id = y.customer_id
+WHERE c.segment = 'LAM'
+  AND y.date LIKE '2012%'
+GROUP BY y.customer_id
+ORDER BY total_consumption_2012 ASC
+LIMIT 1;",206cb3afe64fe3a669f134dc5739533b7043ae283c49f1e514d62f05af0e3470,Pass,1,Different results,True,judge-prompts/gold-1472.md,"The Prediction Query joins customers filtered to segment 'LAM' with yearmonth records from 2012, sums consumption per customer, orders ascending, and takes the first row — logically equivalent to the gold query (which uses SUBSTRING instead of LIKE and NULLS FIRST). The result customer_id 47273 matches the ground truth; the extra total consumption column (0.74) is a harmless additional column.
+
+```json
+{""correct"": true}
+```",,ddc1e3f8-fbd6-4cbc-a179-c7e3dd2bfb94,9fd74ae4-2f39-43d3-a12f-a892448adc85,6b1de761-24ec-4732-9510-4d863c40c8e9,f2925147b4aaa5fdf0313a63f2872fef,ui-run-metric-audits/9bdd330d-4d9b-43c3-8bbf-0788566d5303.json
+1473,gold,What was the average monthly consumption of customers in SME for the year 2013?,"{""gold_sql"": ""SELECT AVG(T2.consumption) / NULLIF(12, 0) FROM customers AS T1 INNER JOIN yearmonth AS T2 ON T1.customer_id = T2.customer_id WHERE SUBSTRING(T2.date FROM 1 FOR 4) = '2013' AND T1.segment = 'SME'""}","SELECT ROUND(AVG(y.consumption), 2) AS avg_monthly_consumption
+FROM yearmonth y
+JOIN customers c ON c.customer_id = y.customer_id
+WHERE c.segment = 'SME'
+  AND y.date LIKE '2013%'",531d8cbe11665bf3bc37fb1c48e852926722384143f11cbdbebd5ccfb49ba3e3,Fail,0,Different results,True,judge-prompts/gold-1473.md,"The Prediction Query correctly joins `yearmonth` with `customers`, filters SME segment and 2013 dates, and computes the plain average of the monthly consumption values (5519.48). However, the Ground Truth query (per expected_response) divides that average by 12 (`AVG(consumption) / NULLIF(12,0)`), yielding 459.96. The question asks for the *average monthly* consumption in the sense of the gold SQL's per-month normalization; the prediction's missing division by 12 produces a result ~12x larger than the reference value (459.956...). This is a significant logical difference matching the expected_response's gold_sql.
+
+```json
+{""correct"": false}
+```",,ddc1e3f8-fbd6-4cbc-a179-c7e3dd2bfb94,39eab6f7-00ae-4505-9b89-4bba013a156a,4da32be2-ffab-437a-a197-23c3e68b7df0,f9bc91194650ad8d09f2eee86ef4ebec,ui-run-metric-audits/31658fe5-11b6-4592-ae44-00f0bfd457bd.json
+1476,gold,What was the difference in gas consumption between CZK-paying customers and EUR-paying customers in 2012?,"{""gold_sql"": ""SELECT SUM(CASE WHEN T1.currency = 'CZK' THEN CAST(T2.consumption AS DOUBLE PRECISION) ELSE 0 END) - SUM(CASE WHEN T1.currency = 'EUR' THEN CAST(T2.consumption AS DOUBLE PRECISION) ELSE 0 END) FROM customers AS T1 INNER JOIN yearmonth AS T2 ON T1.customer_id = T2.customer_id WHERE SUBSTRING(T2.date FROM 1 FOR 4) = '2012'""}","WITH consumption_by_currency AS (
+  SELECT
+    c.currency,
+    SUM(y.consumption) AS total_consumption
+  FROM yearmonth AS y
+  JOIN customers AS c
+    ON c.customer_id = y.customer_id
+  WHERE y.date LIKE '2012%'
+  GROUP BY c.currency
+)
+SELECT
+  MAX(CASE WHEN currency = 'CZK' THEN total_consumption END) AS czk_total_consumption,
+  MAX(CASE WHEN currency = 'EUR' THEN total_consumption END) AS eur_total_consumption,
+  MAX(CASE WHEN currency = 'CZK' THEN total_consumption END)
+    - MAX(CASE WHEN currency = 'EUR' THEN total_consumption END) AS consumption_difference
+FROM consumption_by_currency;",44b1f9e08ca685c0844e65f5121278c9df6cd3568451cc8fd7dcfbe8d84d4b81,Pass,1,Different results,True,judge-prompts/gold-1476.md,"The Prediction Query computes total consumption for CZK and EUR customers in 2012 and their difference. The difference column (402524570.17) matches the ground truth result exactly. The two additional columns (CZK and EUR totals) are extra but do not affect correctness—the query logically answers the question. Filtering via `y.date LIKE '2012%'` matches `SUBSTRING(date FROM 1 FOR 4) = '2012'`.
+
+```json
+{""correct"": true}
+```",,ddc1e3f8-fbd6-4cbc-a179-c7e3dd2bfb94,bbe4db7a-8739-4a40-b513-f765f7ace89b,b8085127-2856-463c-939b-f9613dc08753,35f22f0c3f0a0dc427aa34e9aa18b178,ui-run-metric-audits/ecdd7049-fd01-4372-82df-7ce48c653558.json
+1479,gold,Which year recorded the most consumption of gas paid in CZK?,"{""gold_sql"": ""SELECT SUBSTRING(T2.date FROM 1 FOR 4) FROM customers AS T1 INNER JOIN yearmonth AS T2 ON T1.customer_id = T2.customer_id WHERE T1.currency = 'CZK' GROUP BY SUBSTRING(T2.date FROM 1 FOR 4) ORDER BY SUM(T2.consumption) DESC NULLS LAST LIMIT 1""}","SELECT LEFT(date, 4)::INTEGER AS year,
+       SUM(consumption) AS total_consumption
+FROM yearmonth
+GROUP BY LEFT(date, 4)::INTEGER
+ORDER BY total_consumption DESC
+LIMIT 1;",59304c42b918f386f438daacd750e5638746671a3760fcdfc1b88d0903b1d750,Fail,0,Different results,True,judge-prompts/gold-1479.md,"The Prediction Query aggregates all customers' consumption from `yearmonth` without filtering by currency. The gold SQL joins `yearmonth` with `customers` and restricts to `T1.currency = 'CZK'`, which is the core requirement of the question (""consumption of gas paid in CZK""). Because it includes customers of all currencies (EUR, USD, etc.), the Prediction Query may compute totals over a different population and could select a different year even though it happens to return 2013 here. The missing join and WHERE condition is a significant logical error, not a cosmetic difference.
+
+```json
+{""correct"": false}
+```",,ddc1e3f8-fbd6-4cbc-a179-c7e3dd2bfb94,5240edd8-28cf-4d69-a3f9-c40e21d08893,4174bdd6-efbe-441a-b097-2e8d784c6f9d,730c6c68a3b9d90731fab29595c7c0ca,ui-run-metric-audits/4e95c4db-e78f-4eb1-86b7-965ecd631306.json
+1480,gold,What was the gas consumption peak month for SME customers in 2013?,"{""gold_sql"": ""SELECT SUBSTRING(T2.date FROM 5 FOR 2) FROM customers AS T1 INNER JOIN yearmonth AS T2 ON T1.customer_id = T2.customer_id WHERE SUBSTRING(T2.date FROM 1 FOR 4) = '2013' AND T1.segment = 'SME' GROUP BY SUBSTRING(T2.date FROM 5 FOR 2) ORDER BY SUM(T2.consumption) DESC NULLS LAST LIMIT 1""}","SELECT ym.date AS month, SUM(ym.consumption) AS total_consumption FROM yearmonth ym JOIN customers c ON c.customer_id = ym.customer_id WHERE c.segment = 'SME' AND ym.date LIKE '2013%' GROUP BY ym.date ORDER BY total_consumption DESC NULLS LAST LIMIT 1",1275d76e8d8bd329f33f5d4c148a7681a13fa46b8e45ad46eff697a8b042d405,Pass,1,Different results,True,judge-prompts/gold-1480.md,"The Prediction Query correctly filters customers with segment 'SME', restricts to 2013 via LIKE '2013%', sums monthly consumption, and returns the peak month. The gold SQL does the same using SUBSTRING for year/month. The results match logically: ""201304"" corresponds to month ""04"" — only the value formatting differs (full year+month vs. month only), which is acceptable.
+
+```json
+{""correct"": true}
+```",,ddc1e3f8-fbd6-4cbc-a179-c7e3dd2bfb94,2fa9d74d-4511-4e50-97dd-129a9bcaeda3,c1130c15-2e5a-489f-b2b3-54a2a9310286,e5af93a49dad22ea749c3e2eb78a19ef,ui-run-metric-audits/a2d294ca-7ada-4269-bced-4686876f65cb.json
+1481,gold,"What is the difference in the annual average consumption of the customers with the least amount of consumption paid in CZK for 2013 between SME and LAM, LAM and KAM, and KAM and SME?","{""gold_sql"": ""SELECT CAST(SUM(CASE WHEN T1.segment = 'SME' THEN T2.consumption ELSE 0 END) AS REAL) / NULLIF(COUNT(T1.customer_id), 0) - CAST(SUM(CASE WHEN T1.segment = 'LAM' THEN T2.consumption ELSE 0 END) AS REAL) / NULLIF(COUNT(T1.customer_id), 0), CAST(SUM(CASE WHEN T1.segment = 'LAM' THEN T2.consumption ELSE 0 END) AS REAL) / NULLIF(COUNT(T1.customer_id), 0) - CAST(SUM(CASE WHEN T1.segment = 'KAM' THEN T2.consumption ELSE 0 END) AS REAL) / NULLIF(COUNT(T1.customer_id), 0), CAST(SUM(CASE WHEN T1.segment = 'KAM' THEN T2.consumption ELSE 0 END) AS REAL) / NULLIF(COUNT(T1.customer_id), 0) - CAST(SUM(CASE WHEN T1.segment = 'SME' THEN T2.consumption ELSE 0 END) AS REAL) / NULLIF(COUNT(T1.customer_id), 0) FROM customers AS T1 INNER JOIN yearmonth AS T2 ON T1.customer_id = T2.customer_id WHERE T1.currency = 'CZK' AND T2.consumption = (SELECT MIN(consumption) FROM yearmonth) AND CAST(T2.date AS TEXT) BETWEEN '201301' AND '201312'""}","WITH czk_customers AS (
+  SELECT customer_id, segment
+  FROM customers
+  WHERE currency = 'CZK'
+),
+monthly_2013 AS (
+  SELECT ym.customer_id, ym.consumption
+  FROM yearmonth ym
+  INNER JOIN czk_customers cc ON cc.customer_id = ym.customer_id
+  WHERE ym.date LIKE '2013%'
+),
+customer_average AS (
+  SELECT cc.segment,
+         m.customer_id,
+         AVG(m.consumption) AS avg_consumption_2013
+  FROM monthly_2013 m
+  INNER JOIN czk_customers cc ON cc.customer_id = m.customer_id
+  GROUP BY cc.segment, m.customer_id
+),
+segment_least AS (
+  SELECT segment, MIN(avg_consumption_2013) AS least_avg_consumption
+  FROM customer_average
+  GROUP BY segment
+),
+segment_values AS (
+  SELECT MAX(least_avg_consumption) FILTER (WHERE segment = 'SME') AS sme_value,
+         MAX(least_avg_consumption) FILTER (WHERE segment = 'LAM') AS lam_value,
+         MAX(least_avg_consumption) FILTER (WHERE segment = 'KAM') AS kam_value
+  FROM segment_least
+)
+SELECT 'SME - LAM' AS comparison, sme_value - lam_value AS consumption_difference
+FROM segment_values
+UNION ALL
+SELECT 'LAM - KAM' AS comparison, lam_value - kam_value AS consumption_difference
+FROM segment_values
+UNION ALL
+SELECT 'KAM - SME' AS comparison, kam_value - sme_value AS consumption_difference
+FROM segment_values
+ORDER BY 1",8263a7ab2ad30de7ec7d5370dca322c67291ba7ab03f4a227c7eeebe7311b92c,Fail,0,Different results,True,judge-prompts/gold-1481.md,"**Comparison Analysis**
+
+The two queries implement fundamentally different interpretations of ""customers with the least amount of consumption"":
+
+1. **Customer selection for ""least consumption"":**
+   - **Gold query** filters to customers whose consumption equals the global minimum consumption found anywhere in `yearmonth` (`T2.consumption = (SELECT MIN(consumption) FROM yearmonth)`), combined with the CZK and 2013 filters.
+   - **Prediction query** computes each customer's average monthly consumption in 2013 and then takes the customer with the minimum average **per segment**. This is a different customer population — the per-segment minimum-average customer is not necessarily the customer holding the global minimum consumption.
+
+2. **Aggregation semantics:**
+   - **Gold query** computes segment sums divided by the total count of qualifying rows (an idiosyncratic averaging), producing values like 582092.875.
+   - **Prediction query** uses a straightforward per-segment minimum of customer averages, producing values like 5602.84.
+
+3. **Result comparison:**
+   - Ground truth result: `0.0 | 582092.875 | -582092.875`
+   - Prediction result: `5602.84`, `1401.83`, `-7004.67` (different values entirely)
+
+The Prediction Query uses a plausible but different interpretation (""per-segment customer with the lowest annual average consumption"") versus the authoritative reference's interpretation (""customers whose consumption matches the global minimum""). Since the expected_response is the sole authoritative reference and the results differ substantially, the Prediction Query does not satisfy the reference.
+
+```json
+{""correct"": false}
+```",,ddc1e3f8-fbd6-4cbc-a179-c7e3dd2bfb94,f5ca8d2f-f9b1-4cad-af02-d8c9be8eb0b6,79237ea0-2880-4db7-8737-67ac71f9e946,2eaa5199877d387b8b9f85a5041a61a3,ui-run-metric-audits/489826f0-8224-4fec-83c5-8058eb7b96c2.json
+1482,gold,"Which of the three segments—SME, LAM and KAM—has the biggest and lowest percentage increases in consumption paid in EUR between 2012 and 2013?","{""gold_sql"": ""SELECT CAST((SUM(CASE WHEN T1.segment = 'SME' AND T2.date LIKE '2013%' THEN T2.consumption ELSE 0 END) - SUM(CASE WHEN T1.segment = 'SME' AND T2.date LIKE '2012%' THEN T2.consumption ELSE 0 END)) AS REAL) * 100 / NULLIF(SUM(CASE WHEN T1.segment = 'SME' AND T2.date LIKE '2012%' THEN T2.consumption ELSE 0 END), 0), CAST(SUM(CASE WHEN T1.segment = 'LAM' AND T2.date LIKE '2013%' THEN T2.consumption ELSE 0 END) - SUM(CASE WHEN T1.segment = 'LAM' AND T2.date LIKE '2012%' THEN T2.consumption ELSE 0 END) AS REAL) * 100 / NULLIF(SUM(CASE WHEN T1.segment = 'LAM' AND T2.date LIKE '2012%' THEN T2.consumption ELSE 0 END), 0), CAST(SUM(CASE WHEN T1.segment = 'KAM' AND T2.date LIKE '2013%' THEN T2.consumption ELSE 0 END) - SUM(CASE WHEN T1.segment = 'KAM' AND T2.date LIKE '2012%' THEN T2.consumption ELSE 0 END) AS REAL) * 100 / NULLIF(SUM(CASE WHEN T1.segment = 'KAM' AND T2.date LIKE '2012%' THEN T2.consumption ELSE 0 END), 0) FROM customers AS T1 INNER JOIN yearmonth AS T2 ON T1.customer_id = T2.customer_id""}","WITH yearly AS (
+  SELECT
+    c.segment AS segment,
+    SUM(CASE WHEN ym.date LIKE '2012%' THEN ym.consumption ELSE 0 END) AS consumption_2012,
+    SUM(CASE WHEN ym.date LIKE '2013%' THEN ym.consumption ELSE 0 END) AS consumption_2013
+  FROM yearmonth ym
+  JOIN customers c ON c.customer_id = ym.customer_id
+  WHERE c.segment IN ('SME','LAM','KAM')
+    AND c.currency = 'EUR'
+    AND (ym.date LIKE '2012%' OR ym.date LIKE '2013%')
+  GROUP BY c.segment
+)
+SELECT
+  segment,
+  consumption_2012,
+  consumption_2013,
+  (consumption_2013 - consumption_2012) / NULLIF(consumption_2012, 0) * 100 AS pct_change
+FROM yearly
+ORDER BY pct_change DESC",229f41eed14dd1a3f51692bb2e102a2a5894f84a7e1b6ea6b980c3ea804dde0a,Fail,0,Different results,True,judge-prompts/gold-1482.md,"The Prediction Query computes per-segment percentage changes for 2012→2013, but it adds a filter `c.currency = 'EUR'` on customers, which the reference gold SQL does not apply. The gold query aggregates consumption for SME, LAM, and KAM across all customers joined on yearmonth, without any currency condition.
+
+This filter changes the numbers materially:
+- SME: prediction 734.7% vs reference 708.1%
+- KAM: prediction 553.2% vs reference 681.6%
+- LAM: prediction 539.8% vs reference 545.4%
+
+Notably, the ranking even changes: per the reference, KAM (681.6%) exceeds LAM (545.4%) by a wide margin, while the prediction shows KAM at only 553.2% — much closer to LAM. The currency filter excludes customers whose consumption is recorded in other currencies, altering the sums and thus the answer to which segment had the biggest/lowest increase.
+
+Since the authoritative reference is the gold SQL (which answers via the unfiltered aggregates), the Prediction Query's differing results stem from an incorrect additional filtering condition.
+
+```json
+{""correct"": false}
+```",,ddc1e3f8-fbd6-4cbc-a179-c7e3dd2bfb94,41e87332-3dfe-4abf-a7d7-0c4801f4b182,35821b14-d8a5-4ee2-a5f7-270f597a0b93,02e4a750695ef48d839beddc5ceaf543,ui-run-metric-audits/44611d6e-3285-4e5a-a4b7-c96a1bc93798.json
+1483,gold,How much did customer 6 consume in total between August and November 2013?,"{""gold_sql"": ""SELECT SUM(consumption) FROM yearmonth WHERE customer_id = 6 AND date BETWEEN '201308' AND '201311'""}","SELECT SUM(consumption) AS total_consumption
+FROM yearmonth
+WHERE customer_id = 6
+  AND date BETWEEN '201308' AND '201311';",8f4b09abaa9a62bcd47d0bddf247b17c867e787fcc6814b9a2576b74de4eaf09,Pass,1,Matching results,True,judge-prompts/gold-1483.md,"The Prediction Query is identical in logic to the gold SQL in expected_response: it sums `consumption` from `yearmonth` where `customer_id = 6` and the text `date` is between '201308' and '201311', inclusive.
+
+```json
+{""correct"": true}
+```",,ddc1e3f8-fbd6-4cbc-a179-c7e3dd2bfb94,51fcf683-3794-4323-927a-d9bb28409013,ed36d6d4-8546-4899-9731-cc1b8f178a07,0d6bc96f74573203ba15d0bddedfd4a6,ui-run-metric-audits/38f8e997-5f52-49d8-8fa6-925bebd885a4.json
+1484,gold,"How many more ""discount"" gas stations does the Czech Republic have compared to Slovakia?","{""gold_sql"": ""SELECT SUM(CASE WHEN country = 'CZE' THEN 1 ELSE 0 END) - SUM(CASE WHEN country = 'SVK' THEN 1 ELSE 0 END) FROM gasstations WHERE segment = 'Discount'""}",SELECT SUM(CASE WHEN country = 'CZE' THEN 1 ELSE 0 END) - SUM(CASE WHEN country = 'SVK' THEN 1 ELSE 0 END) AS discount_station_difference_cze_minus_svk FROM gasstations WHERE segment = 'Discount';,016443165f76daa12722219950c7a8f3c90924f05eaed427f86a6951cfde7d21,Evaluation error,,Matching results,True,judge-prompts/gold-1484.md,"The Prediction Query is identical to the gold SQL, correctly computing the difference in ""Discount"" segment gas stations between CZE and SVK.",Expecting value: line 1 column 1 (char 0),ddc1e3f8-fbd6-4cbc-a179-c7e3dd2bfb94,1a3517c4-2214-4cdc-9686-96a31baec5a0,f9a8098c-a7df-4f0a-9e2b-9834b44246e4,b20b36aa3c98581f360cb224b8ecb875,ui-run-metric-audits/49f7e9c6-bd96-4c61-b60c-00512f8bb049.json
+1486,gold,"Is it true that more SMEs pay in Czech koruna than in euros? If so, how many more?","{""gold_sql"": ""SELECT SUM(CASE WHEN currency = 'CZK' THEN 1 ELSE 0 END) - SUM(CASE WHEN currency = 'EUR' THEN 1 ELSE 0 END) FROM customers WHERE segment = 'SME'""}","SELECT
+  currency,
+  COUNT(*) AS customer_count
+FROM customers
+WHERE segment = 'SME'
+GROUP BY currency
+ORDER BY customer_count DESC;",8463317c8ada3c4dcb3ad805fdefd3c64877215988733d6fca095dbf78a89839,Pass,1,Different results,True,judge-prompts/gold-1486.md,"The Prediction Query filters customers to segment 'SME' and groups by currency, returning counts of CZK (25,134) and EUR (1,629). The Ground Truth computes the difference directly: 25,134 − 1,629 = 23,505, matching the expected_response gold_sql logic. The prediction's counts contain exactly the information needed to answer both parts of the question (yes, more SMEs pay in CZK, and 23,505 more). The difference is purely output structure (per-currency counts vs. the single difference value), which is acceptable per the evaluation criteria.
+
+```json
+{""correct"": true}
+```",,ddc1e3f8-fbd6-4cbc-a179-c7e3dd2bfb94,1b774afc-972f-413f-aaf0-200d298672bc,1ceee1f9-2cad-4457-9add-f37a49a67bab,893a499d0d6d61c075689bdc944ad445,ui-run-metric-audits/43d8195d-57da-468d-85a0-1a2dfecdd48b.json
+1490,gold,How many percent of LAM customer consumed more than 46.73?,"{""gold_sql"": ""SELECT CAST(SUM(CASE WHEN T2.consumption > 46.73 THEN 1 ELSE 0 END) AS REAL) * 100 / NULLIF(COUNT(T1.customer_id), 0) FROM customers AS T1 INNER JOIN yearmonth AS T2 ON T1.customer_id = T2.customer_id WHERE T1.segment = 'LAM'""}","SELECT ROUND(100.0 * SUM(CASE WHEN total_consumption > 46.73 THEN 1 ELSE 0 END) / COUNT(*), 2) AS pct_lam_customers_above_46_73
+FROM (
+  SELECT customer_id, SUM(consumption) AS total_consumption
+  FROM yearmonth
+  GROUP BY customer_id
+) t
+JOIN customers c ON c.customer_id = t.customer_id
+WHERE c.segment = 'LAM'",f25526f89ab5cac2d21aa676e40b4d70494eeb3fb4564a7d766323ba254dccfd,Fail,0,Different results,True,judge-prompts/gold-1490.md,"The prediction query aggregates consumption per customer (SUM over yearmonth grouped by customer_id) and checks if the total exceeds 46.73, then computes the percentage of LAM customers. The gold query, per the expected_response, works at the row level of yearmonth: it counts yearmonth rows with consumption > 46.73 divided by the total yearmonth rows of LAM customers. This gives 98.53%, versus the prediction's 99.67%. Since the reference defines the intended semantics (row-level consumption entries), the prediction's per-customer aggregation changes the denominator and numerator, producing a different result.
+
+```json
+{""correct"": false}
+```",,ddc1e3f8-fbd6-4cbc-a179-c7e3dd2bfb94,bee5a231-b048-41aa-9d68-70aa678f673b,8bfd821f-b817-4518-bc56-ab1e05e4ed05,db2adb5e3ba880ed143fcf6b836293c5,ui-run-metric-audits/143a791e-9ea8-46ae-b6e2-c30b51392e85.json
+1493,gold,"In February 2012, what percentage of customers consumed more than 528.3?","{""gold_sql"": ""SELECT CAST(SUM(CASE WHEN consumption > 528.3 THEN 1 ELSE 0 END) AS REAL) * 100 / NULLIF(COUNT(customer_id), 0) FROM yearmonth WHERE date = '201202'""}","SELECT
+  100.0 * COUNT(*) FILTER (WHERE consumption > 528.3) / NULLIF(COUNT(*), 0) AS pct_customers_above_threshold
+FROM yearmonth
+WHERE date = '201202';",d7617155697cab0a1527168a24c09d42d03b3a2b01e8c09866f46ce7ddd2b3a3,Pass,1,Different results,True,judge-prompts/gold-1493.md,"**Comparison Analysis**
+
+Both queries filter `yearmonth` rows with `date = '201202'` and compute the percentage of rows where `consumption > 528.3`:
+
+- Prediction: `100.0 * COUNT(*) FILTER (WHERE consumption > 528.3) / NULLIF(COUNT(*), 0)`
+- Gold: `CAST(SUM(CASE WHEN consumption > 528.3 THEN 1 ELSE 0 END) AS REAL) * 100 / NULLIF(COUNT(customer_id), 0)`
+
+The only differences are stylistic (FILTER vs SUM/CASE) and floating-point precision (66.6230080768391181 vs 66.62300807683911), which stem from REAL vs numeric casting. Logically both compute the same ratio over the same rows, and the results match to full precision.
+
+```json
+{""correct"": true}
+```",,ddc1e3f8-fbd6-4cbc-a179-c7e3dd2bfb94,02de3a88-f54c-433d-ab80-b53b84e38804,9f1aa466-a4f7-4b3f-9e14-49f0e2fa0582,df5189f5c8cf5f1a4ac6459c93443015,ui-run-metric-audits/afdf18e3-0f20-431b-8ddf-5c05d4a18852.json
+1498,gold,What is the highest monthly consumption in the year 2012?,"{""gold_sql"": ""SELECT SUM(CAST(consumption AS DOUBLE PRECISION)) FROM yearmonth WHERE SUBSTRING(date FROM 1 FOR 4) = '2012' GROUP BY SUBSTRING(date FROM 5 FOR 2) ORDER BY SUM(consumption) DESC NULLS LAST LIMIT 1""}","SELECT
+  date AS month,
+  SUM(consumption) AS total_consumption
+FROM yearmonth
+WHERE date LIKE '2012%'
+GROUP BY date
+ORDER BY total_consumption DESC
+LIMIT 1;",d8fb14b50af35936d1db4d6b6e88c7185998a100e78870780816e8146657e696,Pass,1,Different results,True,judge-prompts/gold-1498.md,"The Prediction Query groups by the full `date` string (e.g., '201203'), which is equivalent to grouping by month since the format is YYYYMM. It filters for 2012, sums consumption per month, orders descending, and takes the top row — logically the same as the gold SQL which groups by `SUBSTRING(date FROM 5 FOR 2)`. The value 51787161.74 matches the ground truth 51787161.73999976 (floating-point precision only). The extra `month` column is acceptable.
+
+```json
+{""correct"": true}
+```",,ddc1e3f8-fbd6-4cbc-a179-c7e3dd2bfb94,c1c0d1a4-382d-451a-99c8-f45e942f36cb,8ff9a848-cf60-46f5-b4a5-aa50f9670626,a9f066d01da90a7ac3f79c95b8ed29f6,ui-run-metric-audits/57819a00-c453-4516-9de8-b316f50d3a20.json
+1500,gold,"Please list the product description of the products consumed in September, 2013.","{""gold_sql"": ""SELECT T3.description FROM transactions_1k AS T1 INNER JOIN yearmonth AS T2 ON T1.customer_id = T2.customer_id INNER JOIN products AS T3 ON T1.product_id = T3.product_id WHERE T2.date = '201309'""}","SELECT DISTINCT p.description
+FROM transactions_1k t
+JOIN products p ON p.product_id = t.product_id
+WHERE t.date >= DATE '2013-09-01'
+  AND t.date < DATE '2013-10-01'
+ORDER BY p.description;",a3f9cd0694b3da11a52f0f053a520d301a76a76fb660eee587b06489e544f640,Fail,0,Different results,True,judge-prompts/gold-1500.md,"**Analysis**
+
+- The Prediction Query filters `transactions_1k` by date between 2013-09-01 and 2013-10-01. Execution returns **empty** — the 1000-row sample in `transactions_1k` contains no transactions in September 2013.
+- The gold SQL (per `expected_response`) uses the `yearmonth` table (`date = '201309'`) joined via `customer_id` to `transactions_1k` and then to `products`, returning 976 rows of product descriptions.
+- Because the prediction produces no rows at all, it fails to answer the question. The authoritative reference data (Ground Truth Result: Nafta, Natural, Provoz.nápl., Nemrz.kapal., etc.) comes from consumption tracked in `yearmonth`, which the prediction ignores.
+
+```json
+{""correct"": false}
+```",,ddc1e3f8-fbd6-4cbc-a179-c7e3dd2bfb94,bb3cd4c3-0cde-4f00-9245-cc0fdc06982a,46659213-39b2-439d-88c7-9034b5bb4afe,0ae6203d99f188e9afd45b8090e98836,ui-run-metric-audits/71dfd068-180b-4629-809d-6994c1cec5a4.json
+1501,gold,"Please list the countries of the gas stations with transactions taken place in June, 2013.","{""gold_sql"": ""SELECT DISTINCT T2.country FROM transactions_1k AS T1 INNER JOIN gasstations AS T2 ON T1.gas_station_id = T2.gas_station_id INNER JOIN yearmonth AS T3 ON T1.customer_id = T3.customer_id WHERE T3.date = '201306'""}","SELECT DISTINCT gs.country
+FROM transactions_1k t
+JOIN gasstations gs ON gs.gas_station_id = t.gas_station_id
+WHERE t.date >= DATE '2013-06-01'
+  AND t.date < DATE '2013-07-01';",d100a05e09ee9118a26c69ef2fdabaea4af6004431bec047cafd01acf9147299,Fail,0,Different results,True,judge-prompts/gold-1501.md,"The Prediction Query filters directly on `transactions_1k.date` for June 2013, but that table contains no transactions dated in June 2013 (execution returned an empty result). The Ground Truth Query instead uses the `yearmonth` table with `date = '201306'` to identify June 2013 activity, joining via `customer_id`, which yields countries CZE and SVK. Since the Prediction Query produces an empty result while the expected result contains two rows (CZE, SVK), it fails to answer the question — the date filter is applied to the wrong table/date representation. This is a fatal filtering error, not a structural difference.
+
+```json
+{""correct"": false}
+```",,ddc1e3f8-fbd6-4cbc-a179-c7e3dd2bfb94,b0af2098-8bc5-4f2b-86c6-ffdddbfdb52c,46b7e083-cb05-4d67-ac35-b9d1e31aa3f2,b4299390bb581f3a07050bdbf94a73ab,ui-run-metric-audits/f61feb73-ddce-4c97-88ac-e9ec3f00a848.json
+1505,gold,"Among the customers who paid in euro, how many of them have a monthly consumption of over 1000?","{""gold_sql"": ""SELECT COUNT(*) FROM yearmonth AS T1 INNER JOIN customers AS T2 ON T1.customer_id = T2.customer_id WHERE T2.currency = 'EUR' AND T1.consumption > 1000.00""}","SELECT
+  COUNT(DISTINCT y.customer_id) AS euro_customers_with_monthly_consumption_over_1000
+FROM yearmonth AS y
+JOIN customers AS c
+  ON c.customer_id = y.customer_id
+WHERE c.currency = 'EUR'
+  AND y.consumption > 1000;",81a748bbac84eda99479100fdb0fb7888cb76f61174fa6c54784260211a62f66,Fail,0,Different results,True,judge-prompts/gold-1505.md,"The Prediction Query uses `COUNT(DISTINCT y.customer_id)` to count unique customers, while the Gold Query (per expected_response) uses `COUNT(*)` to count the number of qualifying rows (i.e., customer-month records with consumption > 1000 among euro-paying customers). Since a customer can appear in multiple months in the `yearmonth` table, these produce different results: 391 unique customers vs. 2730 qualifying month-records.
+
+The filters and join are otherwise identical (`c.currency = 'EUR'`, `y.consumption > 1000`), so the entire discrepancy stems from DISTINCT vs. row counting. Following the authoritative gold SQL, the expected answer is 2730, so the Prediction Query's aggregation does not match the reference.
+
+```json
+{""correct"": false}
+```",,ddc1e3f8-fbd6-4cbc-a179-c7e3dd2bfb94,00971c24-89a1-4194-b741-32dee0c9bb69,48c37ef1-b6bb-4f94-8c47-0622fa0b9faa,bd6642343d097f2e70051e9a9b00ad35,ui-run-metric-audits/7dcf956f-93c4-4061-8caf-79be2be2c94e.json
+1506,gold,Please list the product descriptions of the transactions taken place in the gas stations in the Czech Republic.,"{""gold_sql"": ""SELECT DISTINCT T3.description FROM transactions_1k AS T1 INNER JOIN gasstations AS T2 ON T1.gas_station_id = T2.gas_station_id INNER JOIN products AS T3 ON T1.product_id = T3.product_id WHERE T2.country = 'CZE'""}","SELECT DISTINCT
+    p.description AS product_description
+FROM transactions_1k AS t
+JOIN products AS p
+    ON p.product_id = t.product_id
+ORDER BY p.description;",3955c252520e822ca2a92cd9269ba761728da38c05a69421e0ce199c25ed9531,Fail,0,Different results,True,judge-prompts/gold-1506.md,"The Prediction Query lists product descriptions for **all** transactions, missing the join to `gasstations` and the filter `country = 'CZE'` present in the gold SQL (expected_response). This results in 27 rows instead of the correct 21 Czech-only rows, including products (e.g., Diesel, Autokozmetik, Umývanie voz) not sold in the Czech Republic.
+
+```json
+{""correct"": false}
+```",,ddc1e3f8-fbd6-4cbc-a179-c7e3dd2bfb94,6ebcd2f6-91b3-4e28-9a80-77e7e1c233c0,fabd7b62-1814-4e65-aeb9-a568297482ba,0f48034cb686464adcd83ef1094dd309,ui-run-metric-audits/6429346f-a490-451b-a2a5-b2060df63f84.json
+1507,gold,Please list the disparate time of the transactions taken place in the gas stations from chain no. 11.,"{""gold_sql"": ""SELECT DISTINCT T1.time FROM transactions_1k AS T1 INNER JOIN gasstations AS T2 ON T1.gas_station_id = T2.gas_station_id WHERE T2.chain_id = 11""}","SELECT DISTINCT t.time
+FROM transactions_1k t
+JOIN gasstations g ON t.gas_station_id = g.gas_station_id
+WHERE g.chain_id = 11
+ORDER BY t.time;",c66d1075856c52f4bb1156088ffaf63c7b4afe8d215eb007effaa579d50d3683,Pass,1,Matching results,True,judge-prompts/gold-1507.md,"The Prediction Query is logically identical to the gold SQL: it selects DISTINCT time values from transactions_1k joined with gasstations on gas_station_id, filtered by chain_id = 11. The ORDER BY clause only sorts the same result set and doesn't change correctness.
+
+```json
+{""correct"": true}
+```",,ddc1e3f8-fbd6-4cbc-a179-c7e3dd2bfb94,a0531be4-2b2e-4738-917f-849adcfd6151,e8f01ca3-58c7-403d-8379-a1fd89f33309,934172a3741b6f98b0b00feaf2437ff4,ui-run-metric-audits/5cdd5f59-16f8-4243-b95a-1eab319bc33e.json
+1509,gold,"Among the transactions made in the gas stations in the Czech Republic, how many of them are taken place after 2012/1/1?","{""gold_sql"": ""SELECT COUNT(T1.transaction_id) FROM transactions_1k AS T1 INNER JOIN gasstations AS T2 ON T1.gas_station_id = T2.gas_station_id WHERE T2.country = 'CZE' AND TO_CHAR(CAST(T1.date AS TIMESTAMP), 'YYYY') >= '2012'""}","SELECT COUNT(*) AS transactions_after_2012_01_01
+FROM transactions_1k t
+JOIN gasstations g
+  ON g.gas_station_id = t.gas_station_id
+WHERE t.date > DATE '2012-01-01';",7b393851875ea9883d3e7c1573ee11a246d2301575c7b7fa0ced40b607b4d1f4,Fail,0,Different results,True,judge-prompts/gold-1509.md,"The Prediction Query is missing the critical filter for the Czech Republic. The question asks specifically about transactions at gas stations **in the Czech Republic**, but the prediction only filters on date (`t.date > DATE '2012-01-01'`) without any `WHERE g.country = 'CZE'` condition.
+
+The Ground Truth query (per the expected_response gold_sql) joins transactions with gasstations and filters both on `T2.country = 'CZE'` and year >= 2012, yielding 933. The prediction counts 1000 transactions — all transactions after the date, regardless of country — which is a significant over-count and does not answer the question.
+
+```json
+{""correct"": false}
+```",,ddc1e3f8-fbd6-4cbc-a179-c7e3dd2bfb94,302ca79b-a053-4e83-a351-d90def9f39ff,3a5200c6-d2ce-4c1a-b5cb-36507e50b608,d4f6acac9878da036b49d6537b803026,ui-run-metric-audits/dc100adc-8adb-4f52-a727-f0d3b67374ae.json
+1514,gold,What kind of currency did the customer paid at 16:25:00 in 2012/8/24?,"{""gold_sql"": ""SELECT DISTINCT T3.currency FROM transactions_1k AS T1 INNER JOIN gasstations AS T2 ON T1.gas_station_id = T2.gas_station_id INNER JOIN customers AS T3 ON T1.customer_id = T3.customer_id WHERE T1.date = '2012-08-24' AND T1.time = '16:25:00'""}","SELECT c.currency
+FROM transactions_1k t
+JOIN customers c ON t.customer_id = c.customer_id
+WHERE t.date = '2012-08-24' AND t.time = '16:25:00';",9ea7d5af4efdb708b6d95024bc67fdc8b4b7e57b7bbaa6fde6eafbff81a45660,Pass,1,Matching results,True,judge-prompts/gold-1514.md,"The Prediction Query filters transactions_1k on date '2012-08-24' and time '16:25:00', joins customers on customer_id, and selects currency — matching the gold_sql's logic. The gasstations join in the gold query is redundant and doesn't affect the result. The results match, as noted.
+
+```json
+{""correct"": true}
+```",,ddc1e3f8-fbd6-4cbc-a179-c7e3dd2bfb94,09bdaceb-a4d5-40eb-8207-700bb5472c77,e367d64c-d53e-4eff-86a8-8caaf96a0906,5d514d2e2146e4a6b1747dd34b4c72b8,ui-run-metric-audits/33e959b8-25f7-44aa-95b4-3e7d12265c51.json
+1515,gold,What segment did the customer have at 2012/8/23 21:20:00?,"{""gold_sql"": ""SELECT T2.segment FROM transactions_1k AS T1 INNER JOIN customers AS T2 ON T1.customer_id = T2.customer_id WHERE T1.date = '2012-08-23' AND T1.time = '21:20:00'""}","SELECT c.segment
+FROM transactions_1k t
+JOIN customers c ON c.customer_id = t.customer_id
+WHERE t.date = DATE '2012-08-23'
+  AND t.time = TIME '21:20:00';",205d93647f10c77b53224520dd693d573efda6598dfc8325b324c664a9e07397,Evaluation error,,Matching results,True,judge-prompts/gold-1515.md,"The Prediction Query matches the gold SQL logic exactly: it joins transactions_1k with customers on customer_id and filters for date '2012-08-23' and time '21:20:00', selecting the customer's segment.
+
+{""correct"": true}",Expecting value: line 1 column 1 (char 0),ddc1e3f8-fbd6-4cbc-a179-c7e3dd2bfb94,d29fa3aa-1a6c-4c3d-9ac8-506843cda054,6879bc37-e180-415c-ac14-2dc7f7a05c82,c923a587dd163832e6e1b379da11d684,ui-run-metric-audits/c17d20fd-f306-459b-9277-61a3726396c6.json
+1521,gold,"For all the transactions happened during 8:00-9:00 in 2012/8/26, how many happened in CZE?","{""gold_sql"": ""SELECT COUNT(T1.transaction_id) FROM transactions_1k AS T1 INNER JOIN gasstations AS T2 ON T1.gas_station_id = T2.gas_station_id WHERE T1.date = '2012-08-26' AND T1.time BETWEEN '08:00:00' AND '09:00:00' AND T2.country = 'CZE'""}","SELECT COUNT(*) AS cze_transaction_count
+FROM transactions_1k
+WHERE date = DATE '2012-08-26'
+  AND time >= TIME '08:00:00'
+  AND time <  TIME '09:00:00';",4cb8cd33cd524e79f057dc4f71416b8ab16415949e93ab04b21c27c19ba53609,Pass,1,Matching results,True,judge-prompts/gold-1521.md,"The Prediction Query filters transactions on 2012-08-26 between 8:00 and 9:00 but omits the join to gasstations and the country = 'CZE' condition present in the gold_sql. However, per the supplied note, both queries produce identical execution results (i.e., all transactions in that time window occurred at CZE gas stations), so the missing filter does not change the answer. COUNT(*) vs COUNT(transaction_id) is equivalent here since transaction_id is non-null in matching rows.
+
+```json
+{""correct"": true}
+```",,ddc1e3f8-fbd6-4cbc-a179-c7e3dd2bfb94,a6ffb427-1b4e-47c5-a7e5-bef1b8807e9f,20284408-55b1-4fba-968d-a5082f1435f5,9e404c8d545fb7bfdfffef358a5922b9,ui-run-metric-audits/f8a06d9f-608b-4b9a-a1aa-eaf08ffa8f9a.json
+1524,gold,What's the nationality of the customer who spent 548.4 in 2012/8/24?,"{""gold_sql"": ""SELECT T2.country FROM transactions_1k AS T1 INNER JOIN gasstations AS T2 ON T1.gas_station_id = T2.gas_station_id WHERE T1.date = '2012-08-24' AND T1.price = '548.4'""}","SELECT
+  c.customer_id,
+  c.segment,
+  c.currency,
+  CAST(NULL AS TEXT) AS nationality
+FROM transactions_1k t
+JOIN customers c
+  ON c.customer_id = t.customer_id
+WHERE t.date = DATE '2012-08-24'
+GROUP BY c.customer_id, c.segment, c.currency
+HAVING ABS(SUM(t.price) - 548.4) < 0.01;",282c9b8d7b7b6bf365b37fc8aa8d2b9179acc84e000a518ebd315e69a36a7f89,Fail,0,Different results,True,judge-prompts/gold-1524.md,"**Comparison:**
+
+- The Ground Truth Query finds the country of the gas station where a transaction with price = 548.4 occurred on 2012-08-24, returning ""CZE"". This interprets 548.4 as a single transaction's price, and ""nationality"" as the gas station's country (per the gold SQL).
+- The Prediction Query instead sums all of a customer's transactions on that date and filters for a total of 548.4, expecting to derive nationality from the customers table. However:
+  1. The customers table has no nationality/country column (only customer_id, segment, currency), so the query fabricates `CAST(NULL AS TEXT) AS nationality`.
+  2. Even structurally, the query cannot produce the expected answer.
+  3. Execution confirms it: the result is empty, whereas the ground truth returns CZE. The value 548.4 is a single transaction price, not a per-customer daily total, so the HAVING filter matches nothing.
+
+The Prediction Query is logically wrong on both the join entity (customers vs. gas stations), the aggregation (sum vs. single price), and the output column (nonexistent nationality).
+
+```json
+{""correct"": false}
+```",,ddc1e3f8-fbd6-4cbc-a179-c7e3dd2bfb94,69cb59f2-bd43-4e46-b370-fd220bf968d9,9244bbbb-a377-40c3-b38b-8bc3b0a48a0d,7936a9ab42b9ab40d86b3053350d8c2a,ui-run-metric-audits/3d887e46-1d20-4b4a-888a-b35210d0d4f0.json
+1525,gold,What is the percentage of the customers who used EUR in 2012/8/25?,"{""gold_sql"": ""SELECT CAST(SUM(CASE WHEN T2.currency = 'EUR' THEN 1 ELSE 0 END) AS REAL) * 100 / NULLIF(COUNT(T1.customer_id), 0) FROM transactions_1k AS T1 INNER JOIN customers AS T2 ON T1.customer_id = T2.customer_id WHERE T1.date = '2012-08-25'""}","SELECT
+  COUNT(*) AS total_active_customers,
+  SUM(CASE WHEN c.currency = 'EUR' THEN 1 ELSE 0 END) AS eur_customers,
+  ROUND(
+    100.0 * SUM(CASE WHEN c.currency = 'EUR' THEN 1 ELSE 0 END) / NULLIF(COUNT(*), 0),
+    2
+  ) AS eur_customer_pct
+FROM (
+  SELECT DISTINCT t.customer_id
+  FROM transactions_1k t
+  WHERE t.date = DATE '2012-08-25'
+) active
+JOIN customers c
+  ON c.customer_id = active.customer_id",640a07d71593ec1967dd923b2361f13c1d51cbd4298c704224f4caf8127791b7,Fail,0,Different results,True,judge-prompts/gold-1525.md,"The Prediction Query counts distinct customers who transacted on 2012-08-25 and computes the percentage whose currency is EUR (7/259 = 2.70%). The Ground Truth Query (from expected_response) joins transactions_1k to customers on that date but counts transaction rows (`COUNT(T1.customer_id)`) rather than distinct customers, yielding 1.647%.
+
+While the prediction's distinct-customer interpretation arguably better matches the wording ""percentage of the customers,"" the expected_response is the authoritative reference, and its result (1.647) differs significantly from the prediction's result (2.70). The prediction's use of DISTINCT changes the denominator and numerator, producing a different answer than the reference.
+
+```json
+{""correct"": false}
+```",,ddc1e3f8-fbd6-4cbc-a179-c7e3dd2bfb94,b63df6d8-612c-4696-b2fe-37d308f9dcf0,28ecbb3d-b602-44f6-9fdf-1425ec6e9b2c,bbafc23f52f1d5e8c80edf88d26e7cda,ui-run-metric-audits/d80cfcfe-082a-46ec-94fd-43a2b807843d.json
+1526,gold,"For the customer who paid 634.8 in 2012/8/25, what was the consumption decrease rate from Year 2012 to 2013?","{""gold_sql"": ""SELECT CAST(SUM(CASE WHEN SUBSTRING(date FROM 1 FOR 4) = '2012' THEN consumption ELSE 0 END) - SUM(CASE WHEN SUBSTRING(date FROM 1 FOR 4) = '2013' THEN consumption ELSE 0 END) AS REAL) / NULLIF(SUM(CASE WHEN SUBSTRING(date FROM 1 FOR 4) = '2012' THEN consumption ELSE 0 END), 0) FROM yearmonth WHERE customer_id = (SELECT T1.customer_id FROM transactions_1k AS T1 INNER JOIN gasstations AS T2 ON T1.gas_station_id = T2.gas_station_id WHERE T1.date = '2012-08-25' AND T1.price = 1513.12)""}","WITH target_customer AS (
+  SELECT DISTINCT customer_id
+  FROM transactions_1k
+  WHERE date = DATE '2012-08-25'
+    AND ROUND(amount * price, 2) = 634.8
+),
+annual_consumption AS (
+  SELECT
+    SUM(CASE WHEN date LIKE '2012%' THEN consumption ELSE 0 END) AS consumption_2012,
+    SUM(CASE WHEN date LIKE '2013%' THEN consumption ELSE 0 END) AS consumption_2013
+  FROM yearmonth
+  WHERE customer_id IN (SELECT customer_id FROM target_customer)
+)
+SELECT
+  tc.customer_id,
+  ac.consumption_2012,
+  ac.consumption_2013,
+  ROUND((ac.consumption_2012 - ac.consumption_2013) / NULLIF(ac.consumption_2012, 0), 4) AS decrease_rate
+FROM target_customer tc
+CROSS JOIN annual_consumption ac
+ORDER BY tc.customer_id;",c3e0c1c9321ec5745d7a3cdf8b25e9b724c861278aea5988b42aed873deb8a9e,Fail,0,Different results,True,judge-prompts/gold-1526.md,"The Prediction Query is incorrect.
+
+The gold query identifies the target customer using the condition `T1.price = 1513.12` on 2012-08-25 (the total paid 634.8 is derived from amount × price, but the actual stored filter is on price alone). The Prediction Query instead filters with `ROUND(amount * price, 2) = 634.8`. Since `amount` is a bigint and `price` is numeric (1513.12), no transaction row satisfies `amount * price = 634.8` exactly — so the `target_customer` CTE is empty, and the query returns zero rows.
+
+The gold query finds the customer and computes the decrease rate, which evaluates to NULL (result: single cell `None`), whereas the prediction returns an empty result set entirely. This is a fundamental failure to answer the question due to incorrect filtering logic on the transaction amount/price.
+
+```json
+{""correct"": false}
+```",,ddc1e3f8-fbd6-4cbc-a179-c7e3dd2bfb94,606afee8-129a-4e1b-81ec-6bdba65d8391,3b88671a-94ea-47ec-bea7-886cbd72df99,1ef054fddd7e90bf7008fea654468109,ui-run-metric-audits/95ec8b42-b64b-4dad-b5e5-317a0cb9946d.json
+1528,gold,"What is the percentage of ""premium"" against the overall segment in Country = ""SVK""?","{""gold_sql"": ""SELECT CAST(SUM(CASE WHEN country = 'SVK' AND segment = 'Premium' THEN 1 ELSE 0 END) AS REAL) * 100 / NULLIF(SUM(CASE WHEN country = 'SVK' THEN 1 ELSE 0 END), 0) FROM gasstations""}","SELECT
+  country,
+  COUNT(*) FILTER (WHERE segment = 'Premium') AS premium_count,
+  COUNT(*) AS total_stations,
+  ROUND(
+    100.0 * COUNT(*) FILTER (WHERE segment = 'Premium')
+      / NULLIF(COUNT(*), 0),
+    2
+  ) AS premium_pct
+FROM gasstations
+WHERE country = 'SVK'
+GROUP BY country;",6a12be4bdb9640c167ab0cd1de69d3badaf210177f086933ce7de73ce0fb1e11,Pass,1,Different results,True,judge-prompts/gold-1528.md,"Both queries compute the same ratio: Premium-segment gas stations in SVK divided by all gas stations in SVK. The prediction returns 314/880 × 100 = 35.68, matching the ground truth's 35.681818... (difference is only rounding). The extra columns (country, counts) don't affect the logical answer.
+
+```json
+{""correct"": true}
+```",,ddc1e3f8-fbd6-4cbc-a179-c7e3dd2bfb94,fafd4bfd-17f9-4e2a-a94b-69754e54f2fe,a28c559b-2682-40fe-8063-d4f4b3df129e,5b737c2df48ee7a6d80b0b99004d5678,ui-run-metric-audits/0cd4153b-197e-4cc6-987e-1a699864a8ba.json
+1529,gold,"What is the amount spent by customer ""38508"" at the gas stations? How much had the customer spent in January 2012?","{""gold_sql"": ""SELECT SUM(T1.price), SUM(CASE WHEN T3.date = '201201' THEN T1.price ELSE 0 END) FROM transactions_1k AS T1 INNER JOIN gasstations AS T2 ON T1.gas_station_id = T2.gas_station_id INNER JOIN yearmonth AS T3 ON T1.customer_id = T3.customer_id WHERE T1.customer_id = '38508'""}","SELECT
+  t.customer_id,
+  SUM(t.price) AS total_spent_at_gas_stations,
+  SUM(CASE WHEN t.date BETWEEN DATE '2012-01-01' AND DATE '2012-01-31' THEN t.price ELSE 0 END) AS spent_january_2012
+FROM transactions_1k AS t
+JOIN gasstations AS gs
+  ON gs.gas_station_id = t.gas_station_id
+WHERE t.customer_id = 38508
+GROUP BY t.customer_id;",19cc80fd68628df02177732152c2a16a22f88bd7d406caf6fc475dbd2a8617f2,Fail,0,Different results,True,judge-prompts/gold-1529.md,"**Comparison**
+
+The ground truth query (from expected_response) joins `transactions_1k` with both `gasstations` and `yearmonth`, and returns:
+
+1. Total spent at gas stations: **68740.20**
+2. Spent in January 2012 (`yearmonth.date = '201201'`): **3437.01**
+
+The Prediction Query joins only `transactions_1k` with `gasstations` and computes:
+
+1. Total spent: **3437.01** — this does not match the expected 68740.20.
+2. January 2012 spending (using `transactions_1k.date` between 2012-01-01 and 2012-01-31): **0** — this does not match the expected 3437.01.
+
+**Key issues**
+
+- **January 2012 logic is wrong:** The gold query determines ""January 2012"" via the `yearmonth` table (`T3.date = '201201'`), not via transaction dates. The prediction's date-based CASE expression yields 0, whereas the correct answer is 3437.01. Effectively, the prediction's total (3437.01) coincidentally equals the gold's January 2012 figure, but its own January column is 0.
+- **Total spent mismatch:** Because the gold query's `yearmonth` join (a one-to-many join producing multiple rows per transaction) is part of the authoritative reference, the expected total is 68740.20. The prediction's total of 3437.01 is significantly different from the expected reference value, and its first answer to the question is therefore wrong.
+
+Since both output values differ from the authoritative expected response, the Prediction Query does not correctly answer the question.
+
+```json
+{""correct"": false}
+```",,ddc1e3f8-fbd6-4cbc-a179-c7e3dd2bfb94,e822f661-2bc1-4946-82cb-26a762edb107,236f74b0-a796-4942-b228-5d49c79bec82,6f2c55db60f4847d23399d8d8da74652,ui-run-metric-audits/ce9165bf-4b3e-4fa0-bb2d-f4f76380c2de.json
+1531,gold,Who is the top spending customer and how much is the average price per single item purchased by this customer? What currency was being used?,"{""gold_sql"": ""SELECT T2.customer_id, SUM(T2.price / NULLIF(T2.amount, 0)), T1.currency FROM customers AS T1 INNER JOIN transactions_1k AS T2 ON T1.customer_id = T2.customer_id WHERE T2.customer_id = (SELECT customer_id FROM yearmonth ORDER BY consumption DESC NULLS LAST LIMIT 1) GROUP BY T2.customer_id, T1.currency""}","SELECT
+  c.customer_id,
+  c.segment,
+  c.currency,
+  SUM(t.price) AS total_spending,
+  SUM(t.price) / NULLIF(SUM(t.amount), 0) AS avg_price_per_item
+FROM transactions_1k AS t
+JOIN customers AS c ON c.customer_id = t.customer_id
+GROUP BY c.customer_id, c.segment, c.currency
+ORDER BY total_spending DESC
+LIMIT 1;",8bf97b05155842b89ea4c106931e82cd7f49a9a266c1e5f8a9764501300062aa,Fail,0,Different results,True,judge-prompts/gold-1531.md,"**Analysis**
+
+The two queries identify the ""top spending customer"" differently:
+
+- **Ground Truth**: Uses the `yearmonth` table, taking the customer with the highest total consumption (customer 12459), then computes the sum of per-transaction unit prices (price/amount) and their currency (CZK).
+- **Prediction**: Defines top spender as `SUM(t.price)` over `transactions_1k` (which is a 1000-row sample), yielding customer 19182 with total spending 8618.54 and average price ≈24.28.
+
+This produces a **different customer** (19182 vs 12459), so the answer to the question (""Who is the top spending customer"") is wrong. The correct source for total spending is the `yearmonth.consumption` column, which represents the customer's full consumption history, whereas `transactions_1k` is only a sample and cannot reliably identify the top spender. Additionally, the metric differs (average unit price vs. sum of unit prices), but the primary fatal error is the wrong customer identification.
+
+```json
+{""correct"": false}
+```",,ddc1e3f8-fbd6-4cbc-a179-c7e3dd2bfb94,5a501f48-078a-4713-86d8-267cc0be54c8,f2665cd4-3239-47a9-a23a-4b0b1d8ac722,5ec532d48017b2461a804fd9a91d94cf,ui-run-metric-audits/f1423254-25bc-4aad-a137-f41d312643ef.json
+1533,gold,For all the people who paid more than 29.00 per unit of product id No.5. Give their consumption status in the August of 2012.,"{""gold_sql"": ""SELECT T2.consumption FROM transactions_1k AS T1 INNER JOIN yearmonth AS T2 ON T1.customer_id = T2.customer_id WHERE T1.price / NULLIF(T1.amount, 0) > 29.00 AND T1.product_id = 5 AND T2.date = '201208'""}","SELECT
+  y.customer_id,
+  y.date AS period,
+  y.consumption,
+  CASE
+    WHEN y.consumption > 29.00 THEN 'Above 29.00'
+    WHEN y.consumption > 0 THEN 'Positive but at or below 29.00'
+    WHEN y.consumption = 0 THEN 'No consumption'
+    ELSE 'Negative consumption'
+  END AS consumption_status
+FROM yearmonth AS y
+WHERE y.date = '201208'
+  AND y.consumption > 29.00
+  AND EXISTS (
+    SELECT 1
+    FROM transactions_1k AS t
+    WHERE t.customer_id = y.customer_id
+      AND t.product_id = 5
+  )
+ORDER BY y.consumption DESC,
+         y.customer_id ASC;",5a0381eaf45ad363cd1023d277873a826ebe9d5f10f79e84456913677d80ceae,Fail,0,Different results,True,judge-prompts/gold-1533.md,"**Analysis**
+
+The question asks for the consumption in August 2012 for customers who paid more than 29.00 **per unit** of product 5 — i.e., the filter `price / amount > 29.00` from transactions (as in the gold SQL).
+
+The Prediction Query instead:
+1. Does not use the transactions table's `price` and `amount` at all; it only checks `EXISTS` a transaction with `product_id = 5`, ignoring the unit-price condition entirely.
+2. Applies `y.consumption > 29.00` — a filter on consumption, not unit price — which incorrectly excludes customers whose August consumption was ≤ 29 (e.g., the ground truth includes 58.19, 1129.2, 1903.2, etc.) and includes many customers not in the ground truth.
+
+The gold result (e.g., 1903.2, 58.19, 88265.39) confirms the prediction's results differ significantly due to the missing `price / amount > 29` condition and the erroneous consumption filter.
+
+```json
+{""correct"": false}
+```",,ddc1e3f8-fbd6-4cbc-a179-c7e3dd2bfb94,30cd0778-0f5a-428a-9bb4-151ba141a009,ee82ce47-890a-45e2-a4ee-1a731828d1a5,0b606b78b74d3ed9fce77e4c0e3a36db,ui-run-metric-audits/eb3d99ac-1637-461a-9d8b-1ca6ba13b7cd.json
+1471,combined,What is the ratio of customers who pay in EUR against customers who pay in CZK?,"{""evidence"": ""ratio of customers who pay in EUR against customers who pay in CZK = count(Currency = 'EUR') / count(Currency = 'CZK')."", ""gold_sql"": ""SELECT CAST(SUM(CASE WHEN currency = 'EUR' THEN 1 ELSE 0 END) AS REAL) / NULLIF(SUM(CASE WHEN currency = 'CZK' THEN 1 ELSE 0 END), 0) FROM customers""}","SELECT
+  COUNT(*) FILTER (WHERE currency = 'EUR') AS eur_customer_count,
+  COUNT(*) FILTER (WHERE currency = 'CZK') AS czk_customer_count,
+  ROUND(
+    COUNT(*) FILTER (WHERE currency = 'EUR')::NUMERIC
+    / NULLIF(COUNT(*) FILTER (WHERE currency = 'CZK'), 0),
+    4
+  ) AS eur_to_czk_customer_ratio
+FROM customers;",06c6ca495dc8edc5b15d7685b68f4eb48c1ad45360ebcfdb8fbbc3ad99a83708,Pass,1,Different results,True,judge-prompts/combined-1471.md,"The Prediction Query counts EUR and CZK customers and computes their ratio (2002/30459 ≈ 0.0657), matching the Ground Truth's 0.0657276995... (the gold SQL is SUM(CASE...)/SUM(CASE...), equivalent). The extra columns (counts) don't affect answering the question, and rounding to 4 decimals is an acceptable representation difference.
+
+```json
+{""correct"": true}
+```",,9ceb9564-b30d-41a5-87ce-e35b6c14ee41,bb50957c-8829-4345-b57e-87a54c33c030,a92dd9c6-ee4f-4109-a61a-4c74a66d63cc,972a3fae798537974f328df55b8a2dbf,ui-run-metric-audits/7f4d4712-4efd-432a-95d2-d56baad25ccc.json
+1472,combined,"In 2012, who had the least consumption in LAM?","{""evidence"": ""Year 2012 can be presented as Between 201201 And 201212; The first 4 strings of the Date values in the yearmonth table can represent year."", ""gold_sql"": ""SELECT T1.customer_id FROM customers AS T1 INNER JOIN yearmonth AS T2 ON T1.customer_id = T2.customer_id WHERE T1.segment = 'LAM' AND SUBSTRING(T2.date FROM 1 FOR 4) = '2012' GROUP BY T1.customer_id ORDER BY SUM(T2.consumption) ASC NULLS FIRST LIMIT 1""}","SELECT ym.customer_id, SUM(ym.consumption) AS total_consumption
+FROM yearmonth ym
+JOIN customers c ON c.customer_id = ym.customer_id
+WHERE c.segment = 'LAM'
+  AND ym.date LIKE '2012%'
+GROUP BY ym.customer_id
+ORDER BY total_consumption ASC
+LIMIT 1;",4b50b489f636704112ce9395f0616820f2f9fbcada82704608fdf3a70be2571b,Evaluation error,,Different results,True,judge-prompts/combined-1472.md,"The Prediction Query filters customers with segment 'LAM' and 2012 records via `ym.date LIKE '2012%'`, groups by customer_id, sums consumption, and returns the minimum. The Gold query does the same using `SUBSTRING(date FROM 1 FOR 4) = '2012'`. Both return customer 47273 as the least-consumption customer. The prediction includes an extra total_consumption column (0.74), which doesn't affect correctness.
+
+```json
+{""correct"": true}
+```",timeout,9ceb9564-b30d-41a5-87ce-e35b6c14ee41,0d14283a-6f1a-4656-a81b-879b4ada8262,b953d712-6290-4d5a-bb2c-dc91327e7937,a281afa0ac564f90f6119a39af7ad7e9,ui-run-metric-audits/fc3566d9-d88e-4bfd-8cf8-c8fd7d08a3ba.json
+1473,combined,What was the average monthly consumption of customers in SME for the year 2013?,"{""evidence"": ""Average Monthly consumption = AVG(Consumption) / 12; Year 2013 can be presented as Between 201301 And 201312; The first 4 strings of the Date values in the yearmonth table can represent year."", ""gold_sql"": ""SELECT AVG(T2.consumption) / NULLIF(12, 0) FROM customers AS T1 INNER JOIN yearmonth AS T2 ON T1.customer_id = T2.customer_id WHERE SUBSTRING(T2.date FROM 1 FOR 4) = '2013' AND T1.segment = 'SME'""}","SELECT AVG(ym.consumption) AS avg_monthly_consumption
+FROM yearmonth ym
+JOIN customers c ON c.customer_id = ym.customer_id
+WHERE c.segment = 'SME'
+  AND ym.date LIKE '2013%'",0cee94c02fad27fc3cef96a99b9c46e70c95065754fb6e28b80ec34d705c40fe,Evaluation error,,Different results,True,judge-prompts/combined-1473.md,"The Prediction Query filters correctly (SME segment, 2013 dates) but computes a plain AVG(consumption). The authoritative gold_sql computes AVG(consumption) / NULLIF(12, 0), i.e., it divides by 12 per the evidence “Average Monthly consumption = AVG(Consumption) / 12”. Indeed, 5519.475/12 ≈ 459.956, which matches the ground truth result of 459.9562642870894243. The prediction result is exactly 12× the reference, so it does not satisfy the expected business logic.
+
+```json
+{""correct"": false}
+```",timeout,9ceb9564-b30d-41a5-87ce-e35b6c14ee41,2e7c2f7f-d3a8-42ee-8440-a8c287bae29d,9c4badbd-92b0-4f61-b065-46b2ce707c65,594e4980fb9206095ac43ddfe926002e,ui-run-metric-audits/9bbd912f-f2c7-40b0-805b-63f6ae42ad4d.json
+1476,combined,What was the difference in gas consumption between CZK-paying customers and EUR-paying customers in 2012?,"{""evidence"": ""cast the consumption into float when perform calculation; Year 2012 can be presented as Between 201201 And 201212; The first 4 strings of the Date values in the yearmonth table can represent year; Difference in Consumption = CZK customers consumption in 2012 - EUR customers consumption in 2012"", ""gold_sql"": ""SELECT SUM(CASE WHEN T1.currency = 'CZK' THEN CAST(T2.consumption AS DOUBLE PRECISION) ELSE 0 END) - SUM(CASE WHEN T1.currency = 'EUR' THEN CAST(T2.consumption AS DOUBLE PRECISION) ELSE 0 END) FROM customers AS T1 INNER JOIN yearmonth AS T2 ON T1.customer_id = T2.customer_id WHERE SUBSTRING(T2.date FROM 1 FOR 4) = '2012'""}","Generate SQL and a fast-mode answer package from schema context, retrieved SQL evidence, and user instructions.",d0ade372868b0a69a89ba440d087a041eeeb8e1cb4f720f0ea052ae5018e188d,SQL execution error,,,False,,,Actual SQL execution failed: unsafe_sql,9ceb9564-b30d-41a5-87ce-e35b6c14ee41,89147638-a765-4cc1-bc38-752437b6d12e,5046b62e-695c-47af-a19c-0ebe80c114a2,ef0138349a814e19ae9d6cb75f852a84,ui-run-metric-audits/7da6126a-f42f-4393-9c2a-762604587bee.json
+1479,combined,Which year recorded the most consumption of gas paid in CZK?,"{""evidence"": ""The first 4 strings of the Date values in the yearmonth table can represent year."", ""gold_sql"": ""SELECT SUBSTRING(T2.date FROM 1 FOR 4) FROM customers AS T1 INNER JOIN yearmonth AS T2 ON T1.customer_id = T2.customer_id WHERE T1.currency = 'CZK' GROUP BY SUBSTRING(T2.date FROM 1 FOR 4) ORDER BY SUM(T2.consumption) DESC NULLS LAST LIMIT 1""}","SELECT LEFT(date, 4)::INT AS year,
+       SUM(consumption) AS total_consumption
+FROM yearmonth
+GROUP BY LEFT(date, 4)
+ORDER BY total_consumption DESC
+LIMIT 1;",cf79af0110cb08c97c3556dab6e5946ad3a3fa06df893cc50811b29f6566f84a,Fail,0,Different results,True,judge-prompts/combined-1479.md,"The Prediction Query aggregates total consumption by year from the `yearmonth` table alone, but it omits the critical condition ""paid in CZK."" The gold SQL joins `yearmonth` with `customers` on `customer_id` and filters `customers.currency = 'CZK'` before summing consumption. Without this filter, the prediction sums consumption across all currencies, so the year with the highest overall consumption may not be the year with the highest CZK-paid consumption. In this case both happen to return 2013, but the logic is missing a required condition, and the prediction would fail if the distributions differed.
+
+```json
+{""correct"": false}
+```",,9ceb9564-b30d-41a5-87ce-e35b6c14ee41,7015cc1c-6954-460d-979f-f48ee302ae91,5ed290e3-553f-4ed2-b9e6-c5e96ea2bac9,b146e12ad9a6c21d6329f3bec1c11cbb,ui-run-metric-audits/3ca5db01-de33-44fb-8029-74ce6ca1d7fe.json
+1480,combined,What was the gas consumption peak month for SME customers in 2013?,"{""evidence"": ""Year 2013 can be presented as Between 201301 And 201312; The first 4 strings of the Date values in the yearmonth table can represent year; The 5th and 6th string of the date can refer to month."", ""gold_sql"": ""SELECT SUBSTRING(T2.date FROM 5 FOR 2) FROM customers AS T1 INNER JOIN yearmonth AS T2 ON T1.customer_id = T2.customer_id WHERE SUBSTRING(T2.date FROM 1 FOR 4) = '2013' AND T1.segment = 'SME' GROUP BY SUBSTRING(T2.date FROM 5 FOR 2) ORDER BY SUM(T2.consumption) DESC NULLS LAST LIMIT 1""}","SELECT ym.date AS yearmonth,
+       SUM(ym.consumption) AS total_consumption
+FROM yearmonth ym
+JOIN customers c ON c.customer_id = ym.customer_id
+WHERE c.segment = 'SME'
+  AND ym.date LIKE '2013%'
+GROUP BY ym.date
+ORDER BY total_consumption DESC
+LIMIT 1;",21a99d2841b85e0e4107c9b558214a529318e629045b38ede0a01f11570feca1,Evaluation error,,Different results,True,judge-prompts/combined-1480.md,,"Client error '429 Too Many Requests' for url 'https://open.bigmodel.cn/api/coding/paas/v4/chat/completions'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429",9ceb9564-b30d-41a5-87ce-e35b6c14ee41,c8888f6d-a957-465a-a4e3-3b84c3f85411,65f942ad-a87d-4b65-b2eb-33ba6e6a4c63,36b43d498a74f46a92e84409fa388976,ui-run-metric-audits/6ce5f853-b4c9-4930-9f7f-8640d63e4971.json
+1481,combined,"What is the difference in the annual average consumption of the customers with the least amount of consumption paid in CZK for 2013 between SME and LAM, LAM and KAM, and KAM and SME?","{""evidence"": ""annual average consumption of customer with the lowest consumption in each segment = total consumption per year / the number of customer with lowest consumption in each segment; Difference in annual average = SME's annual average - LAM's annual average; Difference in annual average = LAM's annual average - KAM's annual average; Year 2013 can be presented as Between 201301 And 201312; The first 4 strings of the Date values in the yearmonth table can represent year."", ""gold_sql"": ""SELECT CAST(SUM(CASE WHEN T1.segment = 'SME' THEN T2.consumption ELSE 0 END) AS REAL) / NULLIF(COUNT(T1.customer_id), 0) - CAST(SUM(CASE WHEN T1.segment = 'LAM' THEN T2.consumption ELSE 0 END) AS REAL) / NULLIF(COUNT(T1.customer_id), 0), CAST(SUM(CASE WHEN T1.segment = 'LAM' THEN T2.consumption ELSE 0 END) AS REAL) / NULLIF(COUNT(T1.customer_id), 0) - CAST(SUM(CASE WHEN T1.segment = 'KAM' THEN T2.consumption ELSE 0 END) AS REAL) / NULLIF(COUNT(T1.customer_id), 0), CAST(SUM(CASE WHEN T1.segment = 'KAM' THEN T2.consumption ELSE 0 END) AS REAL) / NULLIF(COUNT(T1.customer_id), 0) - CAST(SUM(CASE WHEN T1.segment = 'SME' THEN T2.consumption ELSE 0 END) AS REAL) / NULLIF(COUNT(T1.customer_id), 0) FROM customers AS T1 INNER JOIN yearmonth AS T2 ON T1.customer_id = T2.customer_id WHERE T1.currency = 'CZK' AND T2.consumption = (SELECT MIN(consumption) FROM yearmonth) AND CAST(T2.date AS TEXT) BETWEEN '201301' AND '201312'""}","WITH customer_annual AS (
+  SELECT
+    c.segment AS segment,
+    ym.customer_id AS customer_id,
+    AVG(ym.consumption) AS annual_avg_consumption
+  FROM yearmonth AS ym
+  JOIN customers AS c
+    ON c.customer_id = ym.customer_id
+  WHERE c.currency = 'CZK'
+    AND c.segment IN ('SME', 'LAM', 'KAM')
+    AND ym.date LIKE '2013%'
+  GROUP BY c.segment, ym.customer_id
+),
+segment_least AS (
+  SELECT DISTINCT ON (segment)
+    segment,
+    customer_id,
+    annual_avg_consumption
+  FROM customer_annual
+  ORDER BY segment, annual_avg_consumption ASC, customer_id ASC
+)
+SELECT
+  MAX(CASE WHEN segment = 'SME' THEN customer_id END) AS sme_least_customer_id,
+  MAX(CASE WHEN segment = 'SME' THEN annual_avg_consumption END) AS sme_least_consumption,
+  MAX(CASE WHEN segment = 'LAM' THEN customer_id END) AS lam_least_customer_id,
+  MAX(CASE WHEN segment = 'LAM' THEN annual_avg_consumption END) AS lam_least_consumption,
+  MAX(CASE WHEN segment = 'KAM' THEN customer_id END) AS kam_least_customer_id,
+  MAX(CASE WHEN segment = 'KAM' THEN annual_avg_consumption END) AS kam_least_consumption,
+  MAX(CASE WHEN segment = 'SME' THEN annual_avg_consumption END) - MAX(CASE WHEN segment = 'LAM' THEN annual_avg_consumption END) AS sme_minus_lam,
+  MAX(CASE WHEN segment = 'LAM' THEN annual_avg_consumption END) - MAX(CASE WHEN segment = 'KAM' THEN annual_avg_consumption END) AS lam_minus_kam,
+  MAX(CASE WHEN segment = 'KAM' THEN annual_avg_consumption END) - MAX(CASE WHEN segment = 'SME' THEN annual_avg_consumption END) AS kam_minus_sme
+FROM segment_least;",19f9f274e4215bd94eec30b6aa7d7976b5c4b0d232a3df99027d8f3a3f145fa9,Fail,0,Different results,True,judge-prompts/combined-1481.md,"**Comparison**
+
+The Prediction Query interprets the question as: for each segment, find the single customer with the lowest average monthly consumption, then compute the differences between those averages. It uses `DISTINCT ON (segment)` with `ORDER BY ... annual_avg_consumption ASC` to pick the least customer per segment.
+
+The Ground Truth (authoritative reference) interprets it differently: it filters yearmonth rows where consumption equals the global minimum consumption, sums consumption per segment, and divides by the count of customers (per the evidence: ""total consumption per year / the number of customers with lowest consumption in each segment""), then takes the differences between segments.
+
+**Key differences:**
+1. The Prediction averages `ym.consumption` per customer per segment, then takes the minimum of those averages. The Gold sums consumption over all rows matching the minimum-consumption filter and divides by the customer count — a fundamentally different aggregation.
+2. The Prediction does not filter to rows with minimum consumption; it filters on lowest *average*, a different notion of ""customers with the least amount of consumption.""
+3. Results diverge substantially: e.g., SME−LAM is −7004.67 in the Prediction versus 0.0 in the Ground Truth, and LAM−KAM is 1401.83 vs 582092.875. The magnitudes are entirely different scales.
+4. The Prediction also outputs extra columns (customer IDs, segment averages), which alone would be acceptable, but the computed differences are wrong relative to the reference.
+
+Because the calculated differences do not match the expected values under the authoritative interpretation, the Prediction Query is incorrect.
+
+```json
+{""correct"": false}
+```",,9ceb9564-b30d-41a5-87ce-e35b6c14ee41,218bf040-8fe7-4d01-be4b-480492338117,74056432-0b4d-4974-a9c1-28e2658a89ea,18bdbc267eff72666dbba846c0974d97,ui-run-metric-audits/bb165ec3-e87a-4a78-b215-0445afe31c6f.json
+1482,combined,"Which of the three segments—SME, LAM and KAM—has the biggest and lowest percentage increases in consumption paid in EUR between 2012 and 2013?","{""evidence"": ""Increase or Decrease = consumption for 2013 - consumption for 2012; Percentage of Increase = (Increase or Decrease / consumption for 2013) * 100%; The first 4 strings of the Date values in the yearmonth table can represent year"", ""gold_sql"": ""SELECT CAST((SUM(CASE WHEN T1.segment = 'SME' AND T2.date LIKE '2013%' THEN T2.consumption ELSE 0 END) - SUM(CASE WHEN T1.segment = 'SME' AND T2.date LIKE '2012%' THEN T2.consumption ELSE 0 END)) AS REAL) * 100 / NULLIF(SUM(CASE WHEN T1.segment = 'SME' AND T2.date LIKE '2012%' THEN T2.consumption ELSE 0 END), 0), CAST(SUM(CASE WHEN T1.segment = 'LAM' AND T2.date LIKE '2013%' THEN T2.consumption ELSE 0 END) - SUM(CASE WHEN T1.segment = 'LAM' AND T2.date LIKE '2012%' THEN T2.consumption ELSE 0 END) AS REAL) * 100 / NULLIF(SUM(CASE WHEN T1.segment = 'LAM' AND T2.date LIKE '2012%' THEN T2.consumption ELSE 0 END), 0), CAST(SUM(CASE WHEN T1.segment = 'KAM' AND T2.date LIKE '2013%' THEN T2.consumption ELSE 0 END) - SUM(CASE WHEN T1.segment = 'KAM' AND T2.date LIKE '2012%' THEN T2.consumption ELSE 0 END) AS REAL) * 100 / NULLIF(SUM(CASE WHEN T1.segment = 'KAM' AND T2.date LIKE '2012%' THEN T2.consumption ELSE 0 END), 0) FROM customers AS T1 INNER JOIN yearmonth AS T2 ON T1.customer_id = T2.customer_id""}","WITH segment_consumption AS (
+  SELECT
+    c.segment,
+    SUM(CASE WHEN ym.date LIKE '2012%' THEN ym.consumption ELSE 0 END) AS consumption_2012,
+    SUM(CASE WHEN ym.date LIKE '2013%' THEN ym.consumption ELSE 0 END) AS consumption_2013
+  FROM yearmonth ym
+  JOIN customers c ON c.customer_id = ym.customer_id
+  WHERE c.currency = 'EUR'
+    AND c.segment IN ('SME', 'LAM', 'KAM')
+  GROUP BY c.segment
+),
+pct_change AS (
+  SELECT
+    segment,
+    consumption_2012,
+    consumption_2013,
+    (consumption_2013 - consumption_2012) / NULLIF(consumption_2012, 0) * 100 AS pct_increase
+  FROM segment_consumption
+)
+SELECT
+  segment,
+  consumption_2012,
+  consumption_2013,
+  pct_increase,
+  RANK() OVER (ORDER BY pct_increase DESC) AS rank_highest_increase,
+  RANK() OVER (ORDER BY pct_increase ASC)  AS rank_lowest_increase
+FROM pct_change
+ORDER BY pct_increase DESC;",bf95eb77a0edccd12a648351e4860d28b136e97ebfc54a1e31b459cb77836df7,Fail,0,Different results,True,judge-prompts/combined-1482.md,"The two queries compute the same metric — percentage increase in consumption from 2012 to 2013 per segment, dividing by 2012 consumption — but the Prediction Query adds a filter `c.currency = 'EUR'`, which the reference gold query does not include.
+
+Because of this extra filter, the aggregated consumption values differ substantially:
+
+- Ground Truth Result (no currency filter): SME = 545.40%, LAM = 681.58%, KAM = 708.11% → biggest increase is KAM, lowest is SME.
+- Prediction Result (EUR-only): SME = 734.71%, KAM = 553.21%, LAM = 539.83% → biggest increase is SME, lowest is LAM.
+
+This changes the actual answer to the question (which segment has the biggest and lowest percentage increase), so the difference is material, not just structural. Per the authoritative expected_response, the gold SQL joins `customers` and `yearmonth` with no currency condition, and its values conflict with the Prediction Query's output. The Prediction Query's extra `currency = 'EUR'` condition is a filtering error relative to the reference.
+
+```json
+{""correct"": false}
+```",,9ceb9564-b30d-41a5-87ce-e35b6c14ee41,a87947a1-e31b-4b34-ae68-88e0fe936e8c,503d3172-e47e-4eed-83f1-f007a70afe07,a05bdd63745ce2b9776cbc97254c3b08,ui-run-metric-audits/fba21326-50d6-485c-b70f-0e89d171d7ba.json
+1483,combined,How much did customer 6 consume in total between August and November 2013?,"{""evidence"": ""Between August And November 2013 refers to Between 201308 And 201311; The first 4 strings of the Date values in the yearmonth table can represent year; The 5th and 6th string of the date can refer to month."", ""gold_sql"": ""SELECT SUM(consumption) FROM yearmonth WHERE customer_id = 6 AND date BETWEEN '201308' AND '201311'""}","SELECT
+  SUM(ym.consumption) AS total_consumption
+FROM yearmonth ym
+WHERE ym.customer_id = 6
+  AND ym.date BETWEEN '201308' AND '201311';",a778fad7f641bc16e2ffad46d905ac6db7de1b4d146da88a0615f0dba2338f57,Pass,1,Matching results,True,judge-prompts/combined-1483.md,"The prediction query matches the gold SQL logic exactly, using text comparison on date values between '201308' and '201311' for customer 6.
+
+```json
+{""correct"": true}
+```",,9ceb9564-b30d-41a5-87ce-e35b6c14ee41,9103c69d-d9f6-436a-8c66-69c536ca81ed,5945e194-b5eb-45ae-b541-00baee9e4f01,72e4e531e59920b92a258ac0428e7bce,ui-run-metric-audits/a1d0ad63-5ff3-478b-bb55-0862fd624436.json
+1484,combined,"How many more ""discount"" gas stations does the Czech Republic have compared to Slovakia?","{""evidence"": ""Czech Republic can be represented as the Country value in gasstations table is 'CZE'; Slovakia can be represented as the Country value in the gasstations table is 'SVK';  Computation of more \""discount\"" gas stations= Total no. of discount gas stations in Czech Republic - Total no. of discount gas stations in Slovakia"", ""gold_sql"": ""SELECT SUM(CASE WHEN country = 'CZE' THEN 1 ELSE 0 END) - SUM(CASE WHEN country = 'SVK' THEN 1 ELSE 0 END) FROM gasstations WHERE segment = 'Discount'""}","WITH discount_counts AS (
+  SELECT
+    country,
+    COUNT(*) AS discount_station_count
+  FROM gasstations
+  WHERE segment = 'Discount'
+  GROUP BY country
+)
+SELECT
+  MAX(CASE WHEN country = 'CZE' THEN discount_station_count END) AS cze_discount_stations,
+  MAX(CASE WHEN country = 'SVK' THEN discount_station_count END) AS svk_discount_stations,
+  MAX(CASE WHEN country = 'CZE' THEN discount_station_count END)
+    - MAX(CASE WHEN country = 'SVK' THEN discount_station_count END) AS difference
+FROM discount_counts",1c123baef597cc0d6312cfa0b226eceeddf7aab2978a9be4bddaad1cd16a0fcc,Pass,1,Different results,True,judge-prompts/combined-1484.md,"The Prediction Query correctly counts discount gas stations per country ('Discount' segment) for CZE and SVK and computes the difference. Its extra columns (individual counts) don't affect the answer — the difference column (176) matches the ground truth result exactly. If SVK had zero discount stations the MAX(CASE...) would yield NULL, but the result shows 59, so that edge case doesn't apply here.
+
+```json
+{""correct"": true}
+```",,9ceb9564-b30d-41a5-87ce-e35b6c14ee41,b6e5fc70-753c-478c-a2ac-d35e551624f0,c9e81e27-957f-4610-b540-93ba72c4725d,eeb7806689659363258f120337297acd,ui-run-metric-audits/deda5f2e-0372-4b92-9b6e-4b1f52a09478.json
+1486,combined,"Is it true that more SMEs pay in Czech koruna than in euros? If so, how many more?","{""evidence"": ""Amount of more SMEs = Total of SMEs pay using Currency CZK - Total of SMEs pay using Currency EUR"", ""gold_sql"": ""SELECT SUM(CASE WHEN currency = 'CZK' THEN 1 ELSE 0 END) - SUM(CASE WHEN currency = 'EUR' THEN 1 ELSE 0 END) FROM customers WHERE segment = 'SME'""}","SELECT currency, COUNT(*) AS customer_count FROM customers WHERE segment = 'SME' GROUP BY currency ORDER BY customer_count DESC",6209baedc2a1e854a6abc2d355d2b0027fcafe4921786be4ed7021dc28bbcc09,Pass,1,Different results,True,judge-prompts/combined-1486.md,"The Prediction Query returns counts of SME customers by currency: CZK = 25,134 and EUR = 1,629. The question asks whether more SMEs pay in CZK than EUR and by how much. The difference is 25,134 − 1,629 = 23,505, which exactly matches the Ground Truth Result of 23,505 (computed by the gold SQL as the difference of CASE-based sums). The prediction provides the same answer, just in a slightly different output form (both counts rather than the single difference), which is acceptable.
+
+```json
+{""correct"": true}
+```",,9ceb9564-b30d-41a5-87ce-e35b6c14ee41,dec22764-650e-4557-840c-3525a6632d14,653e7b6d-575c-4562-b5c2-70e583a605ec,b94803ebf5c868f61d456556222a65b9,ui-run-metric-audits/866dc9ce-7d2e-4fd5-8417-fa4ac3a18f49.json
+1490,combined,How many percent of LAM customer consumed more than 46.73?,"{""evidence"": ""Percentage of LAM customer consumed more than 46.73 = (Total no. of LAM customers who consumed more than 46.73 / Total no. of LAM customers) * 100."", ""gold_sql"": ""SELECT CAST(SUM(CASE WHEN T2.consumption > 46.73 THEN 1 ELSE 0 END) AS REAL) * 100 / NULLIF(COUNT(T1.customer_id), 0) FROM customers AS T1 INNER JOIN yearmonth AS T2 ON T1.customer_id = T2.customer_id WHERE T1.segment = 'LAM'""}","WITH lam_totals AS (
+    SELECT
+        ym.customer_id,
+        SUM(ym.consumption) AS total_consumption
+    FROM yearmonth ym
+    JOIN customers c
+        ON c.customer_id = ym.customer_id
+    WHERE c.segment = 'LAM'
+    GROUP BY ym.customer_id
+),
+flagged AS (
+    SELECT
+        CASE WHEN total_consumption > 46.73 THEN 1 ELSE 0 END AS above_flag
+    FROM lam_totals
+)
+SELECT
+    COUNT(*) AS lam_customers,
+    SUM(above_flag) AS above_threshold,
+    ROUND(100.0 * SUM(above_flag) / NULLIF(COUNT(*), 0), 2) AS percent_above
+FROM flagged;",d2c205627ab7dda403bca20efcacd416f4388ce2b25efd3cfa928e650866877f,Fail,0,Different results,True,judge-prompts/combined-1490.md,"**Analysis**
+
+The two queries interpret ""consumed more than 46.73"" differently:
+
+- **Ground Truth Query**: Joins `customers` and `yearmonth` and evaluates each individual monthly consumption record against the 46.73 threshold, computing the percentage of *records* exceeding it. Result: **98.53%**.
+
+- **Prediction Query**: First aggregates total consumption per LAM customer, then flags customers whose *lifetime total* exceeds 46.73. This nearly always triggers (3599 of 3611 customers = **99.67%**), because summing all monthly consumptions makes the threshold trivially easy to exceed.
+
+The per-customer aggregation changes the semantics substantially: the threshold 46.73 is clearly intended to apply to individual consumption values (per the gold SQL's row-level CASE), not to summed totals. The prediction produces a materially different result (99.67 vs 98.53) due to this incorrect aggregation logic, which affects the query's ability to answer the question correctly.
+
+```json
+{""correct"": false}
+```",,9ceb9564-b30d-41a5-87ce-e35b6c14ee41,7ab7cb74-55ee-4d40-bb37-9aae2980e624,bd0429af-b49d-4635-8cfa-0ce826c74ddd,3a26289d27c000877b333a61cb95d7b5,ui-run-metric-audits/823695bb-fe44-4ff9-81f6-2988ca7a9414.json
+1493,combined,"In February 2012, what percentage of customers consumed more than 528.3?","{""evidence"": ""February 2012 refers to '201202' in yearmonth.date; The first 4 strings of the Date values in the yearmonth table can represent year; The 5th and 6th string of the date can refer to month."", ""gold_sql"": ""SELECT CAST(SUM(CASE WHEN consumption > 528.3 THEN 1 ELSE 0 END) AS REAL) * 100 / NULLIF(COUNT(customer_id), 0) FROM yearmonth WHERE date = '201202'""}","SELECT
+    ROUND(
+        100.0 * COUNT(*) FILTER (WHERE consumption > 528.3)
+        / NULLIF(COUNT(*), 0),
+        2
+    ) AS pct_customers_over_528_3,
+    COUNT(*) FILTER (WHERE consumption > 528.3) AS customers_over_528_3,
+    COUNT(*) AS total_customers
+FROM yearmonth
+WHERE date = '201202';",504b3a725a684a1ad99ed457ed588b15d9f47eeb7a7360815cadea78349b13c4,Pass,1,Different results,True,judge-prompts/combined-1493.md,"Both queries filter yearmonth for February 2012 ('201202') and compute the percentage of records with consumption > 528.3. The prediction returns 66.62 (rounded to 2 decimals) versus the gold's 66.62300807683911 — only a formatting/rounding difference, plus extra informative columns (counts), which don't affect correctness.
+
+```json
+{""correct"": true}
+```",,9ceb9564-b30d-41a5-87ce-e35b6c14ee41,f1256fa1-1672-437e-8756-06d9b55f323a,04adfd8c-c1e4-4128-aa5b-749f18a0d5b0,8a477df3684d5d93d41e1de9c6d74f44,ui-run-metric-audits/7362817d-da94-4e88-ac50-d5cf339eb9d5.json
+1498,combined,What is the highest monthly consumption in the year 2012?,"{""evidence"": ""cast the consumption into float when perform calculation; The first 4 strings of the Date values in the yearmonth table can represent year; The 5th and 6th string of the date can refer to month."", ""gold_sql"": ""SELECT SUM(CAST(consumption AS DOUBLE PRECISION)) FROM yearmonth WHERE SUBSTRING(date FROM 1 FOR 4) = '2012' GROUP BY SUBSTRING(date FROM 5 FOR 2) ORDER BY SUM(consumption) DESC NULLS LAST LIMIT 1""}","SELECT
+    date AS month,
+    SUM(consumption) AS total_consumption
+FROM yearmonth
+WHERE date LIKE '2012%'
+GROUP BY date
+ORDER BY total_consumption DESC
+LIMIT 1;",5ca02721a4bda79513c070a5d880f48a2c3cc084a826d632fc2672f0e09842b3,Pass,1,Different results,True,judge-prompts/combined-1498.md,"The Prediction Query sums consumption per month for 2012 rows, orders descending, and returns the top month. Its result (51787161.74 for 201203) matches the Ground Truth value (51787161.73999976). The extra month column doesn't affect correctness, and PostgreSQL numeric SUM handles the calculation appropriately.
+
+```json
+{""correct"": true}
+```",,9ceb9564-b30d-41a5-87ce-e35b6c14ee41,9d36e0f5-2bef-4a7d-91e1-9d0d28d01ddf,fddf1533-1fc9-4469-9af4-718e8f3a4a0b,07a8831372c8b2de4b430f23ddbef7cc,ui-run-metric-audits/7128a378-6c9f-49de-bdb8-8669e5f9811b.json
+1500,combined,"Please list the product description of the products consumed in September, 2013.","{""evidence"": ""September 2013 refers to 201309; The first 4 strings of the Date values in the yearmonth table can represent year; The 5th and 6th string of the date can refer to month."", ""gold_sql"": ""SELECT T3.description FROM transactions_1k AS T1 INNER JOIN yearmonth AS T2 ON T1.customer_id = T2.customer_id INNER JOIN products AS T3 ON T1.product_id = T3.product_id WHERE T2.date = '201309'""}","SELECT DISTINCT p.description
+FROM transactions_1k t
+JOIN products p ON p.product_id = t.product_id
+WHERE t.date >= '2013-09-01'
+  AND t.date < '2013-10-01'
+ORDER BY p.description;",e1507e1c2c9bb0d552620715c78400fba203b432ccc3d5920097218886ad7867,Fail,0,Different results,True,judge-prompts/combined-1500.md,"The Prediction Query filters `transactions_1k.date` to September 2013, but the actual transaction dates in that table are not in 2013 (execution returns empty). The reference evidence indicates that ""September, 2013"" must be determined via the `yearmonth` table, where the `date` text column's first 4 characters are the year and characters 5–6 the month (i.e., '201309'), joining on `customer_id` to transactions. The gold query joins `transactions_1k`, `yearmonth` (date = '201309'), and `products`, returning 976 rows of product descriptions. The Prediction Query's approach yields no results and therefore fails to answer the question.
+
+```json
+{""correct"": false}
+```",,9ceb9564-b30d-41a5-87ce-e35b6c14ee41,15cd97a7-8998-416a-877d-249cb401ba23,a4553a93-6499-41fa-a41d-a9203468853e,0516f4716e2491641688817935356f1a,ui-run-metric-audits/6a3b2c46-a990-476c-afae-3ab880ac767c.json
+1501,combined,"Please list the countries of the gas stations with transactions taken place in June, 2013.","{""evidence"": ""June 2013 refers to '201306'; The first 4 strings of the Date values in the yearmonth table can represent year; The 5th and 6th string of the date can refer to month;"", ""gold_sql"": ""SELECT DISTINCT T2.country FROM transactions_1k AS T1 INNER JOIN gasstations AS T2 ON T1.gas_station_id = T2.gas_station_id INNER JOIN yearmonth AS T3 ON T1.customer_id = T3.customer_id WHERE T3.date = '201306'""}","SELECT DISTINCT gs.country
+FROM transactions_1k t
+JOIN gasstations gs ON gs.gas_station_id = t.gas_station_id
+WHERE t.date >= DATE '2013-06-01'
+  AND t.date < DATE '2013-07-01'
+ORDER BY gs.country;",0144aa3b4b69ae63d482f11d398c99444a310346ca2b1249d228a1b5498c6bab,Fail,0,Different results,True,judge-prompts/combined-1501.md,"The Prediction Query filters `transactions_1k` by `date` in June 2013, but the transactions_1k table evidently contains no rows in that date range (the result is empty). The gold query instead identifies June 2013 via the `yearmonth` table (`date = '201306'`) joined on `customer_id`, which yields countries CZE and SVK per the expected result. The prediction's filtering condition therefore fails to produce the correct answer.
+
+```json
+{""correct"": false}
+```",,9ceb9564-b30d-41a5-87ce-e35b6c14ee41,25486ed6-d08e-40d7-b427-247fa3279ada,daf04f59-f98f-42f5-8d94-8155658ed24b,1ab6f07318ae74e5733a8e27547a8aaf,ui-run-metric-audits/8c7b13ed-ee4a-491f-aa7f-b95411d43df1.json
+1505,combined,"Among the customers who paid in euro, how many of them have a monthly consumption of over 1000?","{""evidence"": ""Pays in euro = Currency = 'EUR'."", ""gold_sql"": ""SELECT COUNT(*) FROM yearmonth AS T1 INNER JOIN customers AS T2 ON T1.customer_id = T2.customer_id WHERE T2.currency = 'EUR' AND T1.consumption > 1000.00""}","SELECT COUNT(DISTINCT ym.customer_id) AS euro_customers_with_consumption_over_1000
+FROM yearmonth ym
+JOIN customers c ON c.customer_id = ym.customer_id
+WHERE c.currency = 'EUR'
+  AND ym.consumption > 1000;",afe440c55afdb8d63beeb2c4b628f72fdefa01f06a0c25520a263688b40ee598,Fail,0,Different results,True,judge-prompts/combined-1505.md,"**Explanation**
+
+The gold SQL provided in the expected_response counts rows (customer-month pairs) with currency = 'EUR' and consumption > 1000, yielding 2730. The Prediction Query applies COUNT(DISTINCT customer_id), collapsing multiple qualifying months per customer, yielding 391. While the question wording (""how many of them"") is arguably ambiguous, the authoritative reference is the gold_sql result of 2730, and the Prediction Query's result differs significantly (391 vs 2730) due to the DISTINCT aggregation. Per the reference contract, the prediction must match the supplied reference.
+
+```json
+{""correct"": false}
+```",,9ceb9564-b30d-41a5-87ce-e35b6c14ee41,9e55dff8-afb3-4e06-8d51-83150ee95e9d,10c27702-35bd-4e8e-9917-f42154859b40,80b131c2868140d94acd2d14e9d99520,ui-run-metric-audits/c07dfd64-63d4-4820-9dbe-b13af8c1d9ff.json
+1506,combined,Please list the product descriptions of the transactions taken place in the gas stations in the Czech Republic.,"{""evidence"": ""Czech Republic can be represented as the Country value in the gasstations table is 'CZE'; "", ""gold_sql"": ""SELECT DISTINCT T3.description FROM transactions_1k AS T1 INNER JOIN gasstations AS T2 ON T1.gas_station_id = T2.gas_station_id INNER JOIN products AS T3 ON T1.product_id = T3.product_id WHERE T2.country = 'CZE'""}","SELECT DISTINCT p.description AS product_description
+FROM transactions_1k t
+JOIN products p ON p.product_id = t.product_id
+ORDER BY p.description;",2bd919ce704c06252eba2c1b86212900b0bbb2410fa850815d091634cc2ab2e6,Evaluation error,,Different results,True,judge-prompts/combined-1506.md,,"Client error '429 Too Many Requests' for url 'https://open.bigmodel.cn/api/coding/paas/v4/chat/completions'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429",9ceb9564-b30d-41a5-87ce-e35b6c14ee41,202c4925-f301-4e2b-8f12-ff87220f5eb5,f632b5bc-65b5-46a0-b5aa-40406dc412cb,faed27988852b3906c52813eca0770bc,ui-run-metric-audits/555e417c-a8ab-40bc-b218-02f37be9c48e.json
+1507,combined,Please list the disparate time of the transactions taken place in the gas stations from chain no. 11.,"{""evidence"": """", ""gold_sql"": ""SELECT DISTINCT T1.time FROM transactions_1k AS T1 INNER JOIN gasstations AS T2 ON T1.gas_station_id = T2.gas_station_id WHERE T2.chain_id = 11""}","SELECT DISTINCT t.time
+FROM transactions_1k t
+JOIN gasstations g ON t.gas_station_id = g.gas_station_id
+WHERE g.chain_id = 11
+ORDER BY t.time;",c66d1075856c52f4bb1156088ffaf63c7b4afe8d215eb007effaa579d50d3683,Evaluation error,,Matching results,True,judge-prompts/combined-1507.md,"The Prediction Query matches the gold SQL logically: it selects distinct transaction times for gas stations with chain_id = 11 via an inner join. The ORDER BY clause is a harmless addition.
+
+```json
+{""correct"": true}
+```",timeout,9ceb9564-b30d-41a5-87ce-e35b6c14ee41,d1c709bc-1595-4bb0-aef9-16578171dd18,c67a4526-2f64-4b06-b58b-6608fa305b6a,80abc2b585d9f024696109d4c391abdf,ui-run-metric-audits/960c44ee-0c11-4c78-9e5c-f3971b739e5e.json
+1509,combined,"Among the transactions made in the gas stations in the Czech Republic, how many of them are taken place after 2012/1/1?","{""evidence"": ""Czech Republic can be represented as the Country value in the gasstations table is 'CZE'"", ""gold_sql"": ""SELECT COUNT(T1.transaction_id) FROM transactions_1k AS T1 INNER JOIN gasstations AS T2 ON T1.gas_station_id = T2.gas_station_id WHERE T2.country = 'CZE' AND TO_CHAR(CAST(T1.date AS TIMESTAMP), 'YYYY') >= '2012'""}","SELECT COUNT(*) AS transaction_count
+FROM transactions_1k
+WHERE date > DATE '2012-01-01';",599ea22059d6b4ec09a952efd48892a7b1101b020f5a5daeb409043c1422f512,Fail,0,Different results,True,judge-prompts/combined-1509.md,"The Prediction Query counts all transactions after 2012-01-01 but omits the join to `gasstations` and the filter `country = 'CZE'`, which is essential to the question (per expected_response evidence: ""Czech Republic can be represented as the Country value in the gasstations table is 'CZE'""). Without this filter, it counts 1000 transactions instead of the correct 933. This is a significant missing-condition error, producing a different result.
+
+```json
+{""correct"": false}
+```",,9ceb9564-b30d-41a5-87ce-e35b6c14ee41,8f1e8947-95ba-4bf6-a941-3fd0140ee4d9,d5a2b62c-98fa-4563-9e7d-969293226c77,606f06b00d3feab11f293ce95b8f0b6d,ui-run-metric-audits/00dedd95-4533-4bfd-b6eb-68d8f1e9ff00.json
+1514,combined,What kind of currency did the customer paid at 16:25:00 in 2012/8/24?,"{""evidence"": ""'2012/8/24' can be represented by '2012-08-24'; "", ""gold_sql"": ""SELECT DISTINCT T3.currency FROM transactions_1k AS T1 INNER JOIN gasstations AS T2 ON T1.gas_station_id = T2.gas_station_id INNER JOIN customers AS T3 ON T1.customer_id = T3.customer_id WHERE T1.date = '2012-08-24' AND T1.time = '16:25:00'""}","SELECT c.currency
+FROM transactions_1k AS t
+JOIN customers AS c
+  ON c.customer_id = t.customer_id
+WHERE t.date = DATE '2012-08-24'
+  AND t.time = TIME '16:25:00';",91fd4643cc1f9d350b6bc5b74522f39ff0a6dc61e5549851649c0154e0796f88,Pass,1,Matching results,True,judge-prompts/combined-1514.md,"The prediction matches the gold query logically. The extra gasstations join in the gold is redundant; DISTINCT omission is allowed. Both filter by the same date and time and return customer currency.
+
+```json
+{""correct"": true}
+```",,9ceb9564-b30d-41a5-87ce-e35b6c14ee41,bf0821ec-ecf9-4572-b41e-c6ba1b7efc1a,89372403-c8cf-46d9-b188-6109935ebdb9,6d85608d8512b05fafd6c965e5a30a3a,ui-run-metric-audits/938e7d4d-fc31-4dae-9ccf-817daf587758.json
+1515,combined,What segment did the customer have at 2012/8/23 21:20:00?,"{""evidence"": ""'2012/8/23' can be represented by '2012-08-23'"", ""gold_sql"": ""SELECT T2.segment FROM transactions_1k AS T1 INNER JOIN customers AS T2 ON T1.customer_id = T2.customer_id WHERE T1.date = '2012-08-23' AND T1.time = '21:20:00'""}","SELECT
+  c.segment AS segment
+FROM transactions_1k AS t
+INNER JOIN customers AS c
+  ON c.customer_id = t.customer_id
+WHERE t.date = DATE '2012-08-23'
+  AND t.time = TIME '21:20:00';",04c4ce4788b100a12da0b67bdc9b88bcf648891f55cf5f2246a3a0674cdd8842,Pass,1,Matching results,True,judge-prompts/combined-1515.md,"The prediction query matches the gold query exactly in logic: joins transactions_1k with customers on customer_id, filters date '2012-08-23' and time '21:20:00', selects the customer segment.
+
+```json
+{""correct"": true}
+```",,9ceb9564-b30d-41a5-87ce-e35b6c14ee41,916aae2e-bcc8-4c4b-a868-88d73288d4a0,e562930a-fd1c-4887-9cb0-28474637331f,91f6317fb287b2c4cd31bb8583622bc4,ui-run-metric-audits/004ca3a8-8799-4eee-b279-20d1b4c86b24.json
+1521,combined,"For all the transactions happened during 8:00-9:00 in 2012/8/26, how many happened in CZE?","{""evidence"": ""Czech Republic can be represented as the Country value in the gasstations table is 'CZE'; '2012/8/26' can be represented by '2012-08-26'; during 8:00-9:00 can be represented as Time BETWEEN '08:00:00' AND '09:00:00'"", ""gold_sql"": ""SELECT COUNT(T1.transaction_id) FROM transactions_1k AS T1 INNER JOIN gasstations AS T2 ON T1.gas_station_id = T2.gas_station_id WHERE T1.date = '2012-08-26' AND T1.time BETWEEN '08:00:00' AND '09:00:00' AND T2.country = 'CZE'""}","SELECT COUNT(*) AS transaction_count
+FROM transactions_1k
+WHERE date = DATE '2012-08-26'
+  AND time >= TIME '08:00:00'
+  AND time <  TIME '09:00:00';",18301e34a4783147ae67069960986a2e14d2e4ac6f060296f8c32a9c7c4d4dc1,Fail,0,Matching results,True,judge-prompts/combined-1521.md,"The Prediction Query is missing the join to the gasstations table and the condition `country = 'CZE'`. It counts all transactions in the time window regardless of country, which does not logically answer the question asking specifically about CZE. Even if the execution results happen to coincide (per the note), the query relies on that coincidence rather than correctly filtering by country, and would produce wrong results if any non-CZE transactions existed in that window.
+
+```json
+{""correct"": false}
+```",,9ceb9564-b30d-41a5-87ce-e35b6c14ee41,d5feb3b9-7960-4d33-be62-81154575d140,84a630f0-2e0c-4e64-8492-cdc7a0dba65a,48c7bd60901f6f3643046cef960d0acd,ui-run-metric-audits/063e2513-8810-4ad4-8e15-52423ac484a0.json
+1524,combined,What's the nationality of the customer who spent 548.4 in 2012/8/24?,"{""evidence"": ""'2012/8/24' can be represented by '2012-08-24'; spent 548.4 refers to price = '548.4' "", ""gold_sql"": ""SELECT T2.country FROM transactions_1k AS T1 INNER JOIN gasstations AS T2 ON T1.gas_station_id = T2.gas_station_id WHERE T1.date = '2012-08-24' AND T1.price = '548.4'""}","SELECT
+  c.customer_id,
+  c.segment,
+  c.currency,
+  SUM(t.price) AS total_spent
+FROM transactions_1k t
+JOIN customers c
+  ON c.customer_id = t.customer_id
+WHERE t.date = '2012-08-24'
+GROUP BY c.customer_id, c.segment, c.currency
+HAVING ROUND(SUM(t.price), 2) = 548.40",aa25e8695ba5b642ecfdee6b5353a95b74b520894a47935f9cd4df9708d2cf16,Evaluation error,,Different results,True,judge-prompts/combined-1524.md,"The Prediction Query is incorrect. The gold query finds a single transaction on 2012-08-24 with price = 548.4 and joins gasstations to get the country (CZE). The prediction instead aggregates SUM(price) per customer and filters on a rounded sum of 548.40, which returned no rows (the 548.4 is an individual transaction price, not a per-customer total). Additionally, it selects customer segment/currency, which does not answer the ""nationality"" question—the answer requires the gas station's country per the reference gold_sql. The empty execution result confirms it fails to produce the expected answer (CZE).
+
+```json
+{""correct"": false}
+```",timeout,9ceb9564-b30d-41a5-87ce-e35b6c14ee41,3e4ecbd1-a544-4b2a-8849-3ba1aa51881f,6a840dc2-5da1-4515-b30b-b9734067f03a,a89336d43158effee50dccc1e9e956a5,ui-run-metric-audits/e3abe848-d9bd-405a-b02c-01f47b77551f.json
+1525,combined,What is the percentage of the customers who used EUR in 2012/8/25?,"{""evidence"": ""'2012/8/25' can be represented by '2012-08-25'"", ""gold_sql"": ""SELECT CAST(SUM(CASE WHEN T2.currency = 'EUR' THEN 1 ELSE 0 END) AS REAL) * 100 / NULLIF(COUNT(T1.customer_id), 0) FROM transactions_1k AS T1 INNER JOIN customers AS T2 ON T1.customer_id = T2.customer_id WHERE T1.date = '2012-08-25'""}","SELECT ROUND(100.0 * COUNT(DISTINCT CASE WHEN c.currency = 'EUR' THEN t.customer_id END) / NULLIF(COUNT(DISTINCT t.customer_id), 0), 2) AS eur_customer_pct FROM transactions_1k t JOIN customers c ON c.customer_id = t.customer_id WHERE t.date = '2012-08-25'",13d9b48d37df14c67b3b130aaa0fb3357192db525b4a7dee745aa3f5103967a0,Fail,0,Different results,True,judge-prompts/combined-1525.md,"The Prediction Query filters by the correct date ('2012-08-25', per the expected_response evidence) and joins transactions to customers properly. However, the expected_response's gold_sql computes the percentage over all transaction rows (COUNT(T1.customer_id)), counting EUR-flagged rows via SUM(CASE...), giving 1.647...%. The Prediction Query instead computes the ratio of distinct EUR customers to distinct customers overall (2.70%), producing a materially different result from the authoritative reference. Since the supplied reference values are the sole business reference and the result differs significantly, the prediction is judged incorrect.
+
+```json
+{""correct"": false}
+```",,9ceb9564-b30d-41a5-87ce-e35b6c14ee41,b6c2df09-b258-4ea4-964e-004bfc4cad2e,be063103-45ac-4370-b9ad-9bbb185c968b,d7ea47a62386b0e6af02e2a9fa6c1644,ui-run-metric-audits/d39e874c-6c68-44c3-bb20-cfe16d55c4a6.json
+1526,combined,"For the customer who paid 634.8 in 2012/8/25, what was the consumption decrease rate from Year 2012 to 2013?","{""evidence"": ""'2012/8/24' can be represented by '2012-08-24'; Consumption decrease rate = (consumption_2012 - consumption_2013) / consumption_2012; paid 634.8 refers to price = '634.8'"", ""gold_sql"": ""SELECT CAST(SUM(CASE WHEN SUBSTRING(date FROM 1 FOR 4) = '2012' THEN consumption ELSE 0 END) - SUM(CASE WHEN SUBSTRING(date FROM 1 FOR 4) = '2013' THEN consumption ELSE 0 END) AS REAL) / NULLIF(SUM(CASE WHEN SUBSTRING(date FROM 1 FOR 4) = '2012' THEN consumption ELSE 0 END), 0) FROM yearmonth WHERE customer_id = (SELECT T1.customer_id FROM transactions_1k AS T1 INNER JOIN gasstations AS T2 ON T1.gas_station_id = T2.gas_station_id WHERE T1.date = '2012-08-25' AND T1.price = 1513.12)""}","WITH payer AS (
+  SELECT customer_id
+  FROM transactions_1k
+  WHERE date = DATE '2012-08-25'
+  GROUP BY customer_id
+  HAVING ABS(SUM(amount * price) - 634.8) < 0.01
+),
+yearly AS (
+  SELECT customer_id,
+         SUM(CASE WHEN LEFT(date, 4) = '2012' THEN consumption ELSE 0 END) AS consumption_2012,
+         SUM(CASE WHEN LEFT(date, 4) = '2013' THEN consumption ELSE 0 END) AS consumption_2013
+  FROM yearmonth
+  WHERE customer_id IN (SELECT customer_id FROM payer)
+    AND LEFT(date, 4) IN ('2012', '2013')
+  GROUP BY customer_id
+)
+SELECT p.customer_id,
+       y.consumption_2012,
+       y.consumption_2013,
+       CASE
+         WHEN y.consumption_2012 <> 0
+           THEN (y.consumption_2012 - y.consumption_2013) / y.consumption_2012
+       END AS consumption_decrease_rate
+FROM payer p
+JOIN yearly y ON y.customer_id = p.customer_id
+ORDER BY p.customer_id;",e3c69c3d2057dd411e78b8a8ed1de9eb3bb15563bde5afeb2129513c411bc043,Evaluation error,,Different results,True,judge-prompts/combined-1526.md,,"Client error '429 Too Many Requests' for url 'https://open.bigmodel.cn/api/coding/paas/v4/chat/completions'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429",9ceb9564-b30d-41a5-87ce-e35b6c14ee41,35cfb0da-0317-4793-895b-decf0235e843,c1963757-f1f8-4e60-a29e-58f2984d7505,07ecb1cf51d86502d963710298f46e66,ui-run-metric-audits/c73e2cf8-be42-465e-80ef-c3764ab6fb83.json
+1528,combined,"What is the percentage of ""premium"" against the overall segment in Country = ""SVK""?","{""evidence"": """", ""gold_sql"": ""SELECT CAST(SUM(CASE WHEN country = 'SVK' AND segment = 'Premium' THEN 1 ELSE 0 END) AS REAL) * 100 / NULLIF(SUM(CASE WHEN country = 'SVK' THEN 1 ELSE 0 END), 0) FROM gasstations""}","SELECT
+  ROUND(
+    SUM(CASE WHEN gs.segment = 'Premium' THEN t.amount ELSE 0 END) * 100.0
+    / NULLIF(SUM(t.amount), 0),
+  2) AS premium_pct_of_total,
+  SUM(t.amount) AS total_amount_all_segments,
+  SUM(CASE WHEN gs.segment = 'Premium' THEN t.amount ELSE 0 END) AS premium_amount
+FROM transactions_1k t
+JOIN gasstations gs
+  ON gs.gas_station_id = t.gas_station_id
+WHERE gs.country = 'SVK'",87cc8e2137963e6913887f93350cd1537d545751443d417545b3a4afe6192eeb,Fail,0,Different results,True,judge-prompts/combined-1528.md,"The question asks for the percentage of ""Premium"" against overall segments in Country = ""SVK"". The ground truth query (from expected_response) computes this directly on the gasstations table: count of gas stations with country='SVK' and segment='Premium' divided by total SVK stations → 35.68%.
+
+The Prediction Query instead computes a transaction-amount-weighted share: it joins transactions_1k with gasstations, sums amounts where segment='Premium', and divides by total amount in SVK → 83.22%. This measures revenue share by segment, not the share of Premium stations among all stations. This is a fundamentally different metric and produces a significantly different result (83.22 vs 35.68), failing to answer the question as intended.
+
+```json
+{""correct"": false}
+```",,9ceb9564-b30d-41a5-87ce-e35b6c14ee41,aff310cf-7d82-40c6-b903-1f79b5decd83,75f03bc4-58d6-4e85-91f3-01f71afc4768,9bfcc7e841096c07131b1fc669f3a4fb,ui-run-metric-audits/4e66cd46-44b8-432e-b8b7-784a25114346.json
+1529,combined,"What is the amount spent by customer ""38508"" at the gas stations? How much had the customer spent in January 2012?","{""evidence"": ""January 2012 refers to the Date value = '201201'"", ""gold_sql"": ""SELECT SUM(T1.price), SUM(CASE WHEN T3.date = '201201' THEN T1.price ELSE 0 END) FROM transactions_1k AS T1 INNER JOIN gasstations AS T2 ON T1.gas_station_id = T2.gas_station_id INNER JOIN yearmonth AS T3 ON T1.customer_id = T3.customer_id WHERE T1.customer_id = '38508'""}","SELECT
+  CASE WHEN GROUPING(t.gas_station_id) = 1 THEN 'ALL STATIONS' ELSE t.gas_station_id::TEXT END AS gas_station,
+  SUM(t.amount) AS total_units,
+  ROUND(SUM(t.price), 2) AS total_spent,
+  SUM(t.amount) FILTER (WHERE t.date BETWEEN '2012-01-01' AND '2012-01-31') AS jan_2012_units,
+  ROUND(SUM(t.price) FILTER (WHERE t.date BETWEEN '2012-01-01' AND '2012-01-31'), 2) AS jan_2012_spent
+FROM transactions_1k AS t
+WHERE t.customer_id = 38508
+GROUP BY GROUPING SETS (
+  (t.gas_station_id),
+  ()
+)
+ORDER BY total_spent DESC;",568461bbad97dc9f6daeeb9b8a4ff871ce991c9e27d6965c9314e158e9029656,Evaluation error,,Different results,True,judge-prompts/combined-1529.md,"The Prediction Query correctly computes the total spent at gas stations (3437.01, matching the ground truth), broken down per station plus a grand total row. However, it fails to answer the second part of the question.
+
+The gold query uses the `yearmonth` table with `T3.date = '201201'` (per the evidence: ""January 2012 refers to the Date value = '201201'"") to find January 2012 spending, which yields 3437.01 — i.e., all of the customer's spending occurred in January 2012 according to the yearmonth data. The Prediction Query instead filters `transactions_1k.date BETWEEN '2012-01-01' AND '2012-01-31'`, and since no transactions_1k rows fall in that range, the Jan 2012 column returns NULL for every row. The reference result shows a non-null January value of 3437.01, so the prediction's answer to the second part (NULL) is significantly different from the reference.
+
+```json
+{""correct"": false}
+```",timeout,9ceb9564-b30d-41a5-87ce-e35b6c14ee41,e878a846-650e-409f-b271-d4677c114de9,54298b3b-e7ab-4276-9b42-881049c6ac24,d1ad9e7d699c7decd929ea0b9ea0d7f8,ui-run-metric-audits/e0f00c1b-2a9d-41be-996e-340aa6c64842.json
+1531,combined,Who is the top spending customer and how much is the average price per single item purchased by this customer? What currency was being used?,"{""evidence"": ""average price per single item = Total(price) / Total(amount)"", ""gold_sql"": ""SELECT T2.customer_id, SUM(T2.price / NULLIF(T2.amount, 0)), T1.currency FROM customers AS T1 INNER JOIN transactions_1k AS T2 ON T1.customer_id = T2.customer_id WHERE T2.customer_id = (SELECT customer_id FROM yearmonth ORDER BY consumption DESC NULLS LAST LIMIT 1) GROUP BY T2.customer_id, T1.currency""}","WITH customer_spending AS (
+  SELECT
+    customer_id,
+    SUM(price) AS total_spent,
+    SUM(amount) AS total_items,
+    SUM(price) / NULLIF(SUM(amount), 0) AS avg_price_per_item
+  FROM transactions_1k
+  GROUP BY customer_id
+),
+top_customer AS (
+  SELECT customer_id, total_spent, total_items, avg_price_per_item
+  FROM customer_spending
+  ORDER BY total_spent DESC
+  LIMIT 1
+)
+SELECT
+  t.customer_id,
+  t.total_spent,
+  t.total_items,
+  t.avg_price_per_item,
+  c.currency
+FROM top_customer t
+JOIN customers c
+  ON c.customer_id = t.customer_id",2abcabe446db7d68e2547074ca55e1a8934fd6ca48abba2bcc377f25a8f0e513,Fail,0,Different results,True,judge-prompts/combined-1531.md,"**Comparison**
+
+- **Top customer identification:** The Ground Truth (per expected_response) determines the top customer using the `yearmonth` table's `consumption` column (customer 12459), while the Prediction Query ranks customers by `SUM(price)` in `transactions_1k`, yielding customer 19182. This produces a fundamentally different customer, so the answer to ""who is the top spending customer"" differs.
+
+- **Average price per item:** The expected_response explicitly defines this as `Total(price) / Total(amount)`. The Prediction Query does use this formula (SUM(price)/SUM(amount) = 24.28), but since it is applied to the wrong customer, the value does not match the expected 203.856. (The gold SQL itself computes `SUM(price/amount)`, but the authoritative expected value is 203.856 for customer 12459, which the prediction does not reproduce.)
+
+- **Currency:** Both return CZK, but for different customers.
+
+Because the predicted customer (19182) and average price (24.28) do not match the reference values (12459, 203.856), the Prediction Query fails to answer the question as defined by the reference.
+
+```json
+{""correct"": false}
+```",,9ceb9564-b30d-41a5-87ce-e35b6c14ee41,16ce6d6d-4b2b-4f29-910f-c90f272b00c2,3436b851-e529-44d5-940a-ec276bea2203,b4f6a1efbbf9dd8a520baafc1f8bb7fb,ui-run-metric-audits/95a55778-984d-49fa-bb43-dfdf4ff20e2b.json
+1533,combined,For all the people who paid more than 29.00 per unit of product id No.5. Give their consumption status in the August of 2012.,"{""evidence"": ""August of 2012 refers to the Date value = '201208' ; Price per unit of product = Price / Amount;"", ""gold_sql"": ""SELECT T2.consumption FROM transactions_1k AS T1 INNER JOIN yearmonth AS T2 ON T1.customer_id = T2.customer_id WHERE T1.price / NULLIF(T1.amount, 0) > 29.00 AND T1.product_id = 5 AND T2.date = '201208'""}","SELECT
+  c.customer_id,
+  y.date AS period,
+  y.consumption,
+  CASE
+    WHEN y.consumption IS NULL THEN 'No August 2012 activity'
+    WHEN y.consumption > 0 THEN 'Positive consumption'
+    WHEN y.consumption = 0 THEN 'Zero consumption'
+    ELSE 'Negative consumption'
+  END AS consumption_status
+FROM (
+  SELECT DISTINCT customer_id
+  FROM transactions_1k
+  WHERE product_id = 5
+) p
+JOIN customers c
+  ON c.customer_id = p.customer_id
+LEFT JOIN yearmonth y
+  ON y.customer_id = p.customer_id
+ AND y.date = '201208'
+ORDER BY y.consumption DESC NULLS LAST, c.customer_id;",59f69c013e6504802ce1de70b7301763cdd298baeaa9983e7833a6a153a8b990,Fail,0,Different results,True,judge-prompts/combined-1533.md,"The Prediction Query is incorrect. The critical difference is the filtering condition.
+
+**Gold SQL logic:** Find customers whose transactions for product_id = 5 had a unit price (price / amount) exceeding 29.00, then return their consumption for '201208' from the yearmonth table.
+
+**Prediction Query logic:** It selects **all distinct customers** who ever bought product_id = 5, with no condition on price per unit (`price / amount > 29.00` is completely missing). It then LEFT JOINs to yearmonth for '201208'.
+
+Because the price-per-unit filter is absent, the Prediction returns 158 rows (every product-5 purchaser with August 2012 activity), whereas the gold result contains only 10 consumption values from the subset of customers who paid more than 29.00 per unit. Some values coincidentally overlap (e.g., 126157.7, 58.19), but the result sets are substantially different due to the missing filter condition.
+
+The prediction also adds extra descriptive columns (customer_id, status label), which would be acceptable on its own, but the missing WHERE condition on price/amount is a fatal logical error.
+
+```json
+{""correct"": false}
+```",,9ceb9564-b30d-41a5-87ce-e35b6c14ee41,9ddd79ab-bcee-4764-b177-f690073762d1,9b0b9e2f-896b-44fd-8adc-60afba12c5a3,88b2c47d6fd687425926ca36758a2825,ui-run-metric-audits/8fbefecf-7968-4997-a27e-0c53d76b2d1a.json

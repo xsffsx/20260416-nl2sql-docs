@@ -1,0 +1,106 @@
+{
+  "reviewed_date": "2026-10-25",
+  "rhesis_head": "c3d7d952928e5eff854f633aa008790f879c77bd",
+  "sdk_version": "0.15.0",
+  "sdk_installation": "editable local source",
+  "note": "These are the actual local source snapshots used for review. Existing working-tree changes may differ from the repository HEAD; checksums identify the reviewed bytes. No Rhesis source was modified.",
+  "files": [
+    {
+      "download": "rhesis-source/decorator.py",
+      "original_path": "sdk/src/rhesis/sdk/decorators/metric.py",
+      "functions": [
+        "metric",
+        "_validate_metric_signature"
+      ],
+      "sha256": "5ee4d2676699341c4977a8d88032dd99f7b2c267bc06e4cbd2dcfb6dd3d8df32"
+    },
+    {
+      "download": "rhesis-source/sdk-manager.py",
+      "original_path": "sdk/src/rhesis/sdk/connector/manager.py",
+      "functions": [
+        "register_metric",
+        "_send_registration",
+        "_handle_metric_request",
+        "_get_websocket_url"
+      ],
+      "sha256": "18973684e90dcd2622c6370155f22b3485ba9c555367474345b2eee092139651"
+    },
+    {
+      "download": "rhesis-source/sdk-executor.py",
+      "original_path": "sdk/src/rhesis/sdk/connector/executor.py",
+      "functions": [
+        "execute_metric"
+      ],
+      "sha256": "e9826588354bc5fb7ec48f9c5f61ab89d88a4ad7b54228947f549206f939115f"
+    },
+    {
+      "download": "rhesis-source/sdk-schemas.py",
+      "original_path": "sdk/src/rhesis/sdk/connector/schemas.py",
+      "functions": [
+        "ExecuteMetricMessage",
+        "MetricResultMessage"
+      ],
+      "sha256": "db429f158b74082c2c6c136e59d3198cac9424bd8fc9c164cb0c3ff50cc1436f"
+    },
+    {
+      "download": "rhesis-source/sdk-client.py",
+      "original_path": "sdk/src/rhesis/sdk/clients/rhesis.py",
+      "functions": [
+        "connect",
+        "register_metric"
+      ],
+      "sha256": "b0ef8c3c09b90610e8cd91adfd1aeccd4d3c2a4e49b3ed9d2fbcdcb5a38add2e"
+    },
+    {
+      "download": "rhesis-source/backend-routing.py",
+      "original_path": "apps/backend/src/rhesis/backend/jobs/execution/executors/runners.py",
+      "functions": [
+        "_build_connector_metric_sender"
+      ],
+      "sha256": "a5338b1858b126df98e1f80109fc0e546a5a81161e24b3af09605315f5db1937"
+    },
+    {
+      "download": "rhesis-source/backend-evaluation.py",
+      "original_path": "apps/backend/src/rhesis/backend/jobs/execution/batch/evaluation.py",
+      "functions": [
+        "_evaluate_single_turn_metrics"
+      ],
+      "sha256": "8fd859a9e91ac0d7f912937a326177bc26dda81dfa807d3879251e86b3a59745"
+    },
+    {
+      "download": "rhesis-source/backend-strategy.py",
+      "original_path": "apps/backend/src/rhesis/backend/metrics/strategies/connector.py",
+      "functions": [
+        "a_evaluate",
+        "_connector_response_to_result"
+      ],
+      "sha256": "335d08d5f98916bd81591cae9ec68af28f112305eabbed602aa195d45f370ddc"
+    },
+    {
+      "download": "rhesis-source/backend-rpc.py",
+      "original_path": "apps/backend/src/rhesis/backend/app/services/connector/rpc_client.py",
+      "functions": [
+        "send_and_await_metric_result",
+        "_send_and_await"
+      ],
+      "sha256": "096d1dbfc3bffbd6d787239843c2f3b0eec93a5d616c607e8ce0341521e4b717"
+    },
+    {
+      "download": "rhesis-source/backend-manager.py",
+      "original_path": "apps/backend/src/rhesis/backend/app/services/connector/manager.py",
+      "functions": [
+        "_forward_metric_to_sdk"
+      ],
+      "sha256": "485ef4ec2d64ffa2ab72f982321863a957a487337d843fb9c3ee562d4a46c7cd"
+    },
+    {
+      "download": "rhesis-source/backend-metric-sync.py",
+      "original_path": "apps/backend/src/rhesis/backend/app/services/connector/handlers/metric_sync.py",
+      "functions": [
+        "_create_new_metric",
+        "_set_sdk_connection"
+      ],
+      "sha256": "4b6a8f841df4e7ca7344be3f38993db9a327c8183bec41d3a0fd3f430d49c950"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "entry_sha256": "b38c9ae5ab4b39a7a0650daf112eac8b07bfa07178bd0937cdadaa537e08bc4b",
+  "syntax": "passed",
+  "sdk_signature_validation": "passed against installed SDK validator",
+  "three_variant_dispatch_and_input_preservation": "passed",
+  "connect_called": "passed with offline client",
+  "existing_audit_directory_rejected": "passed",
+  "markdown_source_matches_download": "passed",
+  "real_sdk_registration": false,
+  "nl2sql_calls": 0,
+  "database_queries": 0,
+  "judge_calls": 0,
+  "note": "Only startup and argument wiring were exercised with offline substitutes. This does not validate a company deployment or create a semantic score."
+}

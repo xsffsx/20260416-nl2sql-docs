@@ -1,0 +1,88 @@
+{
+  "name": "BIRD 30 — Business Evidence Review",
+  "items": 30,
+  "expected_response": "Unmodified BIRD evidence; blank evidence remains blank",
+  "question_input": "prompt_content only",
+  "gold_sql_included": false,
+  "missing_evidence_question_ids": [
+    "1507",
+    "1528"
+  ],
+  "source_dataset": "BIRD Mini-Dev V2 / debit_card_specializing",
+  "source_revision": "abd11b6db92a1c9f809b32f7564c7c71b34d67f0",
+  "source_evidence_csv_sha256": "1b9418f011447a2af22ae6831b47b0711595e22a0f7a2c3bace611392abafd94",
+  "csv_sha256": "0ee7c44feeec162d76c1d71a4b44cb11093100416f1539c4183f78dfe6eb7d11",
+  "dataset_source_url": "https://github.com/bird-bench/mini_dev",
+  "license": "CC BY-SA 4.0",
+  "attribution": "BIRD Team / BIRD-SQL, Li et al.",
+  "adaptation": "Question-only Rhesis CSV; expected_response replaced with original evidence",
+  "interpretation": "Business-rule reference notes, not a complete expected answer or official BIRD score",
+  "rhesis_test_set_id": "c718438d-c896-4335-880c-e126a759dbd2",
+  "rhesis_url": "http://localhost:3002/test-sets/c718438d-c896-4335-880c-e126a759dbd2",
+  "import_surface": "Rhesis UI / Import from File",
+  "imported_rows": 30,
+  "ui_expected_response_spot_check_question_id": "1471",
+  "judge_metric_configured": true,
+  "metric_name": "BIRD Evidence Semantic Review GLM 5.3",
+  "metric_id": "f84ae4e0-484f-4b0f-a574-0f7ff76fcb91",
+  "metric_type": "Rhesis CategoricalJudge",
+  "passing_category": "Meets Business Intent",
+  "other_categories": [
+    "Does Not Meet Business Intent",
+    "Needs Human Review"
+  ],
+  "evaluation_model": "GLM 5.3 BIRD Judge",
+  "evaluation_prompt_boundary": "Judge sees question, generated SQL, and expected_response evidence; it does not execute SQL or see database result rows",
+  "rhesis_test_run_id": "660f06aa-90c5-4817-9086-2f783f739179",
+  "rhesis_test_run_name": "crisp-pupa",
+  "rhesis_test_run_url": "http://localhost:3002/test-runs/660f06aa-90c5-4817-9086-2f783f739179?density=detail",
+  "run_date": "2026-10-25",
+  "run_status": "completed",
+  "run_duration_seconds": 380,
+  "execution_mode": "Parallel",
+  "scoring_target": "Fresh Outputs",
+  "metric_source": "Test Set Metrics",
+  "tests_completed": 30,
+  "metric_verdicts": 30,
+  "judge_categories": {
+    "Meets Business Intent": 20,
+    "Does Not Meet Business Intent": 9,
+    "Needs Human Review": 1
+  },
+  "rhesis_passed": 20,
+  "rhesis_failed": 10,
+  "human_reviews_submitted": 0,
+  "native_run_export": "test_run_660f06aa-90c5-4817-9086-2f783f739179_results.csv",
+  "native_run_export_contains": [
+    "test_id",
+    "prompt_content",
+    "response",
+    "created_at"
+  ],
+  "native_run_export_sha256": "d93a2c6298317bf75863e274866c85d34b14c3a0b9216f09d128ba7d0381fac7",
+  "native_run_export_note": "Rhesis UI export contains endpoint responses, not metric labels or judge reasons",
+  "failed_initial_attempt": {
+    "test_run_id": "06e258c8-3e4e-476f-920c-10412b37d365",
+    "metric_model": "MiMo",
+    "status": "excluded",
+    "failure": "HTTP 400 from the configured metric model endpoint"
+  },
+  "evaluation_run_completed": true,
+  "comparable_to_official_bird_execution_accuracy": false,
+  "semantic_results_archive": {
+    "json_file": "semantic-judge-results.json",
+    "json_sha256": "d3d611d8b6d53af4ea2f301d5729a6dd5f592c2ad53634e913d9e16567b4206b",
+    "csv_file": "semantic-judge-results.csv",
+    "csv_sha256": "ae8d2cea1ca18bf27b2d71aec1a7e87b75eefb6944707252c491c96aebe243b3",
+    "records": 30,
+    "categories": {
+      "Meets Business Intent": 20,
+      "Does Not Meet Business Intent": 9,
+      "Needs Human Review": 1
+    },
+    "rhesis_passed": 20,
+    "rhesis_failed": 10,
+    "human_reviews_submitted": 0,
+    "source": "Read-only snapshot of completed Rhesis Test Run metric records, paired to the preserved evidence Test Set and native endpoint export"
+  }
+}

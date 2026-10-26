@@ -1,0 +1,41 @@
+{
+  "question": "Who is the top spending customer and how much is the average price per single item purchased by this customer? What currency was being used?",
+  "score": 0.0,
+  "details": {
+    "reason": "Complete results differ from Gold SQL; BIRD Soft F1 = 0.25",
+    "BIRD_Soft_F1": 0.25,
+    "actual_sql": "WITH customer_spend AS (\n  SELECT\n    t.customer_id,\n    c.currency,\n    SUM(t.amount * t.price) AS total_spend,\n    SUM(t.amount)           AS total_items,\n    SUM(t.amount * t.price) / NULLIF(SUM(t.amount), 0) AS avg_price_per_item\n  FROM transactions_1k t\n  JOIN customers c\n    ON c.customer_id = t.customer_id\n  GROUP BY t.customer_id, c.currency\n),\nranked AS (\n  SELECT\n    cs.*,\n    RANK() OVER (ORDER BY cs.total_spend DESC) AS spend_rank\n  FROM customer_spend cs\n)\nSELECT\n  customer_id,\n  currency,\n  total_spend,\n  total_items,\n  avg_price_per_item\nFROM ranked\nWHERE spend_rank = 1\nORDER BY total_spend DESC;",
+    "gold_sql": "SELECT T2.customer_id, SUM(T2.price / NULLIF(T2.amount, 0)), T1.currency FROM customers AS T1 INNER JOIN transactions_1k AS T2 ON T1.customer_id = T2.customer_id WHERE T2.customer_id = (SELECT customer_id FROM yearmonth ORDER BY consumption DESC NULLS LAST LIMIT 1) GROUP BY T2.customer_id, T1.currency",
+    "actual_result": [
+      [
+        13665,
+        "CZK",
+        {
+          "type": "Decimal",
+          "value": "1521297.36"
+        },
+        {
+          "type": "Decimal",
+          "value": "264"
+        },
+        {
+          "type": "Decimal",
+          "value": "5762.4900000000000000"
+        }
+      ]
+    ],
+    "gold_result": [
+      [
+        12459,
+        {
+          "type": "Decimal",
+          "value": "203.8560787354257941"
+        },
+        "CZK"
+      ]
+    ],
+    "sql_error": null,
+    "scorer_ms": 41.18587500124704,
+    "max_parallel_workers_per_gather": 0
+  }
+}

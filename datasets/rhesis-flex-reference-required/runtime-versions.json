@@ -1,0 +1,31 @@
+{
+  "scoring_process": {
+    "python": "3.12.4",
+    "packages": {
+      "rhesis-sdk": "0.15.0",
+      "psycopg": "3.3.4",
+      "sqlglot": "29.0.1",
+      "httpx": "0.28.1",
+      "httpx2": "2.3.0",
+      "mcp": "1.28.1",
+      "python-dotenv": "1.2.2"
+    }
+  },
+  "report_collection": {
+    "packages": {
+      "psycopg": "3.3.4",
+      "sqlglot": "29.0.1",
+      "httpx": "0.28.1",
+      "httpx2": "2.16.0",
+      "mcp": "2.3.0",
+      "python-dotenv": "1.2.4"
+    }
+  },
+  "rhesis_repository_head": "c3d7d952928e5eff854f633aa008790f879c77bd",
+  "container_images": {
+    "backend": "sha256:42866aee4d6f833841210d2e8d98aca177ef5ec6ab69eac70fd23b674127c104",
+    "worker": "sha256:d8bb2b57550c10f0cd1819ec73508a81b87e6e5cd3f7a04bc01a65227593a1f8",
+    "frontend": "sha256:310935e805635a2904cf7dd9da1067c1430a446107d44789690aae221a383dd8"
+  },
+  "note": "Working source may include existing local changes; native-threshold-check.json also hashes the actual worker modules. Collection used a separate environment and never generated SQL."
+}

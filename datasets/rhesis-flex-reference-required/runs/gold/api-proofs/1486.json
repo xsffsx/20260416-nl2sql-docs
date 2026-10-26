@@ -1,0 +1,1851 @@
+{
+  "request": {
+    "url": "http://host.docker.internal:4000/api/nl2sql?projectId=bird_baseline_20261024",
+    "body": {
+      "query": "Is it true that more SMEs pay in Czech koruna than in euros? If so, how many more?"
+    },
+    "method": "POST",
+    "headers": {
+      "X-User-ID": "264f6dfc-d8f3-4d5e-bae2-fac6c4158bfb",
+      "Content-Type": "application/json",
+      "X-Organization-ID": "b43335a4-5d29-4c92-aefb-cf77e293d475"
+    },
+    "connection_type": "REST"
+  },
+  "raw_response": {
+    "sql": "SELECT\n  currency,\n  COUNT(*) AS customer_count\nFROM customers\nWHERE segment = 'SME'\nGROUP BY currency\nORDER BY customer_count DESC;",
+    "meta": {
+      "mode": "POC_CSV_SQL_EXECUTE_RESULT",
+      "timing": {
+        "endedAtMs": 1792938334219,
+        "startedAtMs": 1792938322952,
+        "totalDurationMs": 11266
+      },
+      "sql_limit_count": 2,
+      "sql_actual_count": 2
+    },
+    "query": "Is it true that more SMEs pay in Czech koruna than in euros? If so, how many more?",
+    "reason": {
+      "answer": "The query returns one row per currency used by SME customers, with the number of SME customers in each currency, ordered from most to least common. This allows the reader to verify whether more SMEs pay in Czech koruna than in euros and to compute the difference between the two counts by subtracting the euro count from the koruna count.",
+      "business": "- Identify customers belonging to the SME segment.\n- Group those SME customers by the currency they use.\n- Count how many SME customers use each currency.\n- Order the currencies by count so the more common currency appears first, making the comparison and the difference straightforward to compute.",
+      "technical": "## Common Table Expressions\n- (not used)\n\n## Projected Columns\n- Currency of the customer, since the comparison is between Czech koruna and euros.\n- A count of customers per currency to quantify how many SMEs use each.\n\n## Source\n- Customer-level records that carry both the business segment and the currency attributes.\n\n## Joins\n- (not used) All needed attributes live on a single customer-level source.\n\n## Filters\n- Restrict to the SME segment, matching the question about small and medium enterprises.\n\n## Aggregation\n- Group by currency and count the number of customers in each currency group.\n\n## Sorting\n- Sort by customer count descending so the dominant currency is listed first.\n\n## Result Limit\n- (not used) Both currency groups are returned to allow the comparison.\n\n## Union\n- (not used)"
+    },
+    "status": "success",
+    "queryId": "1ceee1f9-2cad-4457-9add-f37a49a67bab",
+    "results": [
+      {
+        "currency": "CZK",
+        "customer_count": 25134
+      },
+      {
+        "currency": "EUR",
+        "customer_count": 1629
+      }
+    ],
+    "traceId": "893a499d0d6d61c075689bdc944ad445",
+    "threadId": "69377982-d0c9-4f32-8307-a3549f51f8c9",
+    "confidence": 0.9,
+    "groundReason": "The SQL groups SME-segment customers by currency, counts them, and orders the counts descending, which directly supports comparing how many SMEs use Czech koruna versus euros and deriving the difference.",
+    "suggestedQuestion": [
+      "Which currency dominates for each customer segment, not just SMEs?",
+      "How does the CZK-versus-EUR split for SMEs compare to KAM and LAM customers?",
+      "What share of SME customers use Czech koruna and what share use euros?"
+    ]
+  },
+  "trace": {
+    "queryId": "1ceee1f9-2cad-4457-9add-f37a49a67bab",
+    "threadId": "69377982-d0c9-4f32-8307-a3549f51f8c9",
+    "traceId": "893a499d0d6d61c075689bdc944ad445",
+    "artifactVersionId": "ea8a1aa0-46a1-4c99-aed0-18c5ac9c3a14",
+    "bundleHash": "50c0cc65c8c8fcd8aaac472f897ab6e1453ca8e8588380cec92bd8126ec7e0f7",
+    "versionName": "BIRD debit baseline · no SQL Pair",
+    "runtimeIdentity": {
+      "bundleHash": "50c0cc65c8c8fcd8aaac472f897ab6e1453ca8e8588380cec92bd8126ec7e0f7",
+      "schemaVersionId": "489dff07-db00-4d4c-b66e-d75efa28fe65"
+    },
+    "dataSourceFingerprint": "runtime",
+    "schemaRag": {
+      "status": "active",
+      "activatedAt": "2026-10-24T07:37:49.382844+00:00",
+      "consistency": "consistent",
+      "sourceBundleHash": "50c0cc65c8c8fcd8aaac472f897ab6e1453ca8e8588380cec92bd8126ec7e0f7",
+      "sourceArtifactVersionId": "ea8a1aa0-46a1-4c99-aed0-18c5ac9c3a14"
+    },
+    "status": "finished",
+    "type": "TEXT_TO_SQL",
+    "answerText": "The query returns one row per currency used by SME customers, with the number of SME customers in each currency, ordered from most to least common. This allows the reader to verify whether more SMEs pay in Czech koruna than in euros and to compute the difference between the two counts by subtracting the euro count from the koruna count.",
+    "queryResult": {
+      "sql": "SELECT\n  currency,\n  COUNT(*) AS customer_count\nFROM customers\nWHERE segment = 'SME'\nGROUP BY currency\nORDER BY customer_count DESC;",
+      "meta": {
+        "mode": "POC_CSV_SQL_EXECUTE_RESULT",
+        "timing": {
+          "endedAtMs": 1792938334219,
+          "startedAtMs": 1792938322952,
+          "totalDurationMs": 11266
+        },
+        "sql_limit_count": 2,
+        "sql_actual_count": 2
+      },
+      "query": "Is it true that more SMEs pay in Czech koruna than in euros? If so, how many more?",
+      "reason": {
+        "answer": "The query returns one row per currency used by SME customers, with the number of SME customers in each currency, ordered from most to least common. This allows the reader to verify whether more SMEs pay in Czech koruna than in euros and to compute the difference between the two counts by subtracting the euro count from the koruna count.",
+        "business": "- Identify customers belonging to the SME segment.\n- Group those SME customers by the currency they use.\n- Count how many SME customers use each currency.\n- Order the currencies by count so the more common currency appears first, making the comparison and the difference straightforward to compute.",
+        "technical": "## Common Table Expressions\n- (not used)\n\n## Projected Columns\n- Currency of the customer, since the comparison is between Czech koruna and euros.\n- A count of customers per currency to quantify how many SMEs use each.\n\n## Source\n- Customer-level records that carry both the business segment and the currency attributes.\n\n## Joins\n- (not used) All needed attributes live on a single customer-level source.\n\n## Filters\n- Restrict to the SME segment, matching the question about small and medium enterprises.\n\n## Aggregation\n- Group by currency and count the number of customers in each currency group.\n\n## Sorting\n- Sort by customer count descending so the dominant currency is listed first.\n\n## Result Limit\n- (not used) Both currency groups are returned to allow the comparison.\n\n## Union\n- (not used)"
+      },
+      "status": "success",
+      "columns": [
+        "currency",
+        "customer_count"
+      ],
+      "results": [
+        {
+          "currency": "CZK",
+          "customer_count": 25134
+        },
+        {
+          "currency": "EUR",
+          "customer_count": 1629
+        }
+      ],
+      "confidence": 0.9,
+      "question_id": "1ceee1f92cad44579addf37a49a67bab",
+      "schemaLinking": {
+        "tokenBudget": 5000,
+        "tokenEstimate": 248,
+        "pruningApplied": false,
+        "selectedTables": [
+          "customers",
+          "transactions_1k",
+          "gasstations",
+          "yearmonth",
+          "products"
+        ],
+        "schemaVersionId": "489dff07-db00-4d4c-b66e-d75efa28fe65",
+        "selectedColumns": {
+          "products": [
+            "product_id"
+          ],
+          "customers": [
+            "currency",
+            "segment",
+            "customer_id"
+          ],
+          "yearmonth": [
+            "customer_id",
+            "date"
+          ],
+          "gasstations": [
+            "gas_station_id",
+            "segment"
+          ],
+          "transactions_1k": [
+            "price",
+            "amount",
+            "card_id",
+            "customer_id",
+            "transaction_id",
+            "gas_station_id",
+            "product_id",
+            "date"
+          ]
+        }
+      },
+      "sqlPairRetrieval": {
+        "topK": 10,
+        "queryText": "Is it true that more SMEs pay in Czech koruna than in euros? If so, how many more?",
+        "threshold": 0.7,
+        "candidates": [],
+        "selectedIds": [],
+        "selectedCount": 0,
+        "selectedPairs": [],
+        "candidateCount": 0,
+        "candidateLimit": 25
+      },
+      "rephrased_question": "Is it true that more SMEs pay in Czech koruna than in euros? If so, how many more?",
+      "schemaLinkingArtifacts": {
+        "tables": [
+          {
+            "rrf_rank": 1,
+            "rrf_score": 0.01639344262295082,
+            "table_name": "customers"
+          },
+          {
+            "rrf_rank": 2,
+            "rrf_score": 0.016129032258064516,
+            "table_name": "transactions_1k"
+          },
+          {
+            "rrf_rank": 3,
+            "rrf_score": 0.015873015873015872,
+            "table_name": "gasstations"
+          },
+          {
+            "rrf_rank": 4,
+            "rrf_score": 0.015625,
+            "table_name": "yearmonth"
+          },
+          {
+            "rrf_rank": 5,
+            "rrf_score": 0.015384615384615385,
+            "table_name": "products"
+          }
+        ],
+        "tableCount": null,
+        "columnCount": null,
+        "tokenBudget": 5000,
+        "schemaSource": "active_pg_schema",
+        "tokenEstimate": 248,
+        "pruningApplied": false,
+        "schemaVersionId": "489dff07-db00-4d4c-b66e-d75efa28fe65",
+        "selectedColumns": {
+          "products": [
+            "product_id"
+          ],
+          "customers": [
+            "currency",
+            "segment",
+            "customer_id"
+          ],
+          "yearmonth": [
+            "customer_id",
+            "date"
+          ],
+          "gasstations": [
+            "gas_station_id",
+            "segment"
+          ],
+          "transactions_1k": [
+            "price",
+            "amount",
+            "card_id",
+            "customer_id",
+            "transaction_id",
+            "gas_station_id",
+            "product_id",
+            "date"
+          ]
+        },
+        "failClosedEnforced": true,
+        "tokenBudgetExceeded": null,
+        "ragSchemaLinkingEnabled": null
+      },
+      "rowCount": 2,
+      "rows": [
+        {
+          "currency": "CZK",
+          "customer_count": 25134
+        },
+        {
+          "currency": "EUR",
+          "customer_count": 1629
+        }
+      ],
+      "sqlRedacted": false
+    },
+    "rephrased_question": "Is it true that more SMEs pay in Czech koruna than in euros? If so, how many more?",
+    "steps": [
+      {
+        "id": "understanding:1",
+        "phase": "understanding",
+        "title": "Understanding",
+        "index": 1,
+        "status": "success",
+        "startedAtMs": 1792938323020,
+        "endedAtMs": 1792938323453,
+        "durationMs": 433,
+        "input": {
+          "text": "Understand the user's request and determine the execution intent for this ask.",
+          "artifacts": {
+            "query": "Is it true that more SMEs pay in Czech koruna than in euros? If so, how many more?",
+            "histories": []
+          }
+        },
+        "thinking": null,
+        "output": {
+          "text": "Final question: Is it true that more SMEs pay in Czech koruna than in euros? If so, how many more?"
+        },
+        "stream": {
+          "kind": "simulated",
+          "activeLane": "done"
+        },
+        "provenance": "persisted"
+      },
+      {
+        "id": "searching:1",
+        "phase": "searching",
+        "title": "SQL Pair RAG",
+        "index": 2,
+        "status": "success",
+        "startedAtMs": 1792938323672,
+        "endedAtMs": 1792938323913,
+        "durationMs": 241,
+        "input": {
+          "text": "Retrieve relevant SQL examples and related retrieval evidence for the current question.",
+          "artifacts": {
+            "query": "Is it true that more SMEs pay in Czech koruna than in euros? If so, how many more?",
+            "histories": [],
+            "rephrased_question": "Is it true that more SMEs pay in Czech koruna than in euros? If so, how many more?"
+          }
+        },
+        "thinking": null,
+        "output": {
+          "text": "SQL example search: reviewed 0 candidates and selected 0 examples.",
+          "artifacts": {
+            "sqlPairRetrieval": {
+              "rrfK": 60,
+              "topK": 10,
+              "queryText": "Is it true that more SMEs pay in Czech koruna than in euros? If so, how many more?",
+              "threshold": 0.7,
+              "candidates": [],
+              "selectedIds": [],
+              "selectedCount": 0,
+              "selectedPairs": [],
+              "candidateCount": 0,
+              "candidateLimit": 25,
+              "retrievalMethod": "api",
+              "providerEndpointHost": "127.0.0.1:4000"
+            }
+          }
+        },
+        "stream": {
+          "kind": "simulated",
+          "activeLane": "done"
+        },
+        "provenance": "persisted"
+      },
+      {
+        "id": "user_instruction:1",
+        "phase": "user_instruction",
+        "title": "User Instructions",
+        "index": 3,
+        "status": "success",
+        "startedAtMs": 1792938324153,
+        "endedAtMs": 1792938324273,
+        "durationMs": 119,
+        "input": {
+          "text": "Resolve applicable user instructions and defaults for this ask.",
+          "artifacts": {
+            "query": "Is it true that more SMEs pay in Czech koruna than in euros? If so, how many more?",
+            "histories": [],
+            "rephrased_question": "Is it true that more SMEs pay in Czech koruna than in euros? If so, how many more?",
+            "sql_samples_prompt": ""
+          }
+        },
+        "thinking": null,
+        "output": {
+          "text": "Applied 0 instructions.",
+          "artifacts": {
+            "instructionRetrieval": {
+              "topK": 5,
+              "queryText": "Is it true that more SMEs pay in Czech koruna than in euros? If so, how many more?",
+              "threshold": 0.65,
+              "candidates": [],
+              "selectedIds": [],
+              "defaultCount": 0,
+              "matchedCount": 0,
+              "selectedCount": 0,
+              "candidateCount": 0,
+              "candidateLimit": 15,
+              "selectedInstructions": [],
+              "globalInstructionsPrompt": "",
+              "matchedInstructionsPrompt": ""
+            }
+          }
+        },
+        "stream": {
+          "kind": "simulated",
+          "activeLane": "done"
+        },
+        "provenance": "persisted"
+      },
+      {
+        "id": "schema_linking:1",
+        "phase": "schema_linking",
+        "title": "Schema Linking",
+        "index": 4,
+        "status": "success",
+        "startedAtMs": 1792938324379,
+        "endedAtMs": 1792938324439,
+        "durationMs": 59,
+        "input": {
+          "text": "Select the relevant tables and columns to build schema context for SQL generation.",
+          "artifacts": {
+            "query": "Is it true that more SMEs pay in Czech koruna than in euros? If so, how many more?",
+            "histories": [],
+            "rephrased_question": "Is it true that more SMEs pay in Czech koruna than in euros? If so, how many more?",
+            "sql_samples_prompt": "",
+            "instructions_prompt": ""
+          }
+        },
+        "thinking": null,
+        "output": {
+          "text": "Schema context from active_pg_schema: 5 tables selected (customers; transactions_1k; gasstations; yearmonth; products). Column selection: 16 columns persisted.",
+          "artifacts": {
+            "schemaLinking": {
+              "tokenBudget": 5000,
+              "schemaSource": "active_pg_schema",
+              "tokenEstimate": 248,
+              "pruningApplied": false,
+              "selectedTables": [
+                {
+                  "rrfRank": 1,
+                  "rrfScore": 0.01639344262295082,
+                  "tableName": "customers"
+                },
+                {
+                  "rrfRank": 2,
+                  "rrfScore": 0.016129032258064516,
+                  "tableName": "transactions_1k"
+                },
+                {
+                  "rrfRank": 3,
+                  "rrfScore": 0.015873015873015872,
+                  "tableName": "gasstations"
+                },
+                {
+                  "rrfRank": 4,
+                  "rrfScore": 0.015625,
+                  "tableName": "yearmonth"
+                },
+                {
+                  "rrfRank": 5,
+                  "rrfScore": 0.015384615384615385,
+                  "tableName": "products"
+                }
+              ],
+              "schemaVersionId": "489dff07-db00-4d4c-b66e-d75efa28fe65",
+              "selectedColumns": {
+                "products": [
+                  "product_id"
+                ],
+                "customers": [
+                  "currency",
+                  "segment",
+                  "customer_id"
+                ],
+                "yearmonth": [
+                  "customer_id",
+                  "date"
+                ],
+                "gasstations": [
+                  "gas_station_id",
+                  "segment"
+                ],
+                "transactions_1k": [
+                  "price",
+                  "amount",
+                  "card_id",
+                  "customer_id",
+                  "transaction_id",
+                  "gas_station_id",
+                  "product_id",
+                  "date"
+                ]
+              },
+              "failClosedEnforced": true
+            }
+          }
+        },
+        "stream": {
+          "kind": "simulated",
+          "activeLane": "done"
+        },
+        "provenance": "persisted"
+      },
+      {
+        "id": "reason_and_generate:1",
+        "phase": "reason_and_generate",
+        "title": "Reason and Generate",
+        "index": 5,
+        "status": "success",
+        "startedAtMs": 1792938324571,
+        "endedAtMs": 1792938333871,
+        "durationMs": 9300,
+        "input": {
+          "text": "Generate SQL and a fast-mode answer package from schema context, retrieved SQL evidence, and user instructions.",
+          "artifacts": {
+            "query": "Is it true that more SMEs pay in Czech koruna than in euros? If so, how many more?",
+            "histories": [],
+            "rephrased_question": "Is it true that more SMEs pay in Czech koruna than in euros? If so, how many more?",
+            "sql_samples_prompt": "",
+            "instructions_prompt": "",
+            "schema_linking_schema_text": "# column_name\tdata_type\tcomment\tenum_value/sample_value\tdistinct_count\n## customers\ncustomer_id\tBIGINT\t\t3, 5, 6\t32461\nsegment\tTEXT\t\tKAM, LAM, SME\t3\ncurrency\tTEXT\t\tCZK, EUR\t2\n\n## gasstations\ngas_station_id\tBIGINT\t\t44, 45, 46\t5716\nsegment\tTEXT\t\tDiscount, Noname, Other, Premium, Value for money\t5\n\n## products\nproduct_id\tBIGINT\t\t1, 2, 3\t591\n\n## transactions_1k\ntransaction_id\tBIGINT\t\t1, 2, 3\t1000\ndate\tDATE\t\t2012-08-23, 2012-08-24, 2012-08-25, 2012-08-26\t4\ncustomer_id\tBIGINT\t\t96, 272, 651\t517\ncard_id\tBIGINT\t\t26228, 29378, 29379\t902\ngas_station_id\tBIGINT\t\t48, 64, 65\t437\nproduct_id\tBIGINT\t\t2, 5, 7, 8, 9, 11, 12, 15, 16, 18, 19, 20, 22, 23, 24, 25, 31, 36, 40, 44, 48, 72, 317, 322, 332, 336, 341, 352\t28\namount\tBIGINT\t\t0, 1, 2\t83\nprice\tNUMERIC\t\t1.76, 3.64, 3.78\t930\n\n## yearmonth\ncustomer_id\tBIGINT\t\t5, 6, 7\t30566\ndate\tTEXT\t\t201112, 201201, 201202, 201203, 201204, 201205, 201206, 201207, 201208, 201209, 201301, 201302, 201303, 201304, 201305, 201306, 201307, 201308, 201309, 201310, 201311\t21\n"
+          }
+        },
+        "thinking": null,
+        "output": {
+          "text": "SELECT\n  currency,\n  COUNT(*) AS customer_count\nFROM customers\nWHERE segment = 'SME'\nGROUP BY currency\nORDER BY customer_count DESC;",
+          "artifacts": {
+            "sql": "SELECT\n  currency,\n  COUNT(*) AS customer_count\nFROM customers\nWHERE segment = 'SME'\nGROUP BY currency\nORDER BY customer_count DESC;",
+            "message": "The query returns one row per currency used by SME customers, with the number of SME customers in each currency, ordered from most to least common. This allows the reader to verify whether more SMEs pay in Czech koruna than in euros and to compute the difference between the two counts by subtracting the euro count from the koruna count.",
+            "llmModel": "mimo-v2.6-flash",
+            "answerText": "The query returns one row per currency used by SME customers, with the number of SME customers in each currency, ordered from most to least common. This allows the reader to verify whether more SMEs pay in Czech koruna than in euros and to compute the difference between the two counts by subtracting the euro count from the koruna count.",
+            "groundScore": 0.9,
+            "rawResponse": "{\"sql\":\"SELECT\\n  currency,\\n  COUNT(*) AS customer_count\\nFROM customers\\nWHERE segment = 'SME'\\nGROUP BY currency\\nORDER BY customer_count DESC;\",\"reasoningPlan\":\"- Identify customers belonging to the SME segment.\\n- Group those SME customers by the currency they use.\\n- Count how many SME customers use each currency.\\n- Order the currencies by count so the more common currency appears first, making the comparison and the difference straightforward to compute.\",\"sqlGenerationReasoning\":\"## Common Table Expressions\\n- (not used)\\n\\n## Projected Columns\\n- Currency of the customer, since the comparison is between Czech koruna and euros.\\n- A count of customers per currency to quantify how many SMEs use each.\\n\\n## Source\\n- Customer-level records that carry both the business segment and the currency attributes.\\n\\n## Joins\\n- (not used) All needed attributes live on a single customer-level source.\\n\\n## Filters\\n- Restrict to the SME segment, matching the question about small and medium enterprises.\\n\\n## Aggregation\\n- Group by currency and count the number of customers in each currency group.\\n\\n## Sorting\\n- Sort by customer count descending so the dominant currency is listed first.\\n\\n## Result Limit\\n- (not used) Both currency groups are returned to allow the comparison.\\n\\n## Union\\n- (not used)\",\"answerText\":\"The query returns one row per currency used by SME customers, with the number of SME customers in each currency, ordered from most to least common. This allows the reader to verify whether more SMEs pay in Czech koruna than in euros and to compute the difference between the two counts by subtracting the euro count from the koruna count.\",\"groundReason\":\"The SQL groups SME-segment customers by currency, counts them, and orders the counts descending, which directly supports comparing how many SMEs use Czech koruna versus euros and deriving the difference.\",\"groundScore\":0.9,\"suggestedQuestions\":[\"Which currency dominates for each customer segment, not just SMEs?\",\"How does the CZK-versus-EUR split for SMEs compare to KAM and LAM customers?\",\"What share of SME customers use Czech koruna and what share use euros?\"]}",
+            "groundReason": "The SQL groups SME-segment customers by currency, counts them, and orders the counts descending, which directly supports comparing how many SMEs use Czech koruna versus euros and deriving the difference.",
+            "inputContext": {
+              "historyTurns": 0,
+              "schemaContextChars": 994,
+              "sqlExamplesProvided": 0,
+              "instructionsProvided": 0
+            },
+            "debug_prompts": {
+              "schemaMeta": "# column_name\tdata_type\tcomment\tenum_value/sample_value\tdistinct_count\n## customers\ncustomer_id\tBIGINT\t\t3, 5, 6\t32461\nsegment\tTEXT\t\tKAM, LAM, SME\t3\ncurrency\tTEXT\t\tCZK, EUR\t2\n\n## gasstations\ngas_station_id\tBIGINT\t\t44, 45, 46\t5716\nsegment\tTEXT\t\tDiscount, Noname, Other, Premium, Value for money\t5\n\n## products\nproduct_id\tBIGINT\t\t1, 2, 3\t591\n\n## transactions_1k\ntransaction_id\tBIGINT\t\t1, 2, 3\t1000\ndate\tDATE\t\t2012-08-23, 2012-08-24, 2012-08-25, 2012-08-26\t4\ncustomer_id\tBIGINT\t\t96, 272, 651\t517\ncard_id\tBIGINT\t\t26228, 29378, 29379\t902\ngas_station_id\tBIGINT\t\t48, 64, 65\t437\nproduct_id\tBIGINT\t\t2, 5, 7, 8, 9, 11, 12, 15, 16, 18, 19, 20, 22, 23, 24, 25, 31, 36, 40, 44, 48, 72, 317, 322, 332, 336, 341, 352\t28\namount\tBIGINT\t\t0, 1, 2\t83\nprice\tNUMERIC\t\t1.76, 3.64, 3.78\t930\n\n## yearmonth\ncustomer_id\tBIGINT\t\t5, 6, 7\t30566\ndate\tTEXT\t\t201112, 201201, 201202, 201203, 201204, 201205, 201206, 201207, 201208, 201209, 201301, 201302, 201303, 201304, 201305, 201306, 201307, 201308, 201309, 201310, 201311\t21",
+              "userPrompt": "LATEST TURN:\nIs it true that more SMEs pay in Czech koruna than in euros? If so, how many more?",
+              "schemaSource": "active_pg_schema",
+              "systemPrompt": "### TASK ###\nYou are a PostgreSQL business data analyst.\nGenerate one SELECT-only SQL query and one answer-rendering-compatible JSON package in the same response.\n\n### GENERAL RULES ###\n1. Output MUST be valid JSON only.\n2. Output MUST follow the exact JSON schema in the FINAL ANSWER FORMAT section.\n3. Generate SELECT-only SQL (or WITH ... SELECT). Never generate INSERT/UPDATE/DELETE/DROP/ALTER/TRUNCATE.\n4. Use PostgreSQL syntax.\n5. Use only views/tables/columns that exist in the provided strict schema-meta projection.\n6. Prefer logical views or curated views over lower-level base relations when both satisfy the request.\n7. Apply all user constraints, including filters, include/exclude keywords, thresholds, top-N, and ordering.\n8. If USER INSTRUCTIONS are provided, follow them.\n9. Do not include markdown fences, XML tags, or chain-of-thought in any output field.\n\n### ANSWER PACKAGE GROUNDING RULES ###\n1. The answer package MUST be compatible with the answer_rendering JSON contract.\n2. The answer package MUST be grounded in the user request and the SQL you generated: selected outputs, filters, grouping/aggregation, ordering, limits, and set operations.\n3. The answer package MUST NOT claim returned row counts, specific top-row facts, empty-result facts, or any evidence that would require executing the SQL and inspecting result rows.\n4. `groundReason` MUST justify why the SQL structure answers the question (SQL-to-question support), not runtime/preview evidence.\n5. `answerText` MUST describe what the query is designed to return (shape + meaning), without inventing concrete result values.\n\n### reasoningPlan (BA-FRIENDLY) RULES ###\n`reasoningPlan` MUST be a short Markdown list (no code fences) that a Business Analyst can read.\nIt MUST:\n1. Describe the analytical steps in business terms (dimensions, metrics, filters, comparisons).\n2. Avoid table/view names, join mechanics, and other table-level implementation details.\n3. Avoid overly technical database terminology (e.g., CTE, hash join, index, partition).\n4. Be general and stable: do not mention modes, internal node names, or system implementation.\n\n### sqlGenerationReasoning (STRUCTURED MARKDOWN) RULES ###\n`sqlGenerationReasoning` MUST be Markdown (no code fences) and MUST use the following headings to map the legacy PAST mode fields into a readable structure.\n\nFor each heading, provide concise bullet points describing intent and constraints.\nIf a section is not used, include a single bullet `- (not used)`.\nDo not mention table/view names; focus on clause purpose, business meaning, and constraints.\n\nRequired heading map:\n## Common Table Expressions\n## Projected Columns\n## Source\n## Joins\n## Filters\n## Aggregation\n## Sorting\n## Result Limit\n## Union\n\n### FINAL ANSWER FORMAT ###\nReturn JSON with exactly these keys:\n{\n  \"sql\": \"\",\n  \"reasoningPlan\": \"\",\n  \"sqlGenerationReasoning\": \"\",\n  \"answerText\": \"\",\n  \"groundReason\": \"\",\n  \"groundScore\": 0.0,\n  \"suggestedQuestions\": [\"\"]\n}\n### REQUIRED OUTPUT EXAMPLE ###\n{\"answerText\":\"The result highlights the highest-ranked records in the returned preview.\",\"groundReason\":\"The answer is grounded in the executed SQL preview rows, returned columns, and visible ordering evidence.\",\"groundScore\":0.92,\"suggestedQuestions\":[\"Show only the top 5 rows from this result.\",\"Compare these leading records by another business dimension.\",\"Which filters would narrow this result further?\"]}\n\n### TEMPLATE VARIABLES ###\nschema_meta:\n# column_name\tdata_type\tcomment\tenum_value/sample_value\tdistinct_count\n## customers\ncustomer_id\tBIGINT\t\t3, 5, 6\t32461\nsegment\tTEXT\t\tKAM, LAM, SME\t3\ncurrency\tTEXT\t\tCZK, EUR\t2\n\n## gasstations\ngas_station_id\tBIGINT\t\t44, 45, 46\t5716\nsegment\tTEXT\t\tDiscount, Noname, Other, Premium, Value for money\t5\n\n## products\nproduct_id\tBIGINT\t\t1, 2, 3\t591\n\n## transactions_1k\ntransaction_id\tBIGINT\t\t1, 2, 3\t1000\ndate\tDATE\t\t2012-08-23, 2012-08-24, 2012-08-25, 2012-08-26\t4\ncustomer_id\tBIGINT\t\t96, 272, 651\t517\ncard_id\tBIGINT\t\t26228, 29378, 29379\t902\ngas_station_id\tBIGINT\t\t48, 64, 65\t437\nproduct_id\tBIGINT\t\t2, 5, 7, 8, 9, 11, 12, 15, 16, 18, 19, 20, 22, 23, 24, 25, 31, 36, 40, 44, 48, 72, 317, 322, 332, 336, 341, 352\t28\namount\tBIGINT\t\t0, 1, 2\t83\nprice\tNUMERIC\t\t1.76, 3.64, 3.78\t930\n\n## yearmonth\ncustomer_id\tBIGINT\t\t5, 6, 7\t30566\ndate\tTEXT\t\t201112, 201201, 201202, 201203, 201204, 201205, 201206, 201207, 201208, 201209, 201301, 201302, 201303, 201304, 201305, 201306, 201307, 201308, 201309, 201310, 201311\t21\n\nglobal_user_instructions:\n\n\nmatched_user_instructions:\n\n\nsql_knowledge:\n\n\nUse the above schema and instructions to produce the SQL and answer package.",
+              "sqlSamplesPrompt": "",
+              "instructionsPrompt": ""
+            },
+            "retryAttempts": 0,
+            "sqlComplexity": {
+              "joinCount": 0,
+              "tableCount": 1,
+              "columnCount": 0
+            },
+            "tokenEstimate": 1208,
+            "llmTemperature": 0.0,
+            "processingTimeMs": 9633,
+            "suggestedQuestions": [
+              "Which currency dominates for each customer segment, not just SMEs?",
+              "How does the CZK-versus-EUR split for SMEs compare to KAM and LAM customers?",
+              "What share of SME customers use Czech koruna and what share use euros?"
+            ],
+            "sqlGenerationReasoning": "## Common Table Expressions\n- (not used)\n\n## Projected Columns\n- Currency of the customer, since the comparison is between Czech koruna and euros.\n- A count of customers per currency to quantify how many SMEs use each.\n\n## Source\n- Customer-level records that carry both the business segment and the currency attributes.\n\n## Joins\n- (not used) All needed attributes live on a single customer-level source.\n\n## Filters\n- Restrict to the SME segment, matching the question about small and medium enterprises.\n\n## Aggregation\n- Group by currency and count the number of customers in each currency group.\n\n## Sorting\n- Sort by customer count descending so the dominant currency is listed first.\n\n## Result Limit\n- (not used) Both currency groups are returned to allow the comparison.\n\n## Union\n- (not used)"
+          }
+        },
+        "stream": {
+          "kind": "provider_stream",
+          "activeLane": "done"
+        },
+        "provenance": "persisted"
+      },
+      {
+        "id": "validating:1",
+        "phase": "validating",
+        "title": "Validating",
+        "index": 6,
+        "status": "success",
+        "startedAtMs": 1792938333931,
+        "endedAtMs": 1792938333962,
+        "durationMs": 30,
+        "input": {
+          "text": "SQL:\nSELECT\n  currency,\n  COUNT(*) AS customer_count\nFROM customers\nWHERE segment = 'SME'\nGROUP BY currency\nORDER BY customer_count DESC;",
+          "artifacts": {
+            "sql": "SELECT\n  currency,\n  COUNT(*) AS customer_count\nFROM customers\nWHERE segment = 'SME'\nGROUP BY currency\nORDER BY customer_count DESC;",
+            "mode": "explain",
+            "attempt": 0
+          }
+        },
+        "thinking": null,
+        "output": {
+          "text": "SQL validation: passed via explain. The query is executable.",
+          "artifacts": {
+            "validation": {
+              "mode": "explain",
+              "isValid": true,
+              "outcome": "valid"
+            }
+          }
+        },
+        "stream": {
+          "kind": "simulated",
+          "activeLane": "done"
+        },
+        "provenance": "persisted"
+      },
+      {
+        "id": "sql_execution:1",
+        "phase": "sql_execution",
+        "title": "SQL Execution",
+        "index": 7,
+        "status": "success",
+        "startedAtMs": 1792938334016,
+        "endedAtMs": 1792938334051,
+        "durationMs": 35,
+        "input": {
+          "text": "SQL:\nSELECT\n  currency,\n  COUNT(*) AS customer_count\nFROM customers\nWHERE segment = 'SME'\nGROUP BY currency\nORDER BY customer_count DESC;",
+          "artifacts": {
+            "sql": "SELECT\n  currency,\n  COUNT(*) AS customer_count\nFROM customers\nWHERE segment = 'SME'\nGROUP BY currency\nORDER BY customer_count DESC;",
+            "attempt": 0
+          }
+        },
+        "thinking": null,
+        "output": {
+          "text": "SQL execution preview: succeeded with 2 rows. Columns: currency, customer_count. Top row: CZK (customer count 25134.00).",
+          "artifacts": {
+            "execution": {
+              "rowCount": 2,
+              "columnNames": [
+                "currency",
+                "customer_count"
+              ],
+              "rowsPreview": [
+                [
+                  "CZK",
+                  25134
+                ],
+                [
+                  "EUR",
+                  1629
+                ]
+              ]
+            }
+          }
+        },
+        "stream": {
+          "kind": "simulated",
+          "activeLane": "done"
+        },
+        "provenance": "persisted"
+      },
+      {
+        "id": "answer_rendering:1",
+        "phase": "answer_rendering",
+        "title": "Answer Rendering",
+        "index": 8,
+        "status": "success",
+        "startedAtMs": 1792938334106,
+        "endedAtMs": 1792938334138,
+        "durationMs": 31,
+        "input": {
+          "text": "Render a business-readable final answer from the executed query result and user request.",
+          "artifacts": {
+            "query": "Is it true that more SMEs pay in Czech koruna than in euros? If so, how many more?",
+            "histories": [],
+            "reasoning_plan": "- Identify customers belonging to the SME segment.\n- Group those SME customers by the currency they use.\n- Count how many SME customers use each currency.\n- Order the currencies by count so the more common currency appears first, making the comparison and the difference straightforward to compute.",
+            "rephrased_question": "Is it true that more SMEs pay in Czech koruna than in euros? If so, how many more?",
+            "sql_samples_prompt": "",
+            "instructions_prompt": "",
+            "schema_linking_schema_text": "# column_name\tdata_type\tcomment\tenum_value/sample_value\tdistinct_count\n## customers\ncustomer_id\tBIGINT\t\t3, 5, 6\t32461\nsegment\tTEXT\t\tKAM, LAM, SME\t3\ncurrency\tTEXT\t\tCZK, EUR\t2\n\n## gasstations\ngas_station_id\tBIGINT\t\t44, 45, 46\t5716\nsegment\tTEXT\t\tDiscount, Noname, Other, Premium, Value for money\t5\n\n## products\nproduct_id\tBIGINT\t\t1, 2, 3\t591\n\n## transactions_1k\ntransaction_id\tBIGINT\t\t1, 2, 3\t1000\ndate\tDATE\t\t2012-08-23, 2012-08-24, 2012-08-25, 2012-08-26\t4\ncustomer_id\tBIGINT\t\t96, 272, 651\t517\ncard_id\tBIGINT\t\t26228, 29378, 29379\t902\ngas_station_id\tBIGINT\t\t48, 64, 65\t437\nproduct_id\tBIGINT\t\t2, 5, 7, 8, 9, 11, 12, 15, 16, 18, 19, 20, 22, 23, 24, 25, 31, 36, 40, 44, 48, 72, 317, 322, 332, 336, 341, 352\t28\namount\tBIGINT\t\t0, 1, 2\t83\nprice\tNUMERIC\t\t1.76, 3.64, 3.78\t930\n\n## yearmonth\ncustomer_id\tBIGINT\t\t5, 6, 7\t30566\ndate\tTEXT\t\t201112, 201201, 201202, 201203, 201204, 201205, 201206, 201207, 201208, 201209, 201301, 201302, 201303, 201304, 201305, 201306, 201307, 201308, 201309, 201310, 201311\t21\n"
+          }
+        },
+        "thinking": null,
+        "output": {
+          "text": "The query returns one row per currency used by SME customers, with the number of SME customers in each currency, ordered from most to least common. This allows the reader to verify whether more SMEs pay in Czech koruna than in euros and to compute the difference between the two counts by subtracting the euro count from the koruna count.",
+          "artifacts": {
+            "message": "The query returns one row per currency used by SME customers, with the number of SME customers in each currency, ordered from most to least common. This allows the reader to verify whether more SMEs pay in Czech koruna than in euros and to compute the difference between the two counts by subtracting the euro count from the koruna count.",
+            "groundReason": "The SQL groups SME-segment customers by currency, counts them, and orders the counts descending, which directly supports comparing how many SMEs use Czech koruna versus euros and deriving the difference.",
+            "groundScore": 0.9,
+            "suggestedQuestions": [
+              "Which currency dominates for each customer segment, not just SMEs?",
+              "How does the CZK-versus-EUR split for SMEs compare to KAM and LAM customers?",
+              "What share of SME customers use Czech koruna and what share use euros?"
+            ]
+          }
+        },
+        "stream": {
+          "kind": "provider_stream",
+          "activeLane": "done"
+        },
+        "provenance": "persisted"
+      }
+    ],
+    "timing": {
+      "startedAtMs": 1792938322952,
+      "endedAtMs": 1792938334219,
+      "totalDurationMs": 11266
+    },
+    "resources": {
+      "result": "ask://query/1ceee1f9-2cad-4457-9add-f37a49a67bab/result",
+      "trace": "ask://query/1ceee1f9-2cad-4457-9add-f37a49a67bab/trace",
+      "traceEvents": "ask://trace/893a499d0d6d61c075689bdc944ad445/events",
+      "traceResult": "ask://trace/893a499d0d6d61c075689bdc944ad445/result",
+      "threadHistory": "ask://history/thread/69377982-d0c9-4f32-8307-a3549f51f8c9",
+      "questionHistory": "ask://history/question/1ceee1f92cad44579addf37a49a67bab"
+    },
+    "error": null,
+    "langfuseTrace": {
+      "available": true,
+      "traceUrl": "http://localhost:3100/project/cmmalglmh0001nf07jxfwglnm/traces?peek=893a499d0d6d61c075689bdc944ad445",
+      "traceId": "893a499d0d6d61c075689bdc944ad445"
+    },
+    "completed": true,
+    "terminalEventType": "qa.trace.completed",
+    "totalDurationMs": 11266,
+    "cursor": "eyJsYXN0U2VxIjoyOH0",
+    "lastSeq": 28
+  },
+  "canonical_events": {
+    "traceId": "893a499d0d6d61c075689bdc944ad445",
+    "events": [
+      {
+        "traceId": "893a499d0d6d61c075689bdc944ad445",
+        "queryId": "1ceee1f9-2cad-4457-9add-f37a49a67bab",
+        "seq": 1,
+        "tsMs": 1792938323019,
+        "type": "qa.turn.started",
+        "phase": "",
+        "nodeId": null,
+        "provenance": "live",
+        "redacted": null,
+        "truncated": null,
+        "payload": {
+          "status": "understanding",
+          "queryId": "1ceee1f9-2cad-4457-9add-f37a49a67bab",
+          "threadId": "69377982-d0c9-4f32-8307-a3549f51f8c9"
+        }
+      },
+      {
+        "traceId": "893a499d0d6d61c075689bdc944ad445",
+        "queryId": "1ceee1f9-2cad-4457-9add-f37a49a67bab",
+        "seq": 2,
+        "tsMs": 1792938323020,
+        "type": "qa.step.started",
+        "phase": "understanding",
+        "nodeId": "understanding:1",
+        "provenance": "live",
+        "redacted": null,
+        "truncated": null,
+        "payload": {
+          "input": {
+            "text": "Understand the user's request and determine the execution intent for this ask.",
+            "artifacts": {
+              "query": "Is it true that more SMEs pay in Czech koruna than in euros? If so, how many more?",
+              "histories": []
+            }
+          },
+          "title": "Understanding",
+          "stepId": "understanding:1",
+          "stream": {
+            "kind": "simulated",
+            "activeLane": "input"
+          },
+          "stepIndex": 1,
+          "startedAtMs": 1792938323020
+        }
+      },
+      {
+        "traceId": "893a499d0d6d61c075689bdc944ad445",
+        "queryId": "1ceee1f9-2cad-4457-9add-f37a49a67bab",
+        "seq": 3,
+        "tsMs": 1792938323453,
+        "type": "qa.step.updated",
+        "phase": "understanding",
+        "nodeId": "understanding:1",
+        "provenance": "live",
+        "redacted": null,
+        "truncated": null,
+        "payload": {
+          "input": {
+            "text": "Understand the user's request and determine the execution intent for this ask.",
+            "artifacts": {
+              "query": "Is it true that more SMEs pay in Czech koruna than in euros? If so, how many more?",
+              "histories": []
+            }
+          },
+          "output": {
+            "text": "Final question: Is it true that more SMEs pay in Czech koruna than in euros? If so, how many more?",
+            "merge": "replace"
+          },
+          "stepId": "understanding:1",
+          "stream": {
+            "kind": "simulated",
+            "activeLane": "output"
+          },
+          "endedAtMs": 1792938323453,
+          "durationMs": 433
+        }
+      },
+      {
+        "traceId": "893a499d0d6d61c075689bdc944ad445",
+        "queryId": "1ceee1f9-2cad-4457-9add-f37a49a67bab",
+        "seq": 4,
+        "tsMs": 1792938323453,
+        "type": "qa.step.finished",
+        "phase": "understanding",
+        "nodeId": "understanding:1",
+        "provenance": "live",
+        "redacted": null,
+        "truncated": null,
+        "payload": {
+          "title": "Understanding",
+          "status": "success",
+          "stepId": "understanding:1",
+          "stream": {
+            "kind": "simulated",
+            "activeLane": "done"
+          },
+          "endedAtMs": 1792938323453,
+          "stepIndex": 1,
+          "durationMs": 433,
+          "startedAtMs": 1792938323020,
+          "outputSummary": "Final question: Is it true that more SMEs pay in Czech koruna than in euros? If so, how many more?"
+        }
+      },
+      {
+        "traceId": "893a499d0d6d61c075689bdc944ad445",
+        "queryId": "1ceee1f9-2cad-4457-9add-f37a49a67bab",
+        "seq": 5,
+        "tsMs": 1792938323672,
+        "type": "qa.step.started",
+        "phase": "searching",
+        "nodeId": "searching:1",
+        "provenance": "live",
+        "redacted": null,
+        "truncated": null,
+        "payload": {
+          "input": {
+            "text": "Retrieve relevant SQL examples and related retrieval evidence for the current question.",
+            "artifacts": {
+              "query": "Is it true that more SMEs pay in Czech koruna than in euros? If so, how many more?",
+              "histories": [],
+              "rephrased_question": "Is it true that more SMEs pay in Czech koruna than in euros? If so, how many more?"
+            }
+          },
+          "title": "SQL Pair RAG",
+          "stepId": "searching:1",
+          "stream": {
+            "kind": "simulated",
+            "activeLane": "input"
+          },
+          "stepIndex": 2,
+          "startedAtMs": 1792938323672
+        }
+      },
+      {
+        "traceId": "893a499d0d6d61c075689bdc944ad445",
+        "queryId": "1ceee1f9-2cad-4457-9add-f37a49a67bab",
+        "seq": 6,
+        "tsMs": 1792938323913,
+        "type": "qa.step.updated",
+        "phase": "searching",
+        "nodeId": "searching:1",
+        "provenance": "live",
+        "redacted": null,
+        "truncated": null,
+        "payload": {
+          "input": {
+            "text": "Retrieve relevant SQL examples and related retrieval evidence for the current question.",
+            "artifacts": {
+              "query": "Is it true that more SMEs pay in Czech koruna than in euros? If so, how many more?",
+              "histories": [],
+              "rephrased_question": "Is it true that more SMEs pay in Czech koruna than in euros? If so, how many more?"
+            }
+          },
+          "output": {
+            "text": "SQL example search: reviewed 0 candidates and selected 0 examples.",
+            "merge": "replace",
+            "artifacts": {
+              "sqlPairRetrieval": {
+                "rrfK": 60,
+                "topK": 10,
+                "queryText": "Is it true that more SMEs pay in Czech koruna than in euros? If so, how many more?",
+                "threshold": 0.7,
+                "candidates": [],
+                "selectedIds": [],
+                "selectedCount": 0,
+                "selectedPairs": [],
+                "candidateCount": 0,
+                "candidateLimit": 25,
+                "retrievalMethod": "api",
+                "providerEndpointHost": "127.0.0.1:4000"
+              }
+            }
+          },
+          "stepId": "searching:1",
+          "stream": {
+            "kind": "simulated",
+            "activeLane": "output"
+          },
+          "endedAtMs": 1792938323913,
+          "durationMs": 241
+        }
+      },
+      {
+        "traceId": "893a499d0d6d61c075689bdc944ad445",
+        "queryId": "1ceee1f9-2cad-4457-9add-f37a49a67bab",
+        "seq": 7,
+        "tsMs": 1792938323913,
+        "type": "qa.step.finished",
+        "phase": "searching",
+        "nodeId": "searching:1",
+        "provenance": "live",
+        "redacted": null,
+        "truncated": null,
+        "payload": {
+          "title": "SQL Pair RAG",
+          "status": "success",
+          "stepId": "searching:1",
+          "stream": {
+            "kind": "simulated",
+            "activeLane": "done"
+          },
+          "endedAtMs": 1792938323913,
+          "stepIndex": 2,
+          "durationMs": 241,
+          "startedAtMs": 1792938323672,
+          "outputSummary": "SQL example search: reviewed 0 candidates and selected 0 examples."
+        }
+      },
+      {
+        "traceId": "893a499d0d6d61c075689bdc944ad445",
+        "queryId": "1ceee1f9-2cad-4457-9add-f37a49a67bab",
+        "seq": 8,
+        "tsMs": 1792938324153,
+        "type": "qa.step.started",
+        "phase": "user_instruction",
+        "nodeId": "user_instruction:1",
+        "provenance": "live",
+        "redacted": null,
+        "truncated": null,
+        "payload": {
+          "input": {
+            "text": "Resolve applicable user instructions and defaults for this ask.",
+            "artifacts": {
+              "query": "Is it true that more SMEs pay in Czech koruna than in euros? If so, how many more?",
+              "histories": [],
+              "rephrased_question": "Is it true that more SMEs pay in Czech koruna than in euros? If so, how many more?",
+              "sql_samples_prompt": ""
+            }
+          },
+          "title": "User Instructions",
+          "stepId": "user_instruction:1",
+          "stream": {
+            "kind": "simulated",
+            "activeLane": "input"
+          },
+          "stepIndex": 3,
+          "startedAtMs": 1792938324153
+        }
+      },
+      {
+        "traceId": "893a499d0d6d61c075689bdc944ad445",
+        "queryId": "1ceee1f9-2cad-4457-9add-f37a49a67bab",
+        "seq": 9,
+        "tsMs": 1792938324273,
+        "type": "qa.step.updated",
+        "phase": "user_instruction",
+        "nodeId": "user_instruction:1",
+        "provenance": "live",
+        "redacted": null,
+        "truncated": null,
+        "payload": {
+          "input": {
+            "text": "Resolve applicable user instructions and defaults for this ask.",
+            "artifacts": {
+              "query": "Is it true that more SMEs pay in Czech koruna than in euros? If so, how many more?",
+              "histories": [],
+              "rephrased_question": "Is it true that more SMEs pay in Czech koruna than in euros? If so, how many more?",
+              "sql_samples_prompt": ""
+            }
+          },
+          "output": {
+            "text": "Applied 0 instructions.",
+            "merge": "replace",
+            "artifacts": {
+              "instructionRetrieval": {
+                "topK": 5,
+                "queryText": "Is it true that more SMEs pay in Czech koruna than in euros? If so, how many more?",
+                "threshold": 0.65,
+                "candidates": [],
+                "selectedIds": [],
+                "defaultCount": 0,
+                "matchedCount": 0,
+                "selectedCount": 0,
+                "candidateCount": 0,
+                "candidateLimit": 15,
+                "selectedInstructions": [],
+                "globalInstructionsPrompt": "",
+                "matchedInstructionsPrompt": ""
+              }
+            }
+          },
+          "stepId": "user_instruction:1",
+          "stream": {
+            "kind": "simulated",
+            "activeLane": "output"
+          },
+          "endedAtMs": 1792938324273,
+          "durationMs": 119
+        }
+      },
+      {
+        "traceId": "893a499d0d6d61c075689bdc944ad445",
+        "queryId": "1ceee1f9-2cad-4457-9add-f37a49a67bab",
+        "seq": 10,
+        "tsMs": 1792938324273,
+        "type": "qa.step.finished",
+        "phase": "user_instruction",
+        "nodeId": "user_instruction:1",
+        "provenance": "live",
+        "redacted": null,
+        "truncated": null,
+        "payload": {
+          "title": "User Instructions",
+          "status": "success",
+          "stepId": "user_instruction:1",
+          "stream": {
+            "kind": "simulated",
+            "activeLane": "done"
+          },
+          "endedAtMs": 1792938324273,
+          "stepIndex": 3,
+          "durationMs": 119,
+          "startedAtMs": 1792938324153,
+          "outputSummary": "Applied 0 instructions."
+        }
+      },
+      {
+        "traceId": "893a499d0d6d61c075689bdc944ad445",
+        "queryId": "1ceee1f9-2cad-4457-9add-f37a49a67bab",
+        "seq": 11,
+        "tsMs": 1792938324379,
+        "type": "qa.step.started",
+        "phase": "schema_linking",
+        "nodeId": "schema_linking:1",
+        "provenance": "live",
+        "redacted": null,
+        "truncated": null,
+        "payload": {
+          "input": {
+            "text": "Select the relevant tables and columns to build schema context for SQL generation.",
+            "artifacts": {
+              "query": "Is it true that more SMEs pay in Czech koruna than in euros? If so, how many more?",
+              "histories": [],
+              "rephrased_question": "Is it true that more SMEs pay in Czech koruna than in euros? If so, how many more?",
+              "sql_samples_prompt": "",
+              "instructions_prompt": ""
+            }
+          },
+          "title": "Schema Linking",
+          "stepId": "schema_linking:1",
+          "stream": {
+            "kind": "simulated",
+            "activeLane": "input"
+          },
+          "stepIndex": 4,
+          "startedAtMs": 1792938324379
+        }
+      },
+      {
+        "traceId": "893a499d0d6d61c075689bdc944ad445",
+        "queryId": "1ceee1f9-2cad-4457-9add-f37a49a67bab",
+        "seq": 12,
+        "tsMs": 1792938324439,
+        "type": "qa.step.updated",
+        "phase": "schema_linking",
+        "nodeId": "schema_linking:1",
+        "provenance": "live",
+        "redacted": null,
+        "truncated": null,
+        "payload": {
+          "input": {
+            "text": "Select the relevant tables and columns to build schema context for SQL generation.",
+            "artifacts": {
+              "query": "Is it true that more SMEs pay in Czech koruna than in euros? If so, how many more?",
+              "histories": [],
+              "rephrased_question": "Is it true that more SMEs pay in Czech koruna than in euros? If so, how many more?",
+              "sql_samples_prompt": "",
+              "instructions_prompt": ""
+            }
+          },
+          "output": {
+            "text": "Schema context from active_pg_schema: 5 tables selected (customers; transactions_1k; gasstations; yearmonth; products). Column selection: 16 columns persisted.",
+            "merge": "replace",
+            "artifacts": {
+              "schemaLinking": {
+                "tokenBudget": 5000,
+                "schemaSource": "active_pg_schema",
+                "tokenEstimate": 248,
+                "pruningApplied": false,
+                "selectedTables": [
+                  {
+                    "rrfRank": 1,
+                    "rrfScore": 0.01639344262295082,
+                    "tableName": "customers"
+                  },
+                  {
+                    "rrfRank": 2,
+                    "rrfScore": 0.016129032258064516,
+                    "tableName": "transactions_1k"
+                  },
+                  {
+                    "rrfRank": 3,
+                    "rrfScore": 0.015873015873015872,
+                    "tableName": "gasstations"
+                  },
+                  {
+                    "rrfRank": 4,
+                    "rrfScore": 0.015625,
+                    "tableName": "yearmonth"
+                  },
+                  {
+                    "rrfRank": 5,
+                    "rrfScore": 0.015384615384615385,
+                    "tableName": "products"
+                  }
+                ],
+                "schemaVersionId": "489dff07-db00-4d4c-b66e-d75efa28fe65",
+                "selectedColumns": {
+                  "products": [
+                    "product_id"
+                  ],
+                  "customers": [
+                    "currency",
+                    "segment",
+                    "customer_id"
+                  ],
+                  "yearmonth": [
+                    "customer_id",
+                    "date"
+                  ],
+                  "gasstations": [
+                    "gas_station_id",
+                    "segment"
+                  ],
+                  "transactions_1k": [
+                    "price",
+                    "amount",
+                    "card_id",
+                    "customer_id",
+                    "transaction_id",
+                    "gas_station_id",
+                    "product_id",
+                    "date"
+                  ]
+                },
+                "failClosedEnforced": true
+              }
+            }
+          },
+          "stepId": "schema_linking:1",
+          "stream": {
+            "kind": "simulated",
+            "activeLane": "output"
+          },
+          "endedAtMs": 1792938324439,
+          "durationMs": 59
+        }
+      },
+      {
+        "traceId": "893a499d0d6d61c075689bdc944ad445",
+        "queryId": "1ceee1f9-2cad-4457-9add-f37a49a67bab",
+        "seq": 13,
+        "tsMs": 1792938324439,
+        "type": "qa.step.finished",
+        "phase": "schema_linking",
+        "nodeId": "schema_linking:1",
+        "provenance": "live",
+        "redacted": null,
+        "truncated": null,
+        "payload": {
+          "title": "Schema Linking",
+          "status": "success",
+          "stepId": "schema_linking:1",
+          "stream": {
+            "kind": "simulated",
+            "activeLane": "done"
+          },
+          "endedAtMs": 1792938324439,
+          "stepIndex": 4,
+          "durationMs": 59,
+          "startedAtMs": 1792938324379,
+          "outputSummary": "Schema context from active_pg_schema: 5 tables selected (customers; transactions_1k; gasstations; yearmonth; products). Column selection: 16 columns persisted."
+        }
+      },
+      {
+        "traceId": "893a499d0d6d61c075689bdc944ad445",
+        "queryId": "1ceee1f9-2cad-4457-9add-f37a49a67bab",
+        "seq": 14,
+        "tsMs": 1792938324571,
+        "type": "qa.step.started",
+        "phase": "reason_and_generate",
+        "nodeId": "reason_and_generate:1",
+        "provenance": "live",
+        "redacted": null,
+        "truncated": null,
+        "payload": {
+          "input": {
+            "text": "Generate SQL and a fast-mode answer package from schema context, retrieved SQL evidence, and user instructions.",
+            "artifacts": {
+              "query": "Is it true that more SMEs pay in Czech koruna than in euros? If so, how many more?",
+              "histories": [],
+              "rephrased_question": "Is it true that more SMEs pay in Czech koruna than in euros? If so, how many more?",
+              "sql_samples_prompt": "",
+              "instructions_prompt": "",
+              "schema_linking_schema_text": "# column_name\tdata_type\tcomment\tenum_value/sample_value\tdistinct_count\n## customers\ncustomer_id\tBIGINT\t\t3, 5, 6\t32461\nsegment\tTEXT\t\tKAM, LAM, SME\t3\ncurrency\tTEXT\t\tCZK, EUR\t2\n\n## gasstations\ngas_station_id\tBIGINT\t\t44, 45, 46\t5716\nsegment\tTEXT\t\tDiscount, Noname, Other, Premium, Value for money\t5\n\n## products\nproduct_id\tBIGINT\t\t1, 2, 3\t591\n\n## transactions_1k\ntransaction_id\tBIGINT\t\t1, 2, 3\t1000\ndate\tDATE\t\t2012-08-23, 2012-08-24, 2012-08-25, 2012-08-26\t4\ncustomer_id\tBIGINT\t\t96, 272, 651\t517\ncard_id\tBIGINT\t\t26228, 29378, 29379\t902\ngas_station_id\tBIGINT\t\t48, 64, 65\t437\nproduct_id\tBIGINT\t\t2, 5, 7, 8, 9, 11, 12, 15, 16, 18, 19, 20, 22, 23, 24, 25, 31, 36, 40, 44, 48, 72, 317, 322, 332, 336, 341, 352\t28\namount\tBIGINT\t\t0, 1, 2\t83\nprice\tNUMERIC\t\t1.76, 3.64, 3.78\t930\n\n## yearmonth\ncustomer_id\tBIGINT\t\t5, 6, 7\t30566\ndate\tTEXT\t\t201112, 201201, 201202, 201203, 201204, 201205, 201206, 201207, 201208, 201209, 201301, 201302, 201303, 201304, 201305, 201306, 201307, 201308, 201309, 201310, 201311\t21\n"
+            }
+          },
+          "title": "Reason and Generate",
+          "stepId": "reason_and_generate:1",
+          "stream": {
+            "kind": "provider_stream",
+            "activeLane": "input"
+          },
+          "stepIndex": 5,
+          "startedAtMs": 1792938324571
+        }
+      },
+      {
+        "traceId": "893a499d0d6d61c075689bdc944ad445",
+        "queryId": "1ceee1f9-2cad-4457-9add-f37a49a67bab",
+        "seq": 15,
+        "tsMs": 1792938333705,
+        "type": "qa.step.updated",
+        "phase": "reason_and_generate",
+        "nodeId": "reason_and_generate:1",
+        "provenance": null,
+        "redacted": null,
+        "truncated": null,
+        "payload": {
+          "input": {
+            "text": "Generate SQL and a fast-mode answer package from schema context, retrieved SQL evidence, and user instructions."
+          },
+          "output": {
+            "text": "SELECT\n  currency,\n  COUNT(*) AS customer_count\nFROM customers\nWHERE segment = 'SME'\nGROUP BY currency\nORDER BY customer_count DESC;",
+            "merge": "append"
+          },
+          "stepId": "reason_and_generate:1",
+          "stream": {
+            "kind": "provider_stream",
+            "activeLane": "output"
+          },
+          "endedAtMs": 1792938333705,
+          "durationMs": 9134
+        }
+      },
+      {
+        "traceId": "893a499d0d6d61c075689bdc944ad445",
+        "queryId": "1ceee1f9-2cad-4457-9add-f37a49a67bab",
+        "seq": 16,
+        "tsMs": 1792938333871,
+        "type": "qa.step.updated",
+        "phase": "reason_and_generate",
+        "nodeId": "reason_and_generate:1",
+        "provenance": "live",
+        "redacted": null,
+        "truncated": null,
+        "payload": {
+          "input": {
+            "text": "Generate SQL and a fast-mode answer package from schema context, retrieved SQL evidence, and user instructions.",
+            "artifacts": {
+              "query": "Is it true that more SMEs pay in Czech koruna than in euros? If so, how many more?",
+              "histories": [],
+              "rephrased_question": "Is it true that more SMEs pay in Czech koruna than in euros? If so, how many more?",
+              "sql_samples_prompt": "",
+              "instructions_prompt": "",
+              "schema_linking_schema_text": "# column_name\tdata_type\tcomment\tenum_value/sample_value\tdistinct_count\n## customers\ncustomer_id\tBIGINT\t\t3, 5, 6\t32461\nsegment\tTEXT\t\tKAM, LAM, SME\t3\ncurrency\tTEXT\t\tCZK, EUR\t2\n\n## gasstations\ngas_station_id\tBIGINT\t\t44, 45, 46\t5716\nsegment\tTEXT\t\tDiscount, Noname, Other, Premium, Value for money\t5\n\n## products\nproduct_id\tBIGINT\t\t1, 2, 3\t591\n\n## transactions_1k\ntransaction_id\tBIGINT\t\t1, 2, 3\t1000\ndate\tDATE\t\t2012-08-23, 2012-08-24, 2012-08-25, 2012-08-26\t4\ncustomer_id\tBIGINT\t\t96, 272, 651\t517\ncard_id\tBIGINT\t\t26228, 29378, 29379\t902\ngas_station_id\tBIGINT\t\t48, 64, 65\t437\nproduct_id\tBIGINT\t\t2, 5, 7, 8, 9, 11, 12, 15, 16, 18, 19, 20, 22, 23, 24, 25, 31, 36, 40, 44, 48, 72, 317, 322, 332, 336, 341, 352\t28\namount\tBIGINT\t\t0, 1, 2\t83\nprice\tNUMERIC\t\t1.76, 3.64, 3.78\t930\n\n## yearmonth\ncustomer_id\tBIGINT\t\t5, 6, 7\t30566\ndate\tTEXT\t\t201112, 201201, 201202, 201203, 201204, 201205, 201206, 201207, 201208, 201209, 201301, 201302, 201303, 201304, 201305, 201306, 201307, 201308, 201309, 201310, 201311\t21\n"
+            }
+          },
+          "output": {
+            "text": "SELECT\n  currency,\n  COUNT(*) AS customer_count\nFROM customers\nWHERE segment = 'SME'\nGROUP BY currency\nORDER BY customer_count DESC;",
+            "merge": "replace",
+            "artifacts": {
+              "sql": "SELECT\n  currency,\n  COUNT(*) AS customer_count\nFROM customers\nWHERE segment = 'SME'\nGROUP BY currency\nORDER BY customer_count DESC;",
+              "message": "The query returns one row per currency used by SME customers, with the number of SME customers in each currency, ordered from most to least common. This allows the reader to verify whether more SMEs pay in Czech koruna than in euros and to compute the difference between the two counts by subtracting the euro count from the koruna count.",
+              "llmModel": "mimo-v2.6-flash",
+              "answerText": "The query returns one row per currency used by SME customers, with the number of SME customers in each currency, ordered from most to least common. This allows the reader to verify whether more SMEs pay in Czech koruna than in euros and to compute the difference between the two counts by subtracting the euro count from the koruna count.",
+              "groundScore": 0.9,
+              "rawResponse": "{\"sql\":\"SELECT\\n  currency,\\n  COUNT(*) AS customer_count\\nFROM customers\\nWHERE segment = 'SME'\\nGROUP BY currency\\nORDER BY customer_count DESC;\",\"reasoningPlan\":\"- Identify customers belonging to the SME segment.\\n- Group those SME customers by the currency they use.\\n- Count how many SME customers use each currency.\\n- Order the currencies by count so the more common currency appears first, making the comparison and the difference straightforward to compute.\",\"sqlGenerationReasoning\":\"## Common Table Expressions\\n- (not used)\\n\\n## Projected Columns\\n- Currency of the customer, since the comparison is between Czech koruna and euros.\\n- A count of customers per currency to quantify how many SMEs use each.\\n\\n## Source\\n- Customer-level records that carry both the business segment and the currency attributes.\\n\\n## Joins\\n- (not used) All needed attributes live on a single customer-level source.\\n\\n## Filters\\n- Restrict to the SME segment, matching the question about small and medium enterprises.\\n\\n## Aggregation\\n- Group by currency and count the number of customers in each currency group.\\n\\n## Sorting\\n- Sort by customer count descending so the dominant currency is listed first.\\n\\n## Result Limit\\n- (not used) Both currency groups are returned to allow the comparison.\\n\\n## Union\\n- (not used)\",\"answerText\":\"The query returns one row per currency used by SME customers, with the number of SME customers in each currency, ordered from most to least common. This allows the reader to verify whether more SMEs pay in Czech koruna than in euros and to compute the difference between the two counts by subtracting the euro count from the koruna count.\",\"groundReason\":\"The SQL groups SME-segment customers by currency, counts them, and orders the counts descending, which directly supports comparing how many SMEs use Czech koruna versus euros and deriving the difference.\",\"groundScore\":0.9,\"suggestedQuestions\":[\"Which currency dominates for each customer segment, not just SMEs?\",\"How does the CZK-versus-EUR split for SMEs compare to KAM and LAM customers?\",\"What share of SME customers use Czech koruna and what share use euros?\"]}",
+              "groundReason": "The SQL groups SME-segment customers by currency, counts them, and orders the counts descending, which directly supports comparing how many SMEs use Czech koruna versus euros and deriving the difference.",
+              "inputContext": {
+                "historyTurns": 0,
+                "schemaContextChars": 994,
+                "sqlExamplesProvided": 0,
+                "instructionsProvided": 0
+              },
+              "debug_prompts": {
+                "schemaMeta": "# column_name\tdata_type\tcomment\tenum_value/sample_value\tdistinct_count\n## customers\ncustomer_id\tBIGINT\t\t3, 5, 6\t32461\nsegment\tTEXT\t\tKAM, LAM, SME\t3\ncurrency\tTEXT\t\tCZK, EUR\t2\n\n## gasstations\ngas_station_id\tBIGINT\t\t44, 45, 46\t5716\nsegment\tTEXT\t\tDiscount, Noname, Other, Premium, Value for money\t5\n\n## products\nproduct_id\tBIGINT\t\t1, 2, 3\t591\n\n## transactions_1k\ntransaction_id\tBIGINT\t\t1, 2, 3\t1000\ndate\tDATE\t\t2012-08-23, 2012-08-24, 2012-08-25, 2012-08-26\t4\ncustomer_id\tBIGINT\t\t96, 272, 651\t517\ncard_id\tBIGINT\t\t26228, 29378, 29379\t902\ngas_station_id\tBIGINT\t\t48, 64, 65\t437\nproduct_id\tBIGINT\t\t2, 5, 7, 8, 9, 11, 12, 15, 16, 18, 19, 20, 22, 23, 24, 25, 31, 36, 40, 44, 48, 72, 317, 322, 332, 336, 341, 352\t28\namount\tBIGINT\t\t0, 1, 2\t83\nprice\tNUMERIC\t\t1.76, 3.64, 3.78\t930\n\n## yearmonth\ncustomer_id\tBIGINT\t\t5, 6, 7\t30566\ndate\tTEXT\t\t201112, 201201, 201202, 201203, 201204, 201205, 201206, 201207, 201208, 201209, 201301, 201302, 201303, 201304, 201305, 201306, 201307, 201308, 201309, 201310, 201311\t21",
+                "userPrompt": "LATEST TURN:\nIs it true that more SMEs pay in Czech koruna than in euros? If so, how many more?",
+                "schemaSource": "active_pg_schema",
+                "systemPrompt": "### TASK ###\nYou are a PostgreSQL business data analyst.\nGenerate one SELECT-only SQL query and one answer-rendering-compatible JSON package in the same response.\n\n### GENERAL RULES ###\n1. Output MUST be valid JSON only.\n2. Output MUST follow the exact JSON schema in the FINAL ANSWER FORMAT section.\n3. Generate SELECT-only SQL (or WITH ... SELECT). Never generate INSERT/UPDATE/DELETE/DROP/ALTER/TRUNCATE.\n4. Use PostgreSQL syntax.\n5. Use only views/tables/columns that exist in the provided strict schema-meta projection.\n6. Prefer logical views or curated views over lower-level base relations when both satisfy the request.\n7. Apply all user constraints, including filters, include/exclude keywords, thresholds, top-N, and ordering.\n8. If USER INSTRUCTIONS are provided, follow them.\n9. Do not include markdown fences, XML tags, or chain-of-thought in any output field.\n\n### ANSWER PACKAGE GROUNDING RULES ###\n1. The answer package MUST be compatible with the answer_rendering JSON contract.\n2. The answer package MUST be grounded in the user request and the SQL you generated: selected outputs, filters, grouping/aggregation, ordering, limits, and set operations.\n3. The answer package MUST NOT claim returned row counts, specific top-row facts, empty-result facts, or any evidence that would require executing the SQL and inspecting result rows.\n4. `groundReason` MUST justify why the SQL structure answers the question (SQL-to-question support), not runtime/preview evidence.\n5. `answerText` MUST describe what the query is designed to return (shape + meaning), without inventing concrete result values.\n\n### reasoningPlan (BA-FRIENDLY) RULES ###\n`reasoningPlan` MUST be a short Markdown list (no code fences) that a Business Analyst can read.\nIt MUST:\n1. Describe the analytical steps in business terms (dimensions, metrics, filters, comparisons).\n2. Avoid table/view names, join mechanics, and other table-level implementation details.\n3. Avoid overly technical database terminology (e.g., CTE, hash join, index, partition).\n4. Be general and stable: do not mention modes, internal node names, or system implementation.\n\n### sqlGenerationReasoning (STRUCTURED MARKDOWN) RULES ###\n`sqlGenerationReasoning` MUST be Markdown (no code fences) and MUST use the following headings to map the legacy PAST mode fields into a readable structure.\n\nFor each heading, provide concise bullet points describing intent and constraints.\nIf a section is not used, include a single bullet `- (not used)`.\nDo not mention table/view names; focus on clause purpose, business meaning, and constraints.\n\nRequired heading map:\n## Common Table Expressions\n## Projected Columns\n## Source\n## Joins\n## Filters\n## Aggregation\n## Sorting\n## Result Limit\n## Union\n\n### FINAL ANSWER FORMAT ###\nReturn JSON with exactly these keys:\n{\n  \"sql\": \"\",\n  \"reasoningPlan\": \"\",\n  \"sqlGenerationReasoning\": \"\",\n  \"answerText\": \"\",\n  \"groundReason\": \"\",\n  \"groundScore\": 0.0,\n  \"suggestedQuestions\": [\"\"]\n}\n### REQUIRED OUTPUT EXAMPLE ###\n{\"answerText\":\"The result highlights the highest-ranked records in the returned preview.\",\"groundReason\":\"The answer is grounded in the executed SQL preview rows, returned columns, and visible ordering evidence.\",\"groundScore\":0.92,\"suggestedQuestions\":[\"Show only the top 5 rows from this result.\",\"Compare these leading records by another business dimension.\",\"Which filters would narrow this result further?\"]}\n\n### TEMPLATE VARIABLES ###\nschema_meta:\n# column_name\tdata_type\tcomment\tenum_value/sample_value\tdistinct_count\n## customers\ncustomer_id\tBIGINT\t\t3, 5, 6\t32461\nsegment\tTEXT\t\tKAM, LAM, SME\t3\ncurrency\tTEXT\t\tCZK, EUR\t2\n\n## gasstations\ngas_station_id\tBIGINT\t\t44, 45, 46\t5716\nsegment\tTEXT\t\tDiscount, Noname, Other, Premium, Value for money\t5\n\n## products\nproduct_id\tBIGINT\t\t1, 2, 3\t591\n\n## transactions_1k\ntransaction_id\tBIGINT\t\t1, 2, 3\t1000\ndate\tDATE\t\t2012-08-23, 2012-08-24, 2012-08-25, 2012-08-26\t4\ncustomer_id\tBIGINT\t\t96, 272, 651\t517\ncard_id\tBIGINT\t\t26228, 29378, 29379\t902\ngas_station_id\tBIGINT\t\t48, 64, 65\t437\nproduct_id\tBIGINT\t\t2, 5, 7, 8, 9, 11, 12, 15, 16, 18, 19, 20, 22, 23, 24, 25, 31, 36, 40, 44, 48, 72, 317, 322, 332, 336, 341, 352\t28\namount\tBIGINT\t\t0, 1, 2\t83\nprice\tNUMERIC\t\t1.76, 3.64, 3.78\t930\n\n## yearmonth\ncustomer_id\tBIGINT\t\t5, 6, 7\t30566\ndate\tTEXT\t\t201112, 201201, 201202, 201203, 201204, 201205, 201206, 201207, 201208, 201209, 201301, 201302, 201303, 201304, 201305, 201306, 201307, 201308, 201309, 201310, 201311\t21\n\nglobal_user_instructions:\n\n\nmatched_user_instructions:\n\n\nsql_knowledge:\n\n\nUse the above schema and instructions to produce the SQL and answer package.",
+                "sqlSamplesPrompt": "",
+                "instructionsPrompt": ""
+              },
+              "retryAttempts": 0,
+              "sqlComplexity": {
+                "joinCount": 0,
+                "tableCount": 1,
+                "columnCount": 0
+              },
+              "tokenEstimate": 1208,
+              "llmTemperature": 0.0,
+              "processingTimeMs": 9633,
+              "suggestedQuestions": [
+                "Which currency dominates for each customer segment, not just SMEs?",
+                "How does the CZK-versus-EUR split for SMEs compare to KAM and LAM customers?",
+                "What share of SME customers use Czech koruna and what share use euros?"
+              ],
+              "sqlGenerationReasoning": "## Common Table Expressions\n- (not used)\n\n## Projected Columns\n- Currency of the customer, since the comparison is between Czech koruna and euros.\n- A count of customers per currency to quantify how many SMEs use each.\n\n## Source\n- Customer-level records that carry both the business segment and the currency attributes.\n\n## Joins\n- (not used) All needed attributes live on a single customer-level source.\n\n## Filters\n- Restrict to the SME segment, matching the question about small and medium enterprises.\n\n## Aggregation\n- Group by currency and count the number of customers in each currency group.\n\n## Sorting\n- Sort by customer count descending so the dominant currency is listed first.\n\n## Result Limit\n- (not used) Both currency groups are returned to allow the comparison.\n\n## Union\n- (not used)"
+            }
+          },
+          "stepId": "reason_and_generate:1",
+          "stream": {
+            "kind": "provider_stream",
+            "activeLane": "output"
+          },
+          "endedAtMs": 1792938333871,
+          "durationMs": 9300
+        }
+      },
+      {
+        "traceId": "893a499d0d6d61c075689bdc944ad445",
+        "queryId": "1ceee1f9-2cad-4457-9add-f37a49a67bab",
+        "seq": 17,
+        "tsMs": 1792938333871,
+        "type": "qa.step.finished",
+        "phase": "reason_and_generate",
+        "nodeId": "reason_and_generate:1",
+        "provenance": "live",
+        "redacted": null,
+        "truncated": null,
+        "payload": {
+          "title": "Reason and Generate",
+          "status": "success",
+          "stepId": "reason_and_generate:1",
+          "stream": {
+            "kind": "provider_stream",
+            "activeLane": "done"
+          },
+          "endedAtMs": 1792938333871,
+          "stepIndex": 5,
+          "durationMs": 9300,
+          "startedAtMs": 1792938324571,
+          "outputSummary": "SELECT\n  currency,\n  COUNT(*) AS customer_count\nFROM customers\nWHERE segment = 'SME'\nGROUP BY currency\nORDER BY customer_count DESC;"
+        }
+      },
+      {
+        "traceId": "893a499d0d6d61c075689bdc944ad445",
+        "queryId": "1ceee1f9-2cad-4457-9add-f37a49a67bab",
+        "seq": 18,
+        "tsMs": 1792938333931,
+        "type": "qa.step.started",
+        "phase": "validating",
+        "nodeId": "validating:1",
+        "provenance": "live",
+        "redacted": null,
+        "truncated": null,
+        "payload": {
+          "input": {
+            "text": "SQL:\nSELECT\n  currency,\n  COUNT(*) AS customer_count\nFROM customers\nWHERE segment = 'SME'\nGROUP BY currency\nORDER BY customer_count DESC;",
+            "artifacts": {
+              "sql": "SELECT\n  currency,\n  COUNT(*) AS customer_count\nFROM customers\nWHERE segment = 'SME'\nGROUP BY currency\nORDER BY customer_count DESC;",
+              "mode": "explain",
+              "attempt": 0
+            }
+          },
+          "title": "Validating",
+          "stepId": "validating:1",
+          "stream": {
+            "kind": "simulated",
+            "activeLane": "input"
+          },
+          "stepIndex": 6,
+          "startedAtMs": 1792938333931
+        }
+      },
+      {
+        "traceId": "893a499d0d6d61c075689bdc944ad445",
+        "queryId": "1ceee1f9-2cad-4457-9add-f37a49a67bab",
+        "seq": 19,
+        "tsMs": 1792938333962,
+        "type": "qa.step.updated",
+        "phase": "validating",
+        "nodeId": "validating:1",
+        "provenance": "live",
+        "redacted": null,
+        "truncated": null,
+        "payload": {
+          "input": {
+            "text": "SQL:\nSELECT\n  currency,\n  COUNT(*) AS customer_count\nFROM customers\nWHERE segment = 'SME'\nGROUP BY currency\nORDER BY customer_count DESC;",
+            "artifacts": {
+              "sql": "SELECT\n  currency,\n  COUNT(*) AS customer_count\nFROM customers\nWHERE segment = 'SME'\nGROUP BY currency\nORDER BY customer_count DESC;",
+              "mode": "explain",
+              "attempt": 0
+            }
+          },
+          "output": {
+            "text": "SQL validation: passed via explain. The query is executable.",
+            "merge": "replace",
+            "artifacts": {
+              "validation": {
+                "mode": "explain",
+                "isValid": true,
+                "outcome": "valid"
+              }
+            }
+          },
+          "stepId": "validating:1",
+          "stream": {
+            "kind": "simulated",
+            "activeLane": "output"
+          },
+          "endedAtMs": 1792938333962,
+          "durationMs": 30
+        }
+      },
+      {
+        "traceId": "893a499d0d6d61c075689bdc944ad445",
+        "queryId": "1ceee1f9-2cad-4457-9add-f37a49a67bab",
+        "seq": 20,
+        "tsMs": 1792938333962,
+        "type": "qa.step.finished",
+        "phase": "validating",
+        "nodeId": "validating:1",
+        "provenance": "live",
+        "redacted": null,
+        "truncated": null,
+        "payload": {
+          "title": "Validating",
+          "status": "success",
+          "stepId": "validating:1",
+          "stream": {
+            "kind": "simulated",
+            "activeLane": "done"
+          },
+          "endedAtMs": 1792938333962,
+          "stepIndex": 6,
+          "durationMs": 30,
+          "startedAtMs": 1792938333931,
+          "outputSummary": "SQL validation: passed via explain. The query is executable."
+        }
+      },
+      {
+        "traceId": "893a499d0d6d61c075689bdc944ad445",
+        "queryId": "1ceee1f9-2cad-4457-9add-f37a49a67bab",
+        "seq": 21,
+        "tsMs": 1792938334016,
+        "type": "qa.step.started",
+        "phase": "sql_execution",
+        "nodeId": "sql_execution:1",
+        "provenance": "live",
+        "redacted": null,
+        "truncated": null,
+        "payload": {
+          "input": {
+            "text": "SQL:\nSELECT\n  currency,\n  COUNT(*) AS customer_count\nFROM customers\nWHERE segment = 'SME'\nGROUP BY currency\nORDER BY customer_count DESC;",
+            "artifacts": {
+              "sql": "SELECT\n  currency,\n  COUNT(*) AS customer_count\nFROM customers\nWHERE segment = 'SME'\nGROUP BY currency\nORDER BY customer_count DESC;",
+              "attempt": 0
+            }
+          },
+          "title": "SQL Execution",
+          "stepId": "sql_execution:1",
+          "stream": {
+            "kind": "simulated",
+            "activeLane": "input"
+          },
+          "stepIndex": 7,
+          "startedAtMs": 1792938334016
+        }
+      },
+      {
+        "traceId": "893a499d0d6d61c075689bdc944ad445",
+        "queryId": "1ceee1f9-2cad-4457-9add-f37a49a67bab",
+        "seq": 22,
+        "tsMs": 1792938334051,
+        "type": "qa.step.updated",
+        "phase": "sql_execution",
+        "nodeId": "sql_execution:1",
+        "provenance": "live",
+        "redacted": null,
+        "truncated": null,
+        "payload": {
+          "input": {
+            "text": "SQL:\nSELECT\n  currency,\n  COUNT(*) AS customer_count\nFROM customers\nWHERE segment = 'SME'\nGROUP BY currency\nORDER BY customer_count DESC;",
+            "artifacts": {
+              "sql": "SELECT\n  currency,\n  COUNT(*) AS customer_count\nFROM customers\nWHERE segment = 'SME'\nGROUP BY currency\nORDER BY customer_count DESC;",
+              "attempt": 0
+            }
+          },
+          "output": {
+            "text": "SQL execution preview: succeeded with 2 rows. Columns: currency, customer_count. Top row: CZK (customer count 25134.00).",
+            "merge": "replace",
+            "artifacts": {
+              "execution": {
+                "rowCount": 2,
+                "columnNames": [
+                  "currency",
+                  "customer_count"
+                ],
+                "rowsPreview": [
+                  [
+                    "CZK",
+                    25134
+                  ],
+                  [
+                    "EUR",
+                    1629
+                  ]
+                ]
+              }
+            }
+          },
+          "stepId": "sql_execution:1",
+          "stream": {
+            "kind": "simulated",
+            "activeLane": "output"
+          },
+          "endedAtMs": 1792938334051,
+          "durationMs": 35
+        }
+      },
+      {
+        "traceId": "893a499d0d6d61c075689bdc944ad445",
+        "queryId": "1ceee1f9-2cad-4457-9add-f37a49a67bab",
+        "seq": 23,
+        "tsMs": 1792938334051,
+        "type": "qa.step.finished",
+        "phase": "sql_execution",
+        "nodeId": "sql_execution:1",
+        "provenance": "live",
+        "redacted": null,
+        "truncated": null,
+        "payload": {
+          "title": "SQL Execution",
+          "status": "success",
+          "stepId": "sql_execution:1",
+          "stream": {
+            "kind": "simulated",
+            "activeLane": "done"
+          },
+          "endedAtMs": 1792938334051,
+          "stepIndex": 7,
+          "durationMs": 35,
+          "startedAtMs": 1792938334016,
+          "outputSummary": "SQL execution preview: succeeded with 2 rows. Columns: currency, customer_count. Top row: CZK (customer count 25134.00)."
+        }
+      },
+      {
+        "traceId": "893a499d0d6d61c075689bdc944ad445",
+        "queryId": "1ceee1f9-2cad-4457-9add-f37a49a67bab",
+        "seq": 24,
+        "tsMs": 1792938334106,
+        "type": "qa.step.started",
+        "phase": "answer_rendering",
+        "nodeId": "answer_rendering:1",
+        "provenance": "live",
+        "redacted": null,
+        "truncated": null,
+        "payload": {
+          "input": {
+            "text": "Render a business-readable final answer from the executed query result and user request.",
+            "artifacts": {
+              "query": "Is it true that more SMEs pay in Czech koruna than in euros? If so, how many more?",
+              "histories": [],
+              "reasoning_plan": "- Identify customers belonging to the SME segment.\n- Group those SME customers by the currency they use.\n- Count how many SME customers use each currency.\n- Order the currencies by count so the more common currency appears first, making the comparison and the difference straightforward to compute.",
+              "rephrased_question": "Is it true that more SMEs pay in Czech koruna than in euros? If so, how many more?",
+              "sql_samples_prompt": "",
+              "instructions_prompt": "",
+              "schema_linking_schema_text": "# column_name\tdata_type\tcomment\tenum_value/sample_value\tdistinct_count\n## customers\ncustomer_id\tBIGINT\t\t3, 5, 6\t32461\nsegment\tTEXT\t\tKAM, LAM, SME\t3\ncurrency\tTEXT\t\tCZK, EUR\t2\n\n## gasstations\ngas_station_id\tBIGINT\t\t44, 45, 46\t5716\nsegment\tTEXT\t\tDiscount, Noname, Other, Premium, Value for money\t5\n\n## products\nproduct_id\tBIGINT\t\t1, 2, 3\t591\n\n## transactions_1k\ntransaction_id\tBIGINT\t\t1, 2, 3\t1000\ndate\tDATE\t\t2012-08-23, 2012-08-24, 2012-08-25, 2012-08-26\t4\ncustomer_id\tBIGINT\t\t96, 272, 651\t517\ncard_id\tBIGINT\t\t26228, 29378, 29379\t902\ngas_station_id\tBIGINT\t\t48, 64, 65\t437\nproduct_id\tBIGINT\t\t2, 5, 7, 8, 9, 11, 12, 15, 16, 18, 19, 20, 22, 23, 24, 25, 31, 36, 40, 44, 48, 72, 317, 322, 332, 336, 341, 352\t28\namount\tBIGINT\t\t0, 1, 2\t83\nprice\tNUMERIC\t\t1.76, 3.64, 3.78\t930\n\n## yearmonth\ncustomer_id\tBIGINT\t\t5, 6, 7\t30566\ndate\tTEXT\t\t201112, 201201, 201202, 201203, 201204, 201205, 201206, 201207, 201208, 201209, 201301, 201302, 201303, 201304, 201305, 201306, 201307, 201308, 201309, 201310, 201311\t21\n"
+            }
+          },
+          "title": "Answer Rendering",
+          "stepId": "answer_rendering:1",
+          "stream": {
+            "kind": "provider_stream",
+            "activeLane": "input"
+          },
+          "stepIndex": 8,
+          "startedAtMs": 1792938334106
+        }
+      },
+      {
+        "traceId": "893a499d0d6d61c075689bdc944ad445",
+        "queryId": "1ceee1f9-2cad-4457-9add-f37a49a67bab",
+        "seq": 25,
+        "tsMs": 1792938334138,
+        "type": "qa.step.updated",
+        "phase": "answer_rendering",
+        "nodeId": "answer_rendering:1",
+        "provenance": "live",
+        "redacted": null,
+        "truncated": null,
+        "payload": {
+          "input": {
+            "text": "Render a business-readable final answer from the executed query result and user request.",
+            "artifacts": {
+              "query": "Is it true that more SMEs pay in Czech koruna than in euros? If so, how many more?",
+              "histories": [],
+              "reasoning_plan": "- Identify customers belonging to the SME segment.\n- Group those SME customers by the currency they use.\n- Count how many SME customers use each currency.\n- Order the currencies by count so the more common currency appears first, making the comparison and the difference straightforward to compute.",
+              "rephrased_question": "Is it true that more SMEs pay in Czech koruna than in euros? If so, how many more?",
+              "sql_samples_prompt": "",
+              "instructions_prompt": "",
+              "schema_linking_schema_text": "# column_name\tdata_type\tcomment\tenum_value/sample_value\tdistinct_count\n## customers\ncustomer_id\tBIGINT\t\t3, 5, 6\t32461\nsegment\tTEXT\t\tKAM, LAM, SME\t3\ncurrency\tTEXT\t\tCZK, EUR\t2\n\n## gasstations\ngas_station_id\tBIGINT\t\t44, 45, 46\t5716\nsegment\tTEXT\t\tDiscount, Noname, Other, Premium, Value for money\t5\n\n## products\nproduct_id\tBIGINT\t\t1, 2, 3\t591\n\n## transactions_1k\ntransaction_id\tBIGINT\t\t1, 2, 3\t1000\ndate\tDATE\t\t2012-08-23, 2012-08-24, 2012-08-25, 2012-08-26\t4\ncustomer_id\tBIGINT\t\t96, 272, 651\t517\ncard_id\tBIGINT\t\t26228, 29378, 29379\t902\ngas_station_id\tBIGINT\t\t48, 64, 65\t437\nproduct_id\tBIGINT\t\t2, 5, 7, 8, 9, 11, 12, 15, 16, 18, 19, 20, 22, 23, 24, 25, 31, 36, 40, 44, 48, 72, 317, 322, 332, 336, 341, 352\t28\namount\tBIGINT\t\t0, 1, 2\t83\nprice\tNUMERIC\t\t1.76, 3.64, 3.78\t930\n\n## yearmonth\ncustomer_id\tBIGINT\t\t5, 6, 7\t30566\ndate\tTEXT\t\t201112, 201201, 201202, 201203, 201204, 201205, 201206, 201207, 201208, 201209, 201301, 201302, 201303, 201304, 201305, 201306, 201307, 201308, 201309, 201310, 201311\t21\n"
+            }
+          },
+          "output": {
+            "text": "The query returns one row per currency used by SME customers, with the number of SME customers in each currency, ordered from most to least common. This allows the reader to verify whether more SMEs pay in Czech koruna than in euros and to compute the difference between the two counts by subtracting the euro count from the koruna count.",
+            "merge": "replace",
+            "artifacts": {
+              "message": "The query returns one row per currency used by SME customers, with the number of SME customers in each currency, ordered from most to least common. This allows the reader to verify whether more SMEs pay in Czech koruna than in euros and to compute the difference between the two counts by subtracting the euro count from the koruna count.",
+              "groundScore": 0.9,
+              "groundReason": "The SQL groups SME-segment customers by currency, counts them, and orders the counts descending, which directly supports comparing how many SMEs use Czech koruna versus euros and deriving the difference.",
+              "suggestedQuestions": [
+                "Which currency dominates for each customer segment, not just SMEs?",
+                "How does the CZK-versus-EUR split for SMEs compare to KAM and LAM customers?",
+                "What share of SME customers use Czech koruna and what share use euros?"
+              ]
+            }
+          },
+          "stepId": "answer_rendering:1",
+          "stream": {
+            "kind": "provider_stream",
+            "activeLane": "output"
+          },
+          "endedAtMs": 1792938334138,
+          "durationMs": 31
+        }
+      },
+      {
+        "traceId": "893a499d0d6d61c075689bdc944ad445",
+        "queryId": "1ceee1f9-2cad-4457-9add-f37a49a67bab",
+        "seq": 26,
+        "tsMs": 1792938334138,
+        "type": "qa.step.finished",
+        "phase": "answer_rendering",
+        "nodeId": "answer_rendering:1",
+        "provenance": "live",
+        "redacted": null,
+        "truncated": null,
+        "payload": {
+          "title": "Answer Rendering",
+          "status": "success",
+          "stepId": "answer_rendering:1",
+          "stream": {
+            "kind": "provider_stream",
+            "activeLane": "done"
+          },
+          "endedAtMs": 1792938334138,
+          "stepIndex": 8,
+          "durationMs": 31,
+          "startedAtMs": 1792938334106,
+          "outputSummary": "The query returns one row per currency used by SME customers, with the number of SME customers in each currency, ordered from most to least common. This allows the reader to verify whether more SMEs pay in Czech koruna than in euros and to compute the difference between the two counts by subtracting the euro count from the koruna count."
+        }
+      },
+      {
+        "traceId": "893a499d0d6d61c075689bdc944ad445",
+        "queryId": "1ceee1f9-2cad-4457-9add-f37a49a67bab",
+        "seq": 27,
+        "tsMs": 1792938334186,
+        "type": "qa.result.ready",
+        "phase": "",
+        "nodeId": null,
+        "provenance": null,
+        "redacted": null,
+        "truncated": null,
+        "payload": {
+          "sql": "SELECT\n  currency,\n  COUNT(*) AS customer_count\nFROM customers\nWHERE segment = 'SME'\nGROUP BY currency\nORDER BY customer_count DESC;",
+          "type": "TEXT_TO_SQL",
+          "status": "finished",
+          "rowCount": 2,
+          "answerText": "The query returns one row per currency used by SME customers, with the number of SME customers in each currency, ordered from most to least common. This allows the reader to verify whether more SMEs pay in Czech koruna than in euros and to compute the difference between the two counts by subtracting the euro count from the koruna count.",
+          "queryResult": {
+            "sql": "SELECT\n  currency,\n  COUNT(*) AS customer_count\nFROM customers\nWHERE segment = 'SME'\nGROUP BY currency\nORDER BY customer_count DESC;",
+            "meta": {
+              "mode": "POC_CSV_SQL_EXECUTE_RESULT",
+              "sql_limit_count": 2,
+              "sql_actual_count": 2
+            },
+            "query": "Is it true that more SMEs pay in Czech koruna than in euros? If so, how many more?",
+            "reason": {
+              "answer": "The query returns one row per currency used by SME customers, with the number of SME customers in each currency, ordered from most to least common. This allows the reader to verify whether more SMEs pay in Czech koruna than in euros and to compute the difference between the two counts by subtracting the euro count from the koruna count.",
+              "business": "- Identify customers belonging to the SME segment.\n- Group those SME customers by the currency they use.\n- Count how many SME customers use each currency.\n- Order the currencies by count so the more common currency appears first, making the comparison and the difference straightforward to compute.",
+              "technical": "## Common Table Expressions\n- (not used)\n\n## Projected Columns\n- Currency of the customer, since the comparison is between Czech koruna and euros.\n- A count of customers per currency to quantify how many SMEs use each.\n\n## Source\n- Customer-level records that carry both the business segment and the currency attributes.\n\n## Joins\n- (not used) All needed attributes live on a single customer-level source.\n\n## Filters\n- Restrict to the SME segment, matching the question about small and medium enterprises.\n\n## Aggregation\n- Group by currency and count the number of customers in each currency group.\n\n## Sorting\n- Sort by customer count descending so the dominant currency is listed first.\n\n## Result Limit\n- (not used) Both currency groups are returned to allow the comparison.\n\n## Union\n- (not used)"
+            },
+            "status": "success",
+            "columns": [
+              "currency",
+              "customer_count"
+            ],
+            "results": [
+              [
+                "CZK",
+                25134
+              ],
+              [
+                "EUR",
+                1629
+              ]
+            ],
+            "confidence": 0.9,
+            "question_id": "1ceee1f92cad44579addf37a49a67bab",
+            "schemaLinking": {
+              "tokenBudget": 5000,
+              "tokenEstimate": 248,
+              "pruningApplied": false,
+              "selectedTables": [
+                "customers",
+                "transactions_1k",
+                "gasstations",
+                "yearmonth",
+                "products"
+              ],
+              "schemaVersionId": "489dff07-db00-4d4c-b66e-d75efa28fe65",
+              "selectedColumns": {
+                "products": [
+                  "product_id"
+                ],
+                "customers": [
+                  "currency",
+                  "segment",
+                  "customer_id"
+                ],
+                "yearmonth": [
+                  "customer_id",
+                  "date"
+                ],
+                "gasstations": [
+                  "gas_station_id",
+                  "segment"
+                ],
+                "transactions_1k": [
+                  "price",
+                  "amount",
+                  "card_id",
+                  "customer_id",
+                  "transaction_id",
+                  "gas_station_id",
+                  "product_id",
+                  "date"
+                ]
+              }
+            },
+            "sqlPairRetrieval": {
+              "topK": 10,
+              "queryText": "Is it true that more SMEs pay in Czech koruna than in euros? If so, how many more?",
+              "threshold": 0.7,
+              "candidates": [],
+              "selectedIds": [],
+              "selectedCount": 0,
+              "selectedPairs": [],
+              "candidateCount": 0,
+              "candidateLimit": 25
+            },
+            "rephrased_question": "Is it true that more SMEs pay in Czech koruna than in euros? If so, how many more?",
+            "schemaLinkingArtifacts": {
+              "tables": [
+                {
+                  "rrf_rank": 1,
+                  "rrf_score": 0.01639344262295082,
+                  "table_name": "customers"
+                },
+                {
+                  "rrf_rank": 2,
+                  "rrf_score": 0.016129032258064516,
+                  "table_name": "transactions_1k"
+                },
+                {
+                  "rrf_rank": 3,
+                  "rrf_score": 0.015873015873015872,
+                  "table_name": "gasstations"
+                },
+                {
+                  "rrf_rank": 4,
+                  "rrf_score": 0.015625,
+                  "table_name": "yearmonth"
+                },
+                {
+                  "rrf_rank": 5,
+                  "rrf_score": 0.015384615384615385,
+                  "table_name": "products"
+                }
+              ],
+              "tableCount": null,
+              "columnCount": null,
+              "tokenBudget": 5000,
+              "schemaSource": "active_pg_schema",
+              "tokenEstimate": 248,
+              "pruningApplied": false,
+              "schemaVersionId": "489dff07-db00-4d4c-b66e-d75efa28fe65",
+              "selectedColumns": {
+                "products": [
+                  "product_id"
+                ],
+                "customers": [
+                  "currency",
+                  "segment",
+                  "customer_id"
+                ],
+                "yearmonth": [
+                  "customer_id",
+                  "date"
+                ],
+                "gasstations": [
+                  "gas_station_id",
+                  "segment"
+                ],
+                "transactions_1k": [
+                  "price",
+                  "amount",
+                  "card_id",
+                  "customer_id",
+                  "transaction_id",
+                  "gas_station_id",
+                  "product_id",
+                  "date"
+                ]
+              },
+              "failClosedEnforced": true,
+              "tokenBudgetExceeded": null,
+              "ragSchemaLinkingEnabled": null
+            }
+          }
+        }
+      },
+      {
+        "traceId": "893a499d0d6d61c075689bdc944ad445",
+        "queryId": "1ceee1f9-2cad-4457-9add-f37a49a67bab",
+        "seq": 28,
+        "tsMs": 1792938334205,
+        "type": "qa.trace.completed",
+        "phase": "",
+        "nodeId": null,
+        "provenance": null,
+        "redacted": null,
+        "truncated": null,
+        "payload": {
+          "status": "finished",
+          "totalDurationMs": 11252
+        }
+      }
+    ]
+  },
+  "provider_audits": [
+    {
+      "id": 15582,
+      "query_id": "1ceee1f9-2cad-4457-9add-f37a49a67bab",
+      "thread_key": "69377982-d0c9-4f32-8307-a3549f51f8c9",
+      "trace_id": "893a499d0d6d61c075689bdc944ad445",
+      "status_code": 200,
+      "response_json": {
+        "rag": {
+          "rrfK": 60,
+          "topK": 10,
+          "queryText": "Is it true that more SMEs pay in Czech koruna than in euros? If so, how many more?",
+          "threshold": 0.7,
+          "candidates": [],
+          "selectedIds": [],
+          "selectedCount": 0,
+          "selectedPairs": [],
+          "candidateCount": 0,
+          "candidateLimit": 25,
+          "retrievalMethod": "hybrid"
+        },
+        "statusCode": 200,
+        "sqlKnowledge": "",
+        "sqlKnowledgeChars": 0
+      }
+    }
+  ],
+  "knowledge_proof": {
+    "provider": "verified_empty",
+    "calls": [
+      {
+        "phase": "reason_and_generate",
+        "node_id": "reason_and_generate:1",
+        "phase_occurrence": 1,
+        "correction_attempt": null,
+        "sql_knowledge_chars": 0,
+        "invocation": "phase_entered"
+      }
+    ],
+    "phases": {
+      "reasoning": "not_executed",
+      "generating": "not_executed",
+      "reason_and_generate": "input_verified",
+      "correcting": "not_executed"
+    }
+  }
+}

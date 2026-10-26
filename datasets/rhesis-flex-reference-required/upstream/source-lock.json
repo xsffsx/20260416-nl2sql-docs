@@ -1,0 +1,26 @@
+{
+  "repository": "https://github.com/HeegyuKim/FLEX",
+  "revision": "270abdba59306134adf0928b2ce92acb8fbd94eb",
+  "files": {
+    "utils/judge/base.py": {
+      "sha256": "c5bd0a0366cd7e9b344be3dbfcba8f6da4537299f6b4bc83f43f37bf0dbdff69",
+      "url": "https://github.com/HeegyuKim/FLEX/blob/270abdba59306134adf0928b2ce92acb8fbd94eb/utils/judge/base.py"
+    },
+    "utils/judge/flex.py": {
+      "sha256": "9839f624d2b01f9f496863ff33428cf933534d7db359adb48c024845064bd63c",
+      "url": "https://github.com/HeegyuKim/FLEX/blob/270abdba59306134adf0928b2ce92acb8fbd94eb/utils/judge/flex.py"
+    },
+    "llm_judge_main.py": {
+      "sha256": "578a6640e50c5a2db6351ade0d64549b67ff5b893481113b7f257762c58f7717",
+      "url": "https://github.com/HeegyuKim/FLEX/blob/270abdba59306134adf0928b2ce92acb8fbd94eb/llm_judge_main.py"
+    },
+    "utils/prompts.py": {
+      "sha256": "9c05cf3359b4cd70429955955662800e42d12ce56714a49d6674e5b6958b3c7e",
+      "url": "https://github.com/HeegyuKim/FLEX/blob/270abdba59306134adf0928b2ce92acb8fbd94eb/utils/prompts.py"
+    },
+    "LICENSE": {
+      "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+      "url": "https://github.com/HeegyuKim/FLEX/blob/270abdba59306134adf0928b2ce92acb8fbd94eb/LICENSE"
+    }
+  }
+}

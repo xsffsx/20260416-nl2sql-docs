@@ -1,0 +1,33 @@
+{
+  "id": "b08fd881-4f15-4217-9054-9e0229e9a5d5",
+  "variant": "evidence",
+  "question": "Please list the disparate time of the transactions taken place in the gas stations from chain no. 11.",
+  "actual_sql": "SELECT DISTINCT t.time\nFROM transactions_1k t\nJOIN gasstations g ON g.gas_station_id = t.gas_station_id\nWHERE g.chain_id = 11\nORDER BY t.time;",
+  "actual_sql_sha256": "68aa81fb45da6948bb7e0b1bd77557acd29d45f574d28832f7888925ab40e7a8",
+  "judge": {
+    "rhesis_model_id": "8c4ac3b8-8e3a-4c56-95e8-fb79339c607c",
+    "name": "GLM 5.3 BIRD Judge",
+    "model": "glm-5.3",
+    "base_url": "https://open.bigmodel.cn/api/coding/paas/v4",
+    "provider": "glm",
+    "temperature": 0,
+    "max_tokens": 8192,
+    "timeout_seconds": 180,
+    "thinking": {
+      "type": "enabled"
+    },
+    "reasoning_effort": "low",
+    "parameter_source": "https://docs.bigmodel.cn/cn/guide/models/text/glm-5.3"
+  },
+  "score": null,
+  "status": "error",
+  "question_id": "1507",
+  "expected_response": "{\"evidence\": \"\"}",
+  "gold_sql": "SELECT DISTINCT T1.time FROM transactions_1k AS T1 INNER JOIN gasstations AS T2 ON T1.gas_station_id = T2.gas_station_id WHERE T2.chain_id = 11",
+  "evidence": "",
+  "error": {
+    "type": "ValueError",
+    "message": "Missing expected_response reference: evidence is empty; judge was not called"
+  },
+  "elapsed_ms": 0.1846249942900613
+}

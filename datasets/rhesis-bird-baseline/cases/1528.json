@@ -1,0 +1,85 @@
+{
+  "question": "What is the percentage of \"premium\" against the overall segment in Country = \"SVK\"?",
+  "score": 0.0,
+  "details": {
+    "reason": "Complete results differ from Gold SQL; BIRD Soft F1 = 0.0",
+    "BIRD_Soft_F1": 0.0,
+    "actual_sql": "SELECT gs.country,\n       gs.segment,\n       COUNT(*) AS station_count,\n       SUM(COUNT(*)) OVER () AS total_station_count,\n       ROUND(100.0 * COUNT(*) / SUM(COUNT(*)) OVER (), 2) AS percentage_of_total\nFROM gasstations gs\nWHERE gs.country = 'SVK'\nGROUP BY gs.country, gs.segment\nORDER BY percentage_of_total DESC;",
+    "gold_sql": "SELECT CAST(SUM(CASE WHEN country = 'SVK' AND segment = 'Premium' THEN 1 ELSE 0 END) AS REAL) * 100 / NULLIF(SUM(CASE WHEN country = 'SVK' THEN 1 ELSE 0 END), 0) FROM gasstations",
+    "actual_result": [
+      [
+        "SVK",
+        "Other",
+        334,
+        {
+          "type": "Decimal",
+          "value": "880"
+        },
+        {
+          "type": "Decimal",
+          "value": "37.95"
+        }
+      ],
+      [
+        "SVK",
+        "Premium",
+        314,
+        {
+          "type": "Decimal",
+          "value": "880"
+        },
+        {
+          "type": "Decimal",
+          "value": "35.68"
+        }
+      ],
+      [
+        "SVK",
+        "Value for money",
+        131,
+        {
+          "type": "Decimal",
+          "value": "880"
+        },
+        {
+          "type": "Decimal",
+          "value": "14.89"
+        }
+      ],
+      [
+        "SVK",
+        "Discount",
+        59,
+        {
+          "type": "Decimal",
+          "value": "880"
+        },
+        {
+          "type": "Decimal",
+          "value": "6.70"
+        }
+      ],
+      [
+        "SVK",
+        "Noname",
+        42,
+        {
+          "type": "Decimal",
+          "value": "880"
+        },
+        {
+          "type": "Decimal",
+          "value": "4.77"
+        }
+      ]
+    ],
+    "gold_result": [
+      [
+        35.68181818181818
+      ]
+    ],
+    "sql_error": null,
+    "scorer_ms": 6.856040999991819,
+    "max_parallel_workers_per_gather": 0
+  }
+}

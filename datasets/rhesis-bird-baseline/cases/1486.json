@@ -1,0 +1,34 @@
+{
+  "question": "Is it true that more SMEs pay in Czech koruna than in euros? If so, how many more?",
+  "score": 0.0,
+  "details": {
+    "reason": "Complete results differ from Gold SQL; BIRD Soft F1 = 0.5",
+    "BIRD_Soft_F1": 0.5,
+    "actual_sql": "WITH sme AS (\n  SELECT currency,\n         COUNT(*) AS customer_count\n  FROM customers\n  WHERE segment = 'SME'\n  GROUP BY currency\n)\nSELECT\n  SUM(customer_count) FILTER (WHERE currency = 'CZK') AS czk_customer_count,\n  SUM(customer_count) FILTER (WHERE currency = 'EUR') AS eur_customer_count,\n  SUM(customer_count) FILTER (WHERE currency = 'CZK')\n    - SUM(customer_count) FILTER (WHERE currency = 'EUR') AS czk_minus_eur\nFROM sme;",
+    "gold_sql": "SELECT SUM(CASE WHEN currency = 'CZK' THEN 1 ELSE 0 END) - SUM(CASE WHEN currency = 'EUR' THEN 1 ELSE 0 END) FROM customers WHERE segment = 'SME'",
+    "actual_result": [
+      [
+        {
+          "type": "Decimal",
+          "value": "25134"
+        },
+        {
+          "type": "Decimal",
+          "value": "1629"
+        },
+        {
+          "type": "Decimal",
+          "value": "23505"
+        }
+      ]
+    ],
+    "gold_result": [
+      [
+        23505
+      ]
+    ],
+    "sql_error": null,
+    "scorer_ms": 7.366334000835195,
+    "max_parallel_workers_per_gather": 0
+  }
+}

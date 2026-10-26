@@ -1,0 +1,19 @@
+{
+  "question": "For the customer who paid 634.8 in 2012/8/25, what was the consumption decrease rate from Year 2012 to 2013?",
+  "score": 0.0,
+  "details": {
+    "reason": "Complete results differ from Gold SQL; BIRD Soft F1 = 0.0",
+    "BIRD_Soft_F1": 0.0,
+    "actual_sql": "SELECT\n    y.customer_id,\n    SUM(CASE WHEN y.date LIKE '2012%' THEN y.consumption ELSE 0 END) AS consumption_2012,\n    SUM(CASE WHEN y.date LIKE '2013%' THEN y.consumption ELSE 0 END) AS consumption_2013,\n    (SUM(CASE WHEN y.date LIKE '2012%' THEN y.consumption ELSE 0 END)\n     - SUM(CASE WHEN y.date LIKE '2013%' THEN y.consumption ELSE 0 END))\n    / NULLIF(SUM(CASE WHEN y.date LIKE '2012%' THEN y.consumption ELSE 0 END), 0) AS decrease_rate\nFROM yearmonth y\nWHERE y.customer_id IN (\n    SELECT t.customer_id\n    FROM transactions_1k t\n    WHERE t.date = DATE '2012-08-25'\n    GROUP BY t.customer_id\n    HAVING SUM(t.price) = 634.8\n)\n  AND (y.date LIKE '2012%' OR y.date LIKE '2013%')\nGROUP BY y.customer_id",
+    "gold_sql": "SELECT CAST(SUM(CASE WHEN SUBSTRING(date FROM 1 FOR 4) = '2012' THEN consumption ELSE 0 END) - SUM(CASE WHEN SUBSTRING(date FROM 1 FOR 4) = '2013' THEN consumption ELSE 0 END) AS REAL) / NULLIF(SUM(CASE WHEN SUBSTRING(date FROM 1 FOR 4) = '2012' THEN consumption ELSE 0 END), 0) FROM yearmonth WHERE customer_id = (SELECT T1.customer_id FROM transactions_1k AS T1 INNER JOIN gasstations AS T2 ON T1.gas_station_id = T2.gas_station_id WHERE T1.date = '2012-08-25' AND T1.price = 1513.12)",
+    "actual_result": [],
+    "gold_result": [
+      [
+        null
+      ]
+    ],
+    "sql_error": null,
+    "scorer_ms": 25.553499996021856,
+    "max_parallel_workers_per_gather": 0
+  }
+}

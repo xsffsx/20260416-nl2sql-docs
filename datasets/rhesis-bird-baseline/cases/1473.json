@@ -1,0 +1,29 @@
+{
+  "question": "What was the average monthly consumption of customers in SME for the year 2013?",
+  "score": 0.0,
+  "details": {
+    "reason": "Complete results differ from Gold SQL; BIRD Soft F1 = 0.0",
+    "BIRD_Soft_F1": 0.0,
+    "actual_sql": "SELECT AVG(y.consumption) AS avg_monthly_consumption\nFROM yearmonth y\nJOIN customers c ON y.customer_id = c.customer_id\nWHERE c.segment = 'SME'\n  AND y.date LIKE '2013%'",
+    "gold_sql": "SELECT AVG(T2.consumption) / NULLIF(12, 0) FROM customers AS T1 INNER JOIN yearmonth AS T2 ON T1.customer_id = T2.customer_id WHERE SUBSTRING(T2.date FROM 1 FOR 4) = '2013' AND T1.segment = 'SME'",
+    "actual_result": [
+      [
+        {
+          "type": "Decimal",
+          "value": "5519.4751714450730920"
+        }
+      ]
+    ],
+    "gold_result": [
+      [
+        {
+          "type": "Decimal",
+          "value": "459.9562642870894243"
+        }
+      ]
+    ],
+    "sql_error": null,
+    "scorer_ms": 196.03770899993833,
+    "max_parallel_workers_per_gather": 0
+  }
+}

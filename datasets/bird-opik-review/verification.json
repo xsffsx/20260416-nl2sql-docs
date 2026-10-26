@@ -1,0 +1,9 @@
+{
+  "persisted_assertion_items": 30,
+  "persisted_assertion_passes": 26,
+  "assertion_reasons_and_outputs_match": true,
+  "original_dataset_version_unchanged": true,
+  "original_EX_passes": 9,
+  "human_approval_claimed": false,
+  "source_hash_matches_manifest": true
+}

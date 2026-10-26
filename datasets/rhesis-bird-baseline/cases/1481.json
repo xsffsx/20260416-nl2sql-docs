@@ -1,0 +1,48 @@
+{
+  "question": "What is the difference in the annual average consumption of the customers with the least amount of consumption paid in CZK for 2013 between SME and LAM, LAM and KAM, and KAM and SME?",
+  "score": 0.0,
+  "details": {
+    "reason": "Complete results differ from Gold SQL; BIRD Soft F1 = 0.0",
+    "BIRD_Soft_F1": 0.0,
+    "actual_sql": "WITH customer_2013 AS (\n  SELECT\n    ym.customer_id,\n    c.segment,\n    SUM(ym.consumption) AS total_consumption,\n    AVG(ym.consumption) AS annual_avg_consumption\n  FROM yearmonth ym\n  JOIN customers c\n    ON c.customer_id = ym.customer_id\n  WHERE c.currency = 'CZK'\n    AND ym.date >= '201301'\n    AND ym.date <= '201312'\n  GROUP BY ym.customer_id, c.segment\n),\nleast_consumers AS (\n  SELECT\n    segment,\n    customer_id,\n    total_consumption,\n    annual_avg_consumption,\n    ROW_NUMBER() OVER (\n      PARTITION BY segment\n      ORDER BY total_consumption ASC, customer_id ASC\n    ) AS rn\n  FROM customer_2013\n),\nsegment_averages AS (\n  SELECT\n    MAX(CASE WHEN segment = 'SME' THEN annual_avg_consumption END) AS sme_avg,\n    MAX(CASE WHEN segment = 'LAM' THEN annual_avg_consumption END) AS lam_avg,\n    MAX(CASE WHEN segment = 'KAM' THEN annual_avg_consumption END) AS kam_avg\n  FROM least_consumers\n  WHERE rn = 1\n)\nSELECT\n  sme_avg,\n  lam_avg,\n  kam_avg,\n  sme_avg - lam_avg AS sme_minus_lam,\n  lam_avg - kam_avg AS lam_minus_kam,\n  kam_avg - sme_avg AS kam_minus_sme\nFROM segment_averages;",
+    "gold_sql": "SELECT CAST(SUM(CASE WHEN T1.segment = 'SME' THEN T2.consumption ELSE 0 END) AS REAL) / NULLIF(COUNT(T1.customer_id), 0) - CAST(SUM(CASE WHEN T1.segment = 'LAM' THEN T2.consumption ELSE 0 END) AS REAL) / NULLIF(COUNT(T1.customer_id), 0), CAST(SUM(CASE WHEN T1.segment = 'LAM' THEN T2.consumption ELSE 0 END) AS REAL) / NULLIF(COUNT(T1.customer_id), 0) - CAST(SUM(CASE WHEN T1.segment = 'KAM' THEN T2.consumption ELSE 0 END) AS REAL) / NULLIF(COUNT(T1.customer_id), 0), CAST(SUM(CASE WHEN T1.segment = 'KAM' THEN T2.consumption ELSE 0 END) AS REAL) / NULLIF(COUNT(T1.customer_id), 0) - CAST(SUM(CASE WHEN T1.segment = 'SME' THEN T2.consumption ELSE 0 END) AS REAL) / NULLIF(COUNT(T1.customer_id), 0) FROM customers AS T1 INNER JOIN yearmonth AS T2 ON T1.customer_id = T2.customer_id WHERE T1.currency = 'CZK' AND T2.consumption = (SELECT MIN(consumption) FROM yearmonth) AND CAST(T2.date AS TEXT) BETWEEN '201301' AND '201312'",
+    "actual_result": [
+      [
+        {
+          "type": "Decimal",
+          "value": "-7003.5500000000000000"
+        },
+        {
+          "type": "Decimal",
+          "value": "1.12000000000000000000"
+        },
+        {
+          "type": "Decimal",
+          "value": "-755.5475000000000000"
+        },
+        {
+          "type": "Decimal",
+          "value": "-7004.67000000000000000000"
+        },
+        {
+          "type": "Decimal",
+          "value": "756.66750000000000000000"
+        },
+        {
+          "type": "Decimal",
+          "value": "6248.0025000000000000"
+        }
+      ]
+    ],
+    "gold_result": [
+      [
+        0.0,
+        582092.875,
+        -582092.875
+      ]
+    ],
+    "sql_error": null,
+    "scorer_ms": 212.59995800210163,
+    "max_parallel_workers_per_gather": 0
+  }
+}

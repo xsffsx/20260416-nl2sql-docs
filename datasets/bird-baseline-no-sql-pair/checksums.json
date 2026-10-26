@@ -1,0 +1,75 @@
+{
+  "algorithm": "sha256",
+  "files": [
+    {
+      "file": "docs-site/static/datasets/bird-baseline-no-sql-pair/case-results.json",
+      "bytes": 43750,
+      "sha256": "adfb72b950eeab18422be2ceb0f515753a04b83c4c901657930602ee94b38a39"
+    },
+    {
+      "file": "docs-site/static/datasets/bird-baseline-no-sql-pair/examples.json",
+      "bytes": 4216,
+      "sha256": "f6b25d2eff2aeb1b1060fd689cdc5c773e93482e1ed7489341be911d185e551a"
+    },
+    {
+      "file": "docs-site/static/datasets/bird-baseline-no-sql-pair/provenance.json",
+      "bytes": 43749,
+      "sha256": "fcf5fc552a0c0a39a31fb258f9b6b4633cd01da71115a93a89dc8847a69a2cdd"
+    },
+    {
+      "file": "docs-site/static/datasets/bird-baseline-no-sql-pair/source-lock.json",
+      "bytes": 45198,
+      "sha256": "51c5f72fb623a15be81f397a8ca480e0663eb84eb9a7b11cd0feb46bf837ae88"
+    },
+    {
+      "file": "docs-site/static/datasets/bird-baseline-no-sql-pair/summary.json",
+      "bytes": 233,
+      "sha256": "d5ed8b0bf2e1bb4c2174bc49670d1fce94925d735fe72ee75a451217c710afd9"
+    },
+    {
+      "file": "docs-site/static/img/examples/bird-baseline-no-sql-pair/02-confirm-import.png",
+      "bytes": 100032,
+      "sha256": "80d7fe77afc838a4bcfd22b0548912804b8f1cf516e420532b7f8b6a7d917bf7"
+    },
+    {
+      "file": "docs-site/static/img/examples/bird-baseline-no-sql-pair/05-publish-review.png",
+      "bytes": 229526,
+      "sha256": "c6e4ff366ae20fbfb662bc444c6f602c4c03d2e2ac523012d66d81917518c909"
+    },
+    {
+      "file": "docs-site/static/img/examples/bird-baseline-no-sql-pair/07-opik-dataset-v1.png",
+      "bytes": 220407,
+      "sha256": "fefafc1f52a0c6e8d6cfbc9fc6dcbbbac1954713fcb449289f3799a205cbac37"
+    },
+    {
+      "file": "docs-site/static/img/examples/bird-baseline-no-sql-pair/09-opik-full-reviewed.png",
+      "bytes": 310647,
+      "sha256": "52039eab071773a877f95aa37abf9811803f5f1db48e4218f4cb217d5b8d68fd"
+    },
+    {
+      "file": "docs-site/static/img/examples/bird-baseline-no-sql-pair/active-reviewed.png",
+      "bytes": 125020,
+      "sha256": "8186224d07d5ccc08fd18ac0ccc31ba429a8a8e86058dc2e12524a685df958c3"
+    },
+    {
+      "file": "docs-site/static/img/examples/bird-baseline-no-sql-pair/after-create-actual.png",
+      "bytes": 233149,
+      "sha256": "d6d8c74e977d565adaaaead639b852bf06ac97c04279fe127f03f45bb4a2715c"
+    },
+    {
+      "file": "docs-site/static/img/examples/bird-baseline-no-sql-pair/opik-metrics-reviewed.png",
+      "bytes": 27612,
+      "sha256": "5fcf1807a5ff0526b3fae4fa95df1b191e84b9cc499518fdb2a6591e00515742"
+    },
+    {
+      "file": "docs-site/static/img/getting-started/project-modes/poc-csv/import-csv-and-qa/04-choose-csv-data.png",
+      "bytes": 96742,
+      "sha256": "460e36caff6b29851f0d8b5ea9c659c17444394f742060ae0eefff264d2a7c72"
+    },
+    {
+      "file": "docs-site/static/img/getting-started/project-modes/poc-csv/import-csv-and-qa/15-readiness-passed.png",
+      "bytes": 120746,
+      "sha256": "c13805e241f679a3856956e64fea26a9757359a7e2132bf9b6db4faf0378af73"
+    }
+  ]
+}

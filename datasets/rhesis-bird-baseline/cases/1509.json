@@ -1,0 +1,23 @@
+{
+  "question": "Among the transactions made in the gas stations in the Czech Republic, how many of them are taken place after 2012/1/1?",
+  "score": 0.0,
+  "details": {
+    "reason": "Complete results differ from Gold SQL; BIRD Soft F1 = 0.0",
+    "BIRD_Soft_F1": 0.0,
+    "actual_sql": "SELECT COUNT(*) AS transaction_count\nFROM transactions_1k\nWHERE date > DATE '2012-01-01';",
+    "gold_sql": "SELECT COUNT(T1.transaction_id) FROM transactions_1k AS T1 INNER JOIN gasstations AS T2 ON T1.gas_station_id = T2.gas_station_id WHERE T2.country = 'CZE' AND TO_CHAR(CAST(T1.date AS TIMESTAMP), 'YYYY') >= '2012'",
+    "actual_result": [
+      [
+        1000
+      ]
+    ],
+    "gold_result": [
+      [
+        933
+      ]
+    ],
+    "sql_error": null,
+    "scorer_ms": 5.794791999505833,
+    "max_parallel_workers_per_gather": 0
+  }
+}

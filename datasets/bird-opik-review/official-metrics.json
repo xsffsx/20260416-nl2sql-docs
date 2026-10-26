@@ -1,0 +1,4077 @@
+[
+  {
+    "case_id": "debit_card_specializing:1471",
+    "question_id": "1471",
+    "execution_mode": "frozen_result_replay",
+    "source_experiment": "bird-debit-baseline-full-20261024-0800",
+    "sql": "SELECT\n  COUNT(*) FILTER (WHERE c.currency = 'EUR') AS eur_customer_count,\n  COUNT(*) FILTER (WHERE c.currency = 'CZK') AS czk_customer_count,\n  ROUND(\n    COUNT(*) FILTER (WHERE c.currency = 'EUR')::NUMERIC\n    / NULLIF(COUNT(*) FILTER (WHERE c.currency = 'CZK'), 0),\n    4\n  ) AS eur_to_czk_ratio\nFROM customers c\nWHERE c.currency IN ('EUR', 'CZK');",
+    "gold_rows": [
+      [
+        0.06572769953051644
+      ]
+    ],
+    "actual_rows": [
+      [
+        2002,
+        30459,
+        {
+          "type": "Decimal",
+          "value": "0.0657"
+        }
+      ]
+    ],
+    "EX": 0,
+    "BIRD_SoftF1": 0,
+    "original_ask_ms": 15498.479833011515,
+    "original_query_id": "359e834e-be97-4796-9b37-582823a75769",
+    "original_trace_id": "7854221ffd0c86aa91240f68163a216a",
+    "source_score_sha256": "bb9ea818678f7a27141647f20302740e72420c63d3c69105741c18509fe8d471"
+  },
+  {
+    "case_id": "debit_card_specializing:1472",
+    "question_id": "1472",
+    "execution_mode": "frozen_result_replay",
+    "source_experiment": "bird-debit-baseline-full-20261024-0800",
+    "sql": "SELECT\n    ym.customer_id,\n    SUM(ym.consumption) AS total_consumption\nFROM yearmonth AS ym\nJOIN customers AS c\n    ON c.customer_id = ym.customer_id\nWHERE c.segment = 'LAM'\n  AND ym.date BETWEEN '201201' AND '201212'\nGROUP BY ym.customer_id\nORDER BY total_consumption ASC\nLIMIT 1;",
+    "gold_rows": [
+      [
+        47273
+      ]
+    ],
+    "actual_rows": [
+      [
+        47273,
+        {
+          "type": "Decimal",
+          "value": "0.74"
+        }
+      ]
+    ],
+    "EX": 0,
+    "BIRD_SoftF1": 0.6666666666666666,
+    "original_ask_ms": 17707.406291970983,
+    "original_query_id": "ff7997f3-6d46-47de-9a04-eb0d8eb83506",
+    "original_trace_id": "a7bedacff0700d2d057f573c2bc89ad3",
+    "source_score_sha256": "17c4765ef29c51696e3b84d72a91c7012babda546570dea9a3312ef9e5c6dd1e"
+  },
+  {
+    "case_id": "debit_card_specializing:1473",
+    "question_id": "1473",
+    "execution_mode": "frozen_result_replay",
+    "source_experiment": "bird-debit-baseline-full-20261024-0800",
+    "sql": "SELECT\n  AVG(ym.consumption) / 12 AS avg_monthly_consumption_sme_2013\nFROM yearmonth AS ym\nJOIN customers AS c\n  ON ym.customer_id = c.customer_id\nWHERE c.segment = 'SME'\n  AND LEFT(ym.date, 4) = '2013';",
+    "gold_rows": [
+      [
+        {
+          "type": "Decimal",
+          "value": "459.9562642870894243"
+        }
+      ]
+    ],
+    "actual_rows": [
+      [
+        {
+          "type": "Decimal",
+          "value": "459.9562642870894243"
+        }
+      ]
+    ],
+    "EX": 1,
+    "BIRD_SoftF1": 1.0,
+    "original_ask_ms": 15399.981292022858,
+    "original_query_id": "95e29d49-1672-47c0-b58f-632514ccdb64",
+    "original_trace_id": "b81772128055dd04f8590db97b0f992a",
+    "source_score_sha256": "f2fa0c6b04660853946f8de4d05e12b34f19d706a5440bf8f6f04c89bddfb51e"
+  },
+  {
+    "case_id": "debit_card_specializing:1476",
+    "question_id": "1476",
+    "execution_mode": "frozen_result_replay",
+    "source_experiment": "bird-debit-baseline-full-20261024-0800",
+    "sql": "SELECT\n  SUM(CASE WHEN c.currency = 'CZK' THEN CAST(ym.consumption AS FLOAT) ELSE 0 END) AS czk_consumption_2012,\n  SUM(CASE WHEN c.currency = 'EUR' THEN CAST(ym.consumption AS FLOAT) ELSE 0 END) AS eur_consumption_2012,\n  SUM(CASE WHEN c.currency = 'CZK' THEN CAST(ym.consumption AS FLOAT) ELSE 0 END)\n    - SUM(CASE WHEN c.currency = 'EUR' THEN CAST(ym.consumption AS FLOAT) ELSE 0 END) AS consumption_difference\nFROM yearmonth ym\nJOIN customers c\n  ON c.customer_id = ym.customer_id\nWHERE ym.date BETWEEN '201201' AND '201212'",
+    "gold_rows": [
+      [
+        402524570.1699988
+      ]
+    ],
+    "actual_rows": [
+      [
+        404716983.980001,
+        2192413.809999997,
+        402524570.170001
+      ]
+    ],
+    "EX": 0,
+    "BIRD_SoftF1": 0,
+    "original_ask_ms": 24416.983250004705,
+    "original_query_id": "dfb0366e-5368-48b0-bfb1-325a25c16713",
+    "original_trace_id": "a1c551523fd2f06495c02589c9ae9f7a",
+    "source_score_sha256": "6b707efb9c293df0ce89f463b7ad4c5a027ffd447b54a9c2c7d05dd230386c22"
+  },
+  {
+    "case_id": "debit_card_specializing:1479",
+    "question_id": "1479",
+    "execution_mode": "frozen_result_replay",
+    "source_experiment": "bird-debit-baseline-full-20261024-0800",
+    "sql": "SELECT LEFT(date, 4) AS year, SUM(consumption) AS total_consumption FROM yearmonth GROUP BY LEFT(date, 4) ORDER BY total_consumption DESC LIMIT 1",
+    "gold_rows": [
+      [
+        "2013"
+      ]
+    ],
+    "actual_rows": [
+      [
+        "2013",
+        {
+          "type": "Decimal",
+          "value": "3008566555.28"
+        }
+      ]
+    ],
+    "EX": 0,
+    "BIRD_SoftF1": 0.6666666666666666,
+    "original_ask_ms": 13960.898666991852,
+    "original_query_id": "42430d66-f33f-40cc-ab8c-371e446456c0",
+    "original_trace_id": "a5e8cd347e6c1cfb1b62f6d42d23ec28",
+    "source_score_sha256": "cd5d426383d45ce23bb4a3e416180aa352ad56bc255732d35697d27521dd1b0e"
+  },
+  {
+    "case_id": "debit_card_specializing:1480",
+    "question_id": "1480",
+    "execution_mode": "frozen_result_replay",
+    "source_experiment": "bird-debit-baseline-full-20261024-0800",
+    "sql": "SELECT ym.date AS year_month, SUM(ym.consumption) AS total_consumption\nFROM yearmonth ym\nJOIN customers c ON c.customer_id = ym.customer_id\nWHERE c.segment = 'SME'\n  AND ym.date BETWEEN '201301' AND '201312'\nGROUP BY ym.date\nORDER BY total_consumption DESC\nLIMIT 1;",
+    "gold_rows": [
+      [
+        "04"
+      ]
+    ],
+    "actual_rows": [
+      [
+        "201304",
+        {
+          "type": "Decimal",
+          "value": "126047776.92"
+        }
+      ]
+    ],
+    "EX": 0,
+    "BIRD_SoftF1": 0,
+    "original_ask_ms": 30655.38816701155,
+    "original_query_id": "3a6ffc0c-1e6c-496b-80f8-84ceae972242",
+    "original_trace_id": "346bb73fb099078289013256dfffa808",
+    "source_score_sha256": "e5e770802d3624b7d24065480dabd8887b73a5c1ef7c01661f8a4b15bdfe3769"
+  },
+  {
+    "case_id": "debit_card_specializing:1481",
+    "question_id": "1481",
+    "execution_mode": "frozen_result_replay",
+    "source_experiment": "bird-debit-baseline-full-20261024-0800",
+    "sql": "WITH czk_2013 AS (\n  SELECT ym.customer_id,\n         SUM(ym.consumption) AS annual_consumption\n  FROM yearmonth ym\n  JOIN customers c ON c.customer_id = ym.customer_id\n  WHERE c.currency = 'CZK'\n    AND ym.date BETWEEN '201301' AND '201312'\n  GROUP BY ym.customer_id\n),\ncustomer_segment AS (\n  SELECT ct.customer_id,\n         ct.annual_consumption,\n         c.segment\n  FROM czk_2013 ct\n  JOIN customers c ON c.customer_id = ct.customer_id\n  WHERE c.segment IN ('SME', 'LAM', 'KAM')\n),\nsegment_min AS (\n  SELECT segment,\n         MIN(annual_consumption) AS min_consumption\n  FROM customer_segment\n  GROUP BY segment\n),\nlowest_customers AS (\n  SELECT cs.segment,\n         cs.annual_consumption\n  FROM customer_segment cs\n  JOIN segment_min sm\n    ON sm.segment = cs.segment\n   AND sm.min_consumption = cs.annual_consumption\n),\nsegment_avg AS (\n  SELECT segment,\n         SUM(annual_consumption) / COUNT(*) AS annual_avg_consumption\n  FROM lowest_customers\n  GROUP BY segment\n),\npivoted AS (\n  SELECT MAX(CASE WHEN segment = 'SME' THEN annual_avg_consumption END) AS sme_avg,\n         MAX(CASE WHEN segment = 'LAM' THEN annual_avg_consumption END) AS lam_avg,\n         MAX(CASE WHEN segment = 'KAM' THEN annual_avg_consumption END) AS kam_avg\n  FROM segment_avg\n)\nSELECT sme_avg - lam_avg AS sme_minus_lam,\n       lam_avg - kam_avg AS lam_minus_kam,\n       kam_avg - sme_avg AS kam_minus_sme\nFROM pivoted;",
+    "gold_rows": [
+      [
+        0.0,
+        582092.875,
+        -582092.875
+      ]
+    ],
+    "actual_rows": [
+      [
+        {
+          "type": "Decimal",
+          "value": "-14009.3400000000000000"
+        },
+        {
+          "type": "Decimal",
+          "value": "6046.6200000000000000"
+        },
+        {
+          "type": "Decimal",
+          "value": "7962.7200000000000000"
+        }
+      ]
+    ],
+    "EX": 0,
+    "BIRD_SoftF1": 0,
+    "original_ask_ms": 55697.102625039406,
+    "original_query_id": "91daee38-31d9-4989-b0ba-eec85aba1e4f",
+    "original_trace_id": "4846706475bb707421c7ea72f0552a2b",
+    "source_score_sha256": "06d474a92d64edd06f82c4d5e51d8cfc86422b3d47329def28d74518b90852ac"
+  },
+  {
+    "case_id": "debit_card_specializing:1482",
+    "question_id": "1482",
+    "execution_mode": "frozen_result_replay",
+    "source_experiment": "bird-debit-baseline-full-20261024-0800",
+    "sql": "WITH eur_customers AS (\n  SELECT customer_id, segment\n  FROM customers\n  WHERE currency = 'EUR'\n    AND segment IN ('SME', 'LAM', 'KAM')\n),\nconsumption_by_year AS (\n  SELECT\n    c.segment,\n    LEFT(ym.date, 4) AS yr,\n    SUM(ym.consumption) AS total_consumption\n  FROM yearmonth ym\n  INNER JOIN eur_customers c ON c.customer_id = ym.customer_id\n  WHERE LEFT(ym.date, 4) IN ('2012', '2013')\n  GROUP BY c.segment, LEFT(ym.date, 4)\n),\nsegment_totals AS (\n  SELECT\n    segment,\n    MAX(total_consumption) FILTER (WHERE yr = '2012') AS consumption_2012,\n    MAX(total_consumption) FILTER (WHERE yr = '2013') AS consumption_2013\n  FROM consumption_by_year\n  GROUP BY segment\n),\nsegment_pct AS (\n  SELECT\n    segment,\n    consumption_2012,\n    consumption_2013,\n    consumption_2013 - consumption_2012 AS increase_or_decrease,\n    ROUND((consumption_2013 - consumption_2012) / NULLIF(consumption_2013, 0) * 100, 4) AS pct_increase\n  FROM segment_totals\n)\nSELECT\n  'Biggest percentage increase' AS result_type,\n  segment,\n  consumption_2012,\n  consumption_2013,\n  increase_or_decrease,\n  pct_increase\nFROM segment_pct\nWHERE pct_increase = (SELECT MAX(pct_increase) FROM segment_pct)\nUNION ALL\nSELECT\n  'Lowest percentage increase' AS result_type,\n  segment,\n  consumption_2012,\n  consumption_2013,\n  increase_or_decrease,\n  pct_increase\nFROM segment_pct\nWHERE pct_increase = (SELECT MIN(pct_increase) FROM segment_pct)\nORDER BY pct_increase DESC;",
+    "gold_rows": [
+      [
+        545.4018808857365,
+        681.5824507359695,
+        708.1124296835194
+      ]
+    ],
+    "actual_rows": [
+      [
+        "Biggest percentage increase",
+        "SME",
+        {
+          "type": "Decimal",
+          "value": "869537.52"
+        },
+        {
+          "type": "Decimal",
+          "value": "7258151.96"
+        },
+        {
+          "type": "Decimal",
+          "value": "6388614.44"
+        },
+        {
+          "type": "Decimal",
+          "value": "88.0198"
+        }
+      ],
+      [
+        "Lowest percentage increase",
+        "LAM",
+        {
+          "type": "Decimal",
+          "value": "676212.68"
+        },
+        {
+          "type": "Decimal",
+          "value": "4326606.13"
+        },
+        {
+          "type": "Decimal",
+          "value": "3650393.45"
+        },
+        {
+          "type": "Decimal",
+          "value": "84.3708"
+        }
+      ]
+    ],
+    "EX": 0,
+    "BIRD_SoftF1": 0,
+    "original_ask_ms": 47517.74204202229,
+    "original_query_id": "ff6aa546-6569-44e6-9b9e-526610c8712e",
+    "original_trace_id": "015d7ab97729db278cd829e157014ecf",
+    "source_score_sha256": "6ebbd0aa4212359d37e7d28fb33c82a5416c7a9be2ad551d0cc78b2252a22c83"
+  },
+  {
+    "case_id": "debit_card_specializing:1483",
+    "question_id": "1483",
+    "execution_mode": "frozen_result_replay",
+    "source_experiment": "bird-debit-baseline-full-20261024-0800",
+    "sql": "SELECT SUM(consumption) AS total_consumption FROM yearmonth WHERE customer_id = 6 AND date >= '201308' AND date <= '201311';",
+    "gold_rows": [
+      [
+        {
+          "type": "Decimal",
+          "value": "1224.96"
+        }
+      ]
+    ],
+    "actual_rows": [
+      [
+        {
+          "type": "Decimal",
+          "value": "1224.96"
+        }
+      ]
+    ],
+    "EX": 1,
+    "BIRD_SoftF1": 1.0,
+    "original_ask_ms": 12476.30004194798,
+    "original_query_id": "9ca45a5d-475b-466c-9b25-27dfb021aa26",
+    "original_trace_id": "c514eb4aaaf147b2205c8c1fed01770f",
+    "source_score_sha256": "099c8f5ca87c165fdfa6ece51f7574efc9c40305f43c37eea1c33ab5f40128af"
+  },
+  {
+    "case_id": "debit_card_specializing:1484",
+    "question_id": "1484",
+    "execution_mode": "frozen_result_replay",
+    "source_experiment": "bird-debit-baseline-full-20261024-0800",
+    "sql": "SELECT\n  COUNT(*) FILTER (WHERE gs.country = 'CZE') AS cze_discount_stations,\n  COUNT(*) FILTER (WHERE gs.country = 'SVK') AS svk_discount_stations,\n  COUNT(*) FILTER (WHERE gs.country = 'CZE') - COUNT(*) FILTER (WHERE gs.country = 'SVK') AS difference\nFROM gasstations gs\nWHERE gs.segment = 'Discount';",
+    "gold_rows": [
+      [
+        176
+      ]
+    ],
+    "actual_rows": [
+      [
+        235,
+        59,
+        176
+      ]
+    ],
+    "EX": 0,
+    "BIRD_SoftF1": 0.5,
+    "original_ask_ms": 10860.188541992102,
+    "original_query_id": "386d5551-439a-4091-a580-bb487eee04a1",
+    "original_trace_id": "aa7840288d67f57ae58b5047493254ca",
+    "source_score_sha256": "e11a861edebadffa5f71b19d2d2937f97d747c9a6ebc47728427af91342f4114"
+  },
+  {
+    "case_id": "debit_card_specializing:1486",
+    "question_id": "1486",
+    "execution_mode": "frozen_result_replay",
+    "source_experiment": "bird-debit-baseline-full-20261024-0800",
+    "sql": "SELECT\n  SUM(CASE WHEN currency = 'CZK' THEN 1 ELSE 0 END) AS sme_czk_count,\n  SUM(CASE WHEN currency = 'EUR' THEN 1 ELSE 0 END) AS sme_eur_count,\n  SUM(CASE WHEN currency = 'CZK' THEN 1 ELSE 0 END)\n    - SUM(CASE WHEN currency = 'EUR' THEN 1 ELSE 0 END) AS diff_czk_minus_eur,\n  CASE\n    WHEN SUM(CASE WHEN currency = 'CZK' THEN 1 ELSE 0 END)\n       > SUM(CASE WHEN currency = 'EUR' THEN 1 ELSE 0 END) THEN 'Yes'\n    ELSE 'No'\n  END AS more_smes_pay_czk\nFROM customers\nWHERE segment = 'SME';",
+    "gold_rows": [
+      [
+        23505
+      ]
+    ],
+    "actual_rows": [
+      [
+        25134,
+        1629,
+        23505,
+        "Yes"
+      ]
+    ],
+    "EX": 0,
+    "BIRD_SoftF1": 0.4,
+    "original_ask_ms": 13899.536624958273,
+    "original_query_id": "44f1545a-f41f-46c8-9388-438fea77ded6",
+    "original_trace_id": "53b8562eba47093a7f2067005fd49958",
+    "source_score_sha256": "c788ebd3a6ae8bd9fb05bdf1e6ea792edba7ddbe5dd70a2583aa2ad38f6fa625"
+  },
+  {
+    "case_id": "debit_card_specializing:1490",
+    "question_id": "1490",
+    "execution_mode": "frozen_result_replay",
+    "source_experiment": "bird-debit-baseline-full-20261024-0800",
+    "sql": "SELECT\n    ROUND(\n      COUNT(*) FILTER (WHERE customer_total_amount > 46.73) * 100.0\n      / NULLIF(COUNT(*), 0),\n      4\n    ) AS pct_lam_customers_over_threshold\nFROM (\n    SELECT\n        c.customer_id,\n        SUM(t.amount) AS customer_total_amount\n    FROM customers c\n    JOIN transactions_1k t\n      ON t.customer_id = c.customer_id\n    WHERE c.segment = 'LAM'\n    GROUP BY c.customer_id\n) AS customer_totals",
+    "gold_rows": [
+      [
+        98.5267932135058
+      ]
+    ],
+    "actual_rows": [
+      [
+        {
+          "type": "Decimal",
+          "value": "15.1515"
+        }
+      ]
+    ],
+    "EX": 0,
+    "BIRD_SoftF1": 0,
+    "original_ask_ms": 25623.03833302576,
+    "original_query_id": "1b68b038-f07e-4192-8254-0b8a9b5af519",
+    "original_trace_id": "93e34ce8281f6a770e8c34bcfaccbc09",
+    "source_score_sha256": "044dc2368321ee67bb0602a3df5f1831e326975033a6977bef8dbd1f93a4264c"
+  },
+  {
+    "case_id": "debit_card_specializing:1493",
+    "question_id": "1493",
+    "execution_mode": "frozen_result_replay",
+    "source_experiment": "bird-debit-baseline-full-20261024-0800",
+    "sql": "SELECT\n  ROUND(\n    100.0 * COUNT(*) FILTER (WHERE consumption > 528.3)\n    / NULLIF(COUNT(*), 0),\n    2\n  ) AS pct_customers_above_threshold\nFROM yearmonth\nWHERE date = '201202';",
+    "gold_rows": [
+      [
+        66.62300807683911
+      ]
+    ],
+    "actual_rows": [
+      [
+        {
+          "type": "Decimal",
+          "value": "66.62"
+        }
+      ]
+    ],
+    "EX": 0,
+    "BIRD_SoftF1": 0,
+    "original_ask_ms": 19549.521124979947,
+    "original_query_id": "381ac54a-e866-44a4-a78c-66ed0b18cdb1",
+    "original_trace_id": "c78b647e27dfc7d8210532fcb940d713",
+    "source_score_sha256": "6bb9361a2e377fe1844740dc75394a66a7b601d671e0e9e58a38ed04fa8bc671"
+  },
+  {
+    "case_id": "debit_card_specializing:1498",
+    "question_id": "1498",
+    "execution_mode": "frozen_result_replay",
+    "source_experiment": "bird-debit-baseline-full-20261024-0800",
+    "sql": "SELECT\n  date AS year_month,\n  CAST(consumption AS DOUBLE PRECISION) AS consumption\nFROM yearmonth\nWHERE LEFT(date, 4) = '2012'\nORDER BY CAST(consumption AS DOUBLE PRECISION) DESC\nLIMIT 1;",
+    "gold_rows": [
+      [
+        51787161.7399998
+      ]
+    ],
+    "actual_rows": [
+      [
+        "201201",
+        445279.69
+      ]
+    ],
+    "EX": 0,
+    "BIRD_SoftF1": 0,
+    "original_ask_ms": 24600.387208978646,
+    "original_query_id": "587944d0-2ff4-45a5-be21-e191c4724522",
+    "original_trace_id": "26534f91c15f78ee3b65d22bf6da3f36",
+    "source_score_sha256": "122a32c8bb173905a6e458e6533cd68cdaa6105a10c169821adc75e122884ea6"
+  },
+  {
+    "case_id": "debit_card_specializing:1500",
+    "question_id": "1500",
+    "execution_mode": "frozen_result_replay",
+    "source_experiment": "bird-debit-baseline-full-20261024-0800",
+    "sql": "SELECT DISTINCT p.description\nFROM products p\nJOIN transactions_1k t ON p.product_id = t.product_id\nJOIN yearmonth y ON t.customer_id = y.customer_id\n  AND to_char(t.date, 'YYYYMM') = y.date\nWHERE y.date = '201309';",
+    "gold_rows": [
+      [
+        "Diesel"
+      ],
+      [
+        "Diesel"
+      ],
+      [
+        "Diesel"
+      ],
+      [
+        "Nat.Super"
+      ],
+      [
+        "Nat.Super"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Autoprísluš."
+      ],
+      [
+        "Provoz.nápl."
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Mytí vozidel"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Diesel"
+      ],
+      [
+        "Diesel"
+      ],
+      [
+        "Diesel aditiv"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Diesel"
+      ],
+      [
+        "Diesel"
+      ],
+      [
+        "Diesel"
+      ],
+      [
+        "Diesel"
+      ],
+      [
+        "Diesel"
+      ],
+      [
+        "Nat.Super"
+      ],
+      [
+        "Diesel"
+      ],
+      [
+        "Nat.Super"
+      ],
+      [
+        "Diesel"
+      ],
+      [
+        "Diesel"
+      ],
+      [
+        "Nat.Super"
+      ],
+      [
+        "Autokozmetik"
+      ],
+      [
+        "Nat.Super"
+      ],
+      [
+        "Nat.Super"
+      ],
+      [
+        "Diesel"
+      ],
+      [
+        "Diesel"
+      ],
+      [
+        "Diesel"
+      ],
+      [
+        "Diesel"
+      ],
+      [
+        "Diesel"
+      ],
+      [
+        "Nat.Super"
+      ],
+      [
+        "Diesel"
+      ],
+      [
+        "Diesel"
+      ],
+      [
+        "Umývanie voz"
+      ],
+      [
+        "Nat.Super"
+      ],
+      [
+        "Diesel"
+      ],
+      [
+        "Diesel"
+      ],
+      [
+        "Diesel"
+      ],
+      [
+        "Nat.Super"
+      ],
+      [
+        "Diesel"
+      ],
+      [
+        "Diesel"
+      ],
+      [
+        "Diesel"
+      ],
+      [
+        "Diesel"
+      ],
+      [
+        "Diesel"
+      ],
+      [
+        "Prev.náplne"
+      ],
+      [
+        "Diesel"
+      ],
+      [
+        "Diesel"
+      ],
+      [
+        "Umývanie voz"
+      ],
+      [
+        "Prev.náplne"
+      ],
+      [
+        "Diesel"
+      ],
+      [
+        "Diesel"
+      ],
+      [
+        "Umývanie voz"
+      ],
+      [
+        "Nat.Super"
+      ],
+      [
+        "Diesel"
+      ],
+      [
+        "Diesel aditiv"
+      ],
+      [
+        "Prev.náplne"
+      ],
+      [
+        "Diesel"
+      ],
+      [
+        "Diesel"
+      ],
+      [
+        "Diesel"
+      ],
+      [
+        "Diesel"
+      ],
+      [
+        "Mytí vozidel"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Oleje,tuky"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nemrz.kapal."
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Provoz.nápl."
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Dalnic.popl."
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Zpr.nakupu"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Mytí vozidel"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Autoprísluš."
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Diesel +"
+      ],
+      [
+        "Provoz.nápl."
+      ],
+      [
+        "Mytí vozidel"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural Spec"
+      ],
+      [
+        "Nemrz.kapal."
+      ],
+      [
+        "Natural +"
+      ],
+      [
+        "Nemrz.kapal."
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Mytí vozidel"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Oleje,tuky"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nemrz.kapal."
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Mytí vozidel"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nemrz.kapal."
+      ],
+      [
+        "Diesel +"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Mytí vozidel"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Autoprísluš."
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Mytí vozidel"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural +"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta Plus"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta Plus"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Autokosmet."
+      ],
+      [
+        "Autokosmet."
+      ],
+      [
+        "Nemrz.kapal."
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta Plus"
+      ],
+      [
+        "Autoprísluš."
+      ],
+      [
+        "Autokosmet."
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural Plus"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural Plus"
+      ],
+      [
+        "Diesel +"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nemrz.kapal."
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Diesel +"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Oleje,tuky"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Additivum"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Provoz.nápl."
+      ],
+      [
+        "Mytí vozidel"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Autokosmet."
+      ],
+      [
+        "Diesel +"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Dalnic.popl."
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Mytí vozidel"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Dalnic.popl."
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Provoz.nápl."
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Provoz.nápl."
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Provoz.nápl."
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Mytí vozidel"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Provoz.nápl."
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural Spec"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Zpr.nakupu"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Mytí vozidel"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Mytí vozidel"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Mytí vozidel"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Diesel +"
+      ],
+      [
+        "Nafta Plus"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Mytí vozidel"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Zpr.nakupu"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nemrz.kapal."
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Oleje,tuky"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Autoprísluš."
+      ],
+      [
+        "Provoz.nápl."
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Diesel +"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Autokosmet."
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural Plus"
+      ],
+      [
+        "Diesel +"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Mytí vozidel"
+      ],
+      [
+        "Mytí vozidel"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Diesel +"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Diesel +"
+      ],
+      [
+        "Nafta Plus"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Diesel +"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Knihy,nov."
+      ],
+      [
+        "Provoz.nápl."
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nemrz.kapal."
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta Plus"
+      ],
+      [
+        "Potraviny"
+      ],
+      [
+        "Provoz.nápl."
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Autoprísluš."
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nemrz.kapal."
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nemrz.kapal."
+      ],
+      [
+        "Natural Spec"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Mytí vozidel"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural Plus"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nemrz.kapal."
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural +"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Provoz.nápl."
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Diesel +"
+      ],
+      [
+        "Mytí vozidel"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Mytí vozidel"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Provoz.nápl."
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "LPG"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Diesel +"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Mytí vozidel"
+      ],
+      [
+        "Nafta Plus"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Obcerstvení"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural Plus"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Mytí vozidel"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Mytí vozidel"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nemrz.kapal."
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Zboží nesp."
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Potraviny"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta Plus"
+      ],
+      [
+        "Mytí vozidel"
+      ],
+      [
+        "Mytí vozidel"
+      ],
+      [
+        "Diesel +"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Diesel +"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta Plus"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Potraviny"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Diesel +"
+      ],
+      [
+        "Potraviny"
+      ],
+      [
+        "Diesel +"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nemrz.kapal."
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Mytí vozidel"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Mytí vozidel"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Oleje,tuky"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta Plus"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Mytí vozidel"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Diesel +"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Mytí vozidel"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nat.Super"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Mytí vozidel"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Mytí vozidel"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Zpr.nakupu"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Mytí vozidel"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural Spec"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Provoz.nápl."
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Diesel +"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Diesel +"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Mytí vozidel"
+      ],
+      [
+        "Diesel +"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Mytí vozidel"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Provoz.nápl."
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Autokosmet."
+      ],
+      [
+        "Mytí vozidel"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Oleje,tuky"
+      ],
+      [
+        "Nemrz.kapal."
+      ],
+      [
+        "Diesel +"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Diesel +"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta Plus"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Diesel +"
+      ],
+      [
+        "LPG"
+      ],
+      [
+        "Diesel"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Diesel"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Diesel +"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Dalnic.popl."
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Mytí vozidel"
+      ],
+      [
+        "Nemrz.kapal."
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nemrz.kapal."
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta Plus"
+      ],
+      [
+        "Provoz.nápl."
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Mytí vozidel"
+      ],
+      [
+        "Diesel +"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Mytí vozidel"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Provoz.nápl."
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Autokosmet."
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nemrz.kapal."
+      ],
+      [
+        "Mytí vozidel"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "LPG"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Mytí vozidel"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Diesel"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Diesel +"
+      ],
+      [
+        "Zboží nesp."
+      ],
+      [
+        "Obcerstvení"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "LPG"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Diesel"
+      ],
+      [
+        "Diesel"
+      ],
+      [
+        "Umývanie voz"
+      ],
+      [
+        "Diesel aditiv"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Provoz.nápl."
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta"
+      ]
+    ],
+    "actual_rows": [],
+    "EX": 0,
+    "BIRD_SoftF1": 0,
+    "original_ask_ms": 20354.617666976992,
+    "original_query_id": "5c555f3f-7dea-48b6-9116-243c6bd5b956",
+    "original_trace_id": "a55b53104ab9ba4c4db8b4e4d381778d",
+    "source_score_sha256": "8e20a3b8bab9fc86f2d2c364d6184f2975668d73c433420830a26fed1d0bbf32"
+  },
+  {
+    "case_id": "debit_card_specializing:1501",
+    "question_id": "1501",
+    "execution_mode": "frozen_result_replay",
+    "source_experiment": "bird-debit-baseline-full-20261024-0800",
+    "sql": "SELECT DISTINCT gs.country\nFROM yearmonth ym\nJOIN transactions_1k t ON t.customer_id = ym.customer_id\nJOIN gasstations gs ON gs.gas_station_id = t.gas_station_id\nWHERE ym.date = '201306'\nORDER BY gs.country;",
+    "gold_rows": [
+      [
+        "CZE"
+      ],
+      [
+        "SVK"
+      ]
+    ],
+    "actual_rows": [
+      [
+        "CZE"
+      ],
+      [
+        "SVK"
+      ]
+    ],
+    "EX": 1,
+    "BIRD_SoftF1": 1.0,
+    "original_ask_ms": 20572.01400003396,
+    "original_query_id": "87b8d3d7-db27-422f-8360-5fbbb8e44594",
+    "original_trace_id": "0e4b591602c3b5294d2970ee91f644b7",
+    "source_score_sha256": "9590d9c1d8a9de12e80fa3a04ae8be7caa17f49ab4a7e767ea478d64f4ed9767"
+  },
+  {
+    "case_id": "debit_card_specializing:1505",
+    "question_id": "1505",
+    "execution_mode": "frozen_result_replay",
+    "source_experiment": "bird-debit-baseline-full-20261024-0800",
+    "sql": "SELECT COUNT(DISTINCT c.customer_id) AS euro_customers_with_monthly_consumption_over_1000\nFROM customers c\nJOIN yearmonth ym ON ym.customer_id = c.customer_id\nWHERE c.currency = 'EUR'\n  AND ym.consumption > 1000;",
+    "gold_rows": [
+      [
+        2730
+      ]
+    ],
+    "actual_rows": [
+      [
+        391
+      ]
+    ],
+    "EX": 0,
+    "BIRD_SoftF1": 0,
+    "original_ask_ms": 12211.556166992523,
+    "original_query_id": "42a52501-077a-4d8a-9cf0-64c6db079391",
+    "original_trace_id": "13c1943a2a0acb83e6ac08b2cfce85f0",
+    "source_score_sha256": "01272478a308a741d9f95a88d22b1b690154b900577a3f91ca6b764de44c1f3c"
+  },
+  {
+    "case_id": "debit_card_specializing:1506",
+    "question_id": "1506",
+    "execution_mode": "frozen_result_replay",
+    "source_experiment": "bird-debit-baseline-full-20261024-0800",
+    "sql": "SELECT DISTINCT p.description FROM transactions_1k t JOIN gasstations g ON g.gas_station_id = t.gas_station_id JOIN products p ON p.product_id = t.product_id WHERE g.country = 'CZE' ORDER BY p.description;",
+    "gold_rows": [
+      [
+        "Dalnic.popl."
+      ],
+      [
+        "Zpr.nakupu"
+      ],
+      [
+        "Autoprísluš."
+      ],
+      [
+        "Zboží nesp."
+      ],
+      [
+        "Diesel +"
+      ],
+      [
+        "Obcerstvení"
+      ],
+      [
+        "Nemrz.kapal."
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural Plus"
+      ],
+      [
+        "Autokosmet."
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural +"
+      ],
+      [
+        "Knihy,nov."
+      ],
+      [
+        "Provoz.nápl."
+      ],
+      [
+        "Oleje,tuky"
+      ],
+      [
+        "Potraviny"
+      ],
+      [
+        "Mytí vozidel"
+      ],
+      [
+        "LPG"
+      ],
+      [
+        "Additivum"
+      ],
+      [
+        "Natural Spec"
+      ],
+      [
+        "Nafta Plus"
+      ]
+    ],
+    "actual_rows": [
+      [
+        "Additivum"
+      ],
+      [
+        "Autokosmet."
+      ],
+      [
+        "Autoprísluš."
+      ],
+      [
+        "Dalnic.popl."
+      ],
+      [
+        "Diesel +"
+      ],
+      [
+        "Knihy,nov."
+      ],
+      [
+        "LPG"
+      ],
+      [
+        "Mytí vozidel"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta Plus"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural +"
+      ],
+      [
+        "Natural Plus"
+      ],
+      [
+        "Natural Spec"
+      ],
+      [
+        "Nemrz.kapal."
+      ],
+      [
+        "Obcerstvení"
+      ],
+      [
+        "Oleje,tuky"
+      ],
+      [
+        "Potraviny"
+      ],
+      [
+        "Provoz.nápl."
+      ],
+      [
+        "Zboží nesp."
+      ],
+      [
+        "Zpr.nakupu"
+      ]
+    ],
+    "EX": 1,
+    "BIRD_SoftF1": 0.19047619047619047,
+    "original_ask_ms": 34812.33612500364,
+    "original_query_id": "bc1d543f-837e-489d-b065-036161253956",
+    "original_trace_id": "1c8d8c5f1c81c0833a0cbfea88c0996c",
+    "source_score_sha256": "9d4392b302d7e9a9911cfc65994fd6c0148918fbff139b6e7c85bd77fa742cc1"
+  },
+  {
+    "case_id": "debit_card_specializing:1507",
+    "question_id": "1507",
+    "execution_mode": "frozen_result_replay",
+    "source_experiment": "bird-debit-baseline-full-20261024-0800",
+    "sql": "SELECT DISTINCT t.time\nFROM transactions_1k AS t\nINNER JOIN gasstations AS gs\n  ON gs.gas_station_id = t.gas_station_id\nWHERE gs.chain_id = 11\nORDER BY t.time;",
+    "gold_rows": [
+      [
+        {
+          "type": "time",
+          "value": "11:55:00"
+        }
+      ],
+      [
+        {
+          "type": "time",
+          "value": "14:29:00"
+        }
+      ]
+    ],
+    "actual_rows": [
+      [
+        {
+          "type": "time",
+          "value": "11:55:00"
+        }
+      ],
+      [
+        {
+          "type": "time",
+          "value": "14:29:00"
+        }
+      ]
+    ],
+    "EX": 1,
+    "BIRD_SoftF1": 1.0,
+    "original_ask_ms": 13189.564833010081,
+    "original_query_id": "7c8a5f7a-c90b-4ec6-bdc5-62111628fe41",
+    "original_trace_id": "344cacef455a4d4e79bed251a641116e",
+    "source_score_sha256": "2e985d8e7a0f10694c148baeee26fbc98e91191f0cbd55d79ffca14002ca3756"
+  },
+  {
+    "case_id": "debit_card_specializing:1509",
+    "question_id": "1509",
+    "execution_mode": "frozen_result_replay",
+    "source_experiment": "bird-debit-baseline-full-20261024-0800",
+    "sql": "SELECT COUNT(*) AS transaction_count FROM transactions_1k t JOIN gasstations g ON t.gas_station_id = g.gas_station_id WHERE g.country = 'CZE' AND t.date > DATE '2012-01-01'",
+    "gold_rows": [
+      [
+        933
+      ]
+    ],
+    "actual_rows": [
+      [
+        933
+      ]
+    ],
+    "EX": 1,
+    "BIRD_SoftF1": 1.0,
+    "original_ask_ms": 17840.073624975048,
+    "original_query_id": "7c252332-33f3-469f-b73c-cbceb8a5e442",
+    "original_trace_id": "06a2125f014403368160b5dc5edffda9",
+    "source_score_sha256": "e419a2cb7306764e86960db349f69e410d51204f2fa3d2b894010bb2cf343ef5"
+  },
+  {
+    "case_id": "debit_card_specializing:1514",
+    "question_id": "1514",
+    "execution_mode": "frozen_result_replay",
+    "source_experiment": "bird-debit-baseline-full-20261024-0800",
+    "sql": "SELECT c.currency\nFROM transactions_1k t\nJOIN customers c ON c.customer_id = t.customer_id\nWHERE t.date = DATE '2012-08-24'\n  AND t.time = TIME '16:25:00';",
+    "gold_rows": [
+      [
+        "CZK"
+      ]
+    ],
+    "actual_rows": [
+      [
+        "CZK"
+      ],
+      [
+        "CZK"
+      ],
+      [
+        "CZK"
+      ]
+    ],
+    "EX": 1,
+    "BIRD_SoftF1": 1.0,
+    "original_ask_ms": 8234.984915994573,
+    "original_query_id": "998ca97a-1e79-4ed9-8c8c-b9aa98ef343c",
+    "original_trace_id": "08ab6a4d578ab8097236cee5a6e33a8e",
+    "source_score_sha256": "7531a1a556607630e746d12f41200f9578adeb6dc7f15a8ed4cca0cdb395c2bb"
+  },
+  {
+    "case_id": "debit_card_specializing:1515",
+    "question_id": "1515",
+    "execution_mode": "frozen_result_replay",
+    "source_experiment": "bird-debit-baseline-full-20261024-0800",
+    "sql": "SELECT c.segment AS segment\nFROM transactions_1k AS t\nJOIN customers AS c\n  ON c.customer_id = t.customer_id\nWHERE t.date = DATE '2012-08-23'\n  AND t.time = TIME '21:20:00';",
+    "gold_rows": [
+      [
+        "KAM"
+      ]
+    ],
+    "actual_rows": [
+      [
+        "KAM"
+      ]
+    ],
+    "EX": 1,
+    "BIRD_SoftF1": 1.0,
+    "original_ask_ms": 14704.874166054651,
+    "original_query_id": "7a8fa4a4-d7ff-4ffe-afc8-284fcf29fbc8",
+    "original_trace_id": "4e1b10f71ebb5c116139b43052594f95",
+    "source_score_sha256": "af9553a8cf11df2ac46b4fc8c2c6bb41d8d1b6c3b294d8c5680c2279ebce3b1b"
+  },
+  {
+    "case_id": "debit_card_specializing:1521",
+    "question_id": "1521",
+    "execution_mode": "frozen_result_replay",
+    "source_experiment": "bird-debit-baseline-full-20261024-0800",
+    "sql": "SELECT COUNT(*) AS transaction_count\nFROM transactions_1k t\nJOIN gasstations g ON g.gas_station_id = t.gas_station_id\nWHERE t.date = DATE '2012-08-26'\n  AND t.time BETWEEN TIME '08:00:00' AND TIME '09:00:00'\n  AND g.country = 'CZE';",
+    "gold_rows": [
+      [
+        14
+      ]
+    ],
+    "actual_rows": [
+      [
+        14
+      ]
+    ],
+    "EX": 1,
+    "BIRD_SoftF1": 1.0,
+    "original_ask_ms": 10394.018249993678,
+    "original_query_id": "67b4e17f-8bab-40a0-97e9-82e18ed9ba85",
+    "original_trace_id": "2d9e26f85faa6576895bc3654f7469bc",
+    "source_score_sha256": "7d8c21ed9eb667de00b3f38d8d88b2b2ac611a9d429e35af063ecd4c21254dcb"
+  },
+  {
+    "case_id": "debit_card_specializing:1524",
+    "question_id": "1524",
+    "execution_mode": "frozen_result_replay",
+    "source_experiment": "bird-debit-baseline-full-20261024-0800",
+    "sql": "SELECT c.customer_id, c.segment, c.currency\nFROM transactions_1k t\nJOIN customers c ON c.customer_id = t.customer_id\nWHERE t.date = '2012-08-24'\n  AND t.price = 548.4;",
+    "gold_rows": [
+      [
+        "CZE"
+      ]
+    ],
+    "actual_rows": [
+      [
+        31543,
+        "KAM",
+        "CZK"
+      ]
+    ],
+    "EX": 0,
+    "BIRD_SoftF1": 0,
+    "original_ask_ms": 14451.670250040479,
+    "original_query_id": "2cf379bb-ef04-40b8-8c68-1274c816f875",
+    "original_trace_id": "d228d76e29e6200e49b374c6c5a9c286",
+    "source_score_sha256": "7f8a24adf2a9dde24e3318904bdb22f5cf7c90441b268ade7831c8049cd1ab1b"
+  },
+  {
+    "case_id": "debit_card_specializing:1525",
+    "question_id": "1525",
+    "execution_mode": "frozen_result_replay",
+    "source_experiment": "bird-debit-baseline-full-20261024-0800",
+    "sql": "SELECT\n  ROUND(\n    100.0\n    * COUNT(DISTINCT CASE WHEN c.currency = 'EUR' THEN t.customer_id END)\n    / NULLIF(COUNT(DISTINCT t.customer_id), 0),\n    2\n  ) AS pct_eur_customers\nFROM transactions_1k AS t\nJOIN customers AS c\n  ON c.customer_id = t.customer_id\nWHERE t.date = DATE '2012-08-25';",
+    "gold_rows": [
+      [
+        1.6470588235294117
+      ]
+    ],
+    "actual_rows": [
+      [
+        {
+          "type": "Decimal",
+          "value": "2.70"
+        }
+      ]
+    ],
+    "EX": 0,
+    "BIRD_SoftF1": 0,
+    "original_ask_ms": 18141.914750041906,
+    "original_query_id": "43ecdb44-661f-4df4-9db9-700e91e5f6ee",
+    "original_trace_id": "097e4c7db75053ea69cdd75ea6f52eef",
+    "source_score_sha256": "7846107c1f3fbead7441dd1b226c64eba4118c93c8ee9ca93e83054aaeb75b51"
+  },
+  {
+    "case_id": "debit_card_specializing:1526",
+    "question_id": "1526",
+    "execution_mode": "frozen_result_replay",
+    "source_experiment": "bird-debit-baseline-full-20261024-0800",
+    "sql": "WITH target_customer AS (\n  SELECT DISTINCT t.customer_id\n  FROM transactions_1k AS t\n  WHERE t.date = DATE '2012-08-25'\n    AND t.price = 634.8\n),\nyearly AS (\n  SELECT\n    y.customer_id,\n    SUM(CASE WHEN y.date LIKE '2012%' THEN y.consumption ELSE 0 END) AS consumption_2012,\n    SUM(CASE WHEN y.date LIKE '2013%' THEN y.consumption ELSE 0 END) AS consumption_2013\n  FROM yearmonth AS y\n  JOIN target_customer AS tc\n    ON tc.customer_id = y.customer_id\n  GROUP BY y.customer_id\n)\nSELECT\n  consumption_2012,\n  consumption_2013,\n  (consumption_2012 - consumption_2013) / NULLIF(consumption_2012, 0) AS consumption_decrease_rate\nFROM yearly;",
+    "gold_rows": [
+      [
+        null
+      ]
+    ],
+    "actual_rows": [
+      [
+        {
+          "type": "Decimal",
+          "value": "158447.52"
+        },
+        {
+          "type": "Decimal",
+          "value": "1079858.30"
+        },
+        {
+          "type": "Decimal",
+          "value": "-5.8152426746723458"
+        }
+      ]
+    ],
+    "EX": 0,
+    "BIRD_SoftF1": 0,
+    "original_ask_ms": 14658.588707970921,
+    "original_query_id": "f442f689-482b-453a-83ce-da6aafd6d835",
+    "original_trace_id": "c0f4cb8419dc9994ac8ca6c9d3694ef8",
+    "source_score_sha256": "dc647349bc21799b80219c7cc91a7d2f8ef610e72c3c95a9209f93f0291e93e2"
+  },
+  {
+    "case_id": "debit_card_specializing:1528",
+    "question_id": "1528",
+    "execution_mode": "frozen_result_replay",
+    "source_experiment": "bird-debit-baseline-full-20261024-0800",
+    "sql": "SELECT\n  segment,\n  COUNT(*) AS segment_count,\n  SUM(COUNT(*)) OVER () AS total_count,\n  ROUND(100.0 * COUNT(*) / SUM(COUNT(*)) OVER (), 2) AS pct_of_total\nFROM gasstations\nWHERE country = 'SVK'\nGROUP BY segment\nORDER BY segment_count DESC;",
+    "gold_rows": [
+      [
+        35.68181818181818
+      ]
+    ],
+    "actual_rows": [
+      [
+        "Other",
+        334,
+        {
+          "type": "Decimal",
+          "value": "880"
+        },
+        {
+          "type": "Decimal",
+          "value": "37.95"
+        }
+      ],
+      [
+        "Premium",
+        314,
+        {
+          "type": "Decimal",
+          "value": "880"
+        },
+        {
+          "type": "Decimal",
+          "value": "35.68"
+        }
+      ],
+      [
+        "Value for money",
+        131,
+        {
+          "type": "Decimal",
+          "value": "880"
+        },
+        {
+          "type": "Decimal",
+          "value": "14.89"
+        }
+      ],
+      [
+        "Discount",
+        59,
+        {
+          "type": "Decimal",
+          "value": "880"
+        },
+        {
+          "type": "Decimal",
+          "value": "6.70"
+        }
+      ],
+      [
+        "Noname",
+        42,
+        {
+          "type": "Decimal",
+          "value": "880"
+        },
+        {
+          "type": "Decimal",
+          "value": "4.77"
+        }
+      ]
+    ],
+    "EX": 0,
+    "BIRD_SoftF1": 0,
+    "original_ask_ms": 10028.384790988639,
+    "original_query_id": "ca29dfd6-27bf-46b8-81eb-6bf0c7a479b8",
+    "original_trace_id": "3f423111fcdf20e636ab83738683d5d7",
+    "source_score_sha256": "941f1c1978fd3f5a9f4b57197861c5619878c62d6214836548cb4539afb4d640"
+  },
+  {
+    "case_id": "debit_card_specializing:1529",
+    "question_id": "1529",
+    "execution_mode": "frozen_result_replay",
+    "source_experiment": "bird-debit-baseline-full-20261024-0800",
+    "sql": "SELECT 38508 AS customer_id,\n       COALESCE((SELECT SUM(t.amount)\n                 FROM transactions_1k t\n                 WHERE t.customer_id = 38508), 0) AS total_spent_at_gas_stations,\n       COALESCE((SELECT y.consumption\n                 FROM yearmonth y\n                 WHERE y.customer_id = 38508\n                   AND y.date = '201201'), 0) AS spent_january_2012;",
+    "gold_rows": [
+      [
+        {
+          "type": "Decimal",
+          "value": "68740.20"
+        },
+        {
+          "type": "Decimal",
+          "value": "3437.01"
+        }
+      ]
+    ],
+    "actual_rows": [
+      [
+        38508,
+        {
+          "type": "Decimal",
+          "value": "148"
+        },
+        {
+          "type": "Decimal",
+          "value": "67156.94"
+        }
+      ]
+    ],
+    "EX": 0,
+    "BIRD_SoftF1": 0,
+    "original_ask_ms": 23622.79158300953,
+    "original_query_id": "4b19dfa4-d1e8-4130-ac8c-9e2663875b6c",
+    "original_trace_id": "440eb92034c0b4b258b2c8cbdae76a2d",
+    "source_score_sha256": "b418fcc7f9c7f4c6c1f9559a1985af3a577e111a524209aa47608ba2c56f802f"
+  },
+  {
+    "case_id": "debit_card_specializing:1531",
+    "question_id": "1531",
+    "execution_mode": "frozen_result_replay",
+    "source_experiment": "bird-debit-baseline-full-20261024-0800",
+    "sql": "WITH customer_spending AS (\n  SELECT\n    customer_id,\n    SUM(price) AS total_spending,\n    SUM(price) / NULLIF(SUM(amount), 0) AS avg_price_per_item\n  FROM transactions_1k\n  GROUP BY customer_id\n),\ntop_customer AS (\n  SELECT customer_id, total_spending, avg_price_per_item\n  FROM customer_spending\n  ORDER BY total_spending DESC\n  LIMIT 1\n)\nSELECT\n  t.customer_id,\n  t.total_spending,\n  t.avg_price_per_item,\n  c.currency\nFROM top_customer t\nJOIN customers c ON c.customer_id = t.customer_id",
+    "gold_rows": [
+      [
+        12459,
+        {
+          "type": "Decimal",
+          "value": "203.8560787354257941"
+        },
+        "CZK"
+      ]
+    ],
+    "actual_rows": [
+      [
+        19182,
+        {
+          "type": "Decimal",
+          "value": "8618.54"
+        },
+        {
+          "type": "Decimal",
+          "value": "24.2775774647887324"
+        },
+        "CZK"
+      ]
+    ],
+    "EX": 0,
+    "BIRD_SoftF1": 0.28571428571428575,
+    "original_ask_ms": 14530.684958037455,
+    "original_query_id": "08964685-6725-4d5e-aab5-934fc7d42f27",
+    "original_trace_id": "489fec08ab804e20dd93d94b95952208",
+    "source_score_sha256": "197b99fadefd43e2abeddaad993dbb5822ab1c88844b7aa63104d56fa373f9a1"
+  },
+  {
+    "case_id": "debit_card_specializing:1533",
+    "question_id": "1533",
+    "execution_mode": "frozen_result_replay",
+    "source_experiment": "bird-debit-baseline-full-20261024-0800",
+    "sql": "SELECT\n    ym.customer_id,\n    ym.consumption\nFROM yearmonth AS ym\nWHERE ym.date = '201208'\n  AND ym.customer_id IN (\n    SELECT t.customer_id\n    FROM transactions_1k AS t\n    WHERE t.product_id = 5\n      AND t.amount > 0\n      AND (t.price / t.amount) > 29.00\n  )\nORDER BY ym.consumption DESC;",
+    "gold_rows": [
+      [
+        {
+          "type": "Decimal",
+          "value": "88265.39"
+        }
+      ],
+      [
+        {
+          "type": "Decimal",
+          "value": "1903.2"
+        }
+      ],
+      [
+        {
+          "type": "Decimal",
+          "value": "126157.7"
+        }
+      ],
+      [
+        {
+          "type": "Decimal",
+          "value": "126157.7"
+        }
+      ],
+      [
+        {
+          "type": "Decimal",
+          "value": "45937.22"
+        }
+      ],
+      [
+        {
+          "type": "Decimal",
+          "value": "1142.95"
+        }
+      ],
+      [
+        {
+          "type": "Decimal",
+          "value": "58.19"
+        }
+      ],
+      [
+        {
+          "type": "Decimal",
+          "value": "8878.07"
+        }
+      ],
+      [
+        {
+          "type": "Decimal",
+          "value": "69331.72"
+        }
+      ],
+      [
+        {
+          "type": "Decimal",
+          "value": "1129.2"
+        }
+      ]
+    ],
+    "actual_rows": [
+      [
+        6768,
+        {
+          "type": "Decimal",
+          "value": "126157.7"
+        }
+      ],
+      [
+        5443,
+        {
+          "type": "Decimal",
+          "value": "88265.39"
+        }
+      ],
+      [
+        24700,
+        {
+          "type": "Decimal",
+          "value": "69331.72"
+        }
+      ],
+      [
+        7626,
+        {
+          "type": "Decimal",
+          "value": "45937.22"
+        }
+      ],
+      [
+        23861,
+        {
+          "type": "Decimal",
+          "value": "8878.07"
+        }
+      ],
+      [
+        18831,
+        {
+          "type": "Decimal",
+          "value": "1903.2"
+        }
+      ],
+      [
+        45868,
+        {
+          "type": "Decimal",
+          "value": "1142.95"
+        }
+      ],
+      [
+        46933,
+        {
+          "type": "Decimal",
+          "value": "1129.2"
+        }
+      ],
+      [
+        20447,
+        {
+          "type": "Decimal",
+          "value": "58.19"
+        }
+      ]
+    ],
+    "EX": 0,
+    "BIRD_SoftF1": 0.07407407407407407,
+    "original_ask_ms": 18803.61866700696,
+    "original_query_id": "f047b809-5343-4431-a370-e928b9838dde",
+    "original_trace_id": "4009404a7aacb0383658bc01fb9bf446",
+    "source_score_sha256": "f69466c525228a314c53b7f4aa17355834174e496b8012118c8bec763fa6a926"
+  }
+]

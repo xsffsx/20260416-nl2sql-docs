@@ -1,0 +1,29 @@
+{
+  "question": "How much did customer 6 consume in total between August and November 2013?",
+  "score": 1.0,
+  "details": {
+    "reason": "Complete results match Gold SQL; BIRD Soft F1 = 1.0",
+    "BIRD_Soft_F1": 1.0,
+    "actual_sql": "SELECT SUM(ym.consumption) AS total_consumption\nFROM yearmonth ym\nWHERE ym.customer_id = 6\n  AND ym.date BETWEEN '201308' AND '201311';",
+    "gold_sql": "SELECT SUM(consumption) FROM yearmonth WHERE customer_id = 6 AND date BETWEEN '201308' AND '201311'",
+    "actual_result": [
+      [
+        {
+          "type": "Decimal",
+          "value": "1224.96"
+        }
+      ]
+    ],
+    "gold_result": [
+      [
+        {
+          "type": "Decimal",
+          "value": "1224.96"
+        }
+      ]
+    ],
+    "sql_error": null,
+    "scorer_ms": 69.62645799649181,
+    "max_parallel_workers_per_gather": 0
+  }
+}

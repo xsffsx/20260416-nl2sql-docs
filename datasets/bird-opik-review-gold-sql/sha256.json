@@ -1,0 +1,21 @@
+{
+  "bird-debit-opik-gold-sql-review-v2.csv": "b550495a3927f305debe5b4c7fc4d3b0a559cfa72bdf61a9734b67d20c3a45f6",
+  "gold-sql-assertion-validation.json": "4ff08abc77a81794cd915e80c23742f2f8927d89665e6008d93d3e865602ed6e",
+  "manifest.json": "68617b40eff7f1575987d3e200e2db1bcd0baad1a5aaed235ccf3e6b37069c1e",
+  "metrics-created.json": "7486ed85e6cd05b43fddcf08b69f0fc43f66e288ed68ac4eb82da736d3113ffa",
+  "metrics-readback.json": "19922e50e8f8b71861ef2d13e18944dbf8e5421eeb4e4eab31e45e3aaacab892",
+  "official-metrics.json": "2463a13238da076f9bda2d5941f6f4c9a34f33f4d56ba1bfaaf15642937264b8",
+  "opik-annotation-queue.png": "f33622bbb78a5843e06f06d6dd535a65541e5ddcf2153a4822b8fead0f2fb898",
+  "opik-gold-sql-assertions-dialog.png": "c7936d16e71d96a17e31bd950e4f76585cce2ad3316cb189a45d1f2389872852",
+  "opik-human-review-gold-sql.png": "33f5c0bc94fffa5d06850291820ebc789e75fc1c0127f77d73dbff169d3915a7",
+  "opik-suite-gold-sql-annotated.png": "e32370cfd74d66b9cfdc634e8f935dcc5bf0fd0cc0debf7a623a912a08a1de0d",
+  "opik-suite-results-annotated.png": "09956a61794e118740b9ade58d82a2ee035b8a16e30890c92e9d2d91a4314117",
+  "policy.json": "71b5020fca846a87ba37a2ba6eacaba2f86af8fdad64cabc17b65f000d38772b",
+  "queue-readback.json": "58d6bfd21cae4693c2fbe45f496ed2107a9fffa5887356881d5c525977f32d33",
+  "runner-source.py": "265412a1fb5b4a09d12994a95550e970e30b230c4ad4e2551be5e982eb78609d",
+  "suite-created.json": "db74e23587777c2d63d178f5e749e177055018db79bb44f8da4d0ba0a4946b59",
+  "suite-readback.json": "79b21e676dd7b765877f3c65f766804f7777207ece2aba487e0950e1bfcc7209",
+  "suite-report.json": "dce339e4688ec065b4a7a879f7d558f17e50f55f5a0debd49a70e343a254474c",
+  "summary.json": "b8b5c4d40eaaccd4cad1c7670138273156009fb5b43631fa0974bbff5f74763c",
+  "verification.json": "369754083b8c62f1d3c386ebeeb5a65a37aa774a013ed2e1334ceed872d09166"
+}

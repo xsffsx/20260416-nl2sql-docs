@@ -1,0 +1,22 @@
+{
+  "id": "01a16df2-92f6-7f22-a6e0-344634719d07",
+  "project_id": "01a16caf-2b08-740a-9dfb-6749c7da485f",
+  "project_name": "nl2sql_followup",
+  "name": "bird-opik-review-20261024-2038-gold-sql-SME-review",
+  "description": "30 archived outputs, awaiting actual human review.",
+  "instructions": "Review the original question/evidence (trace Input) and SQL, Gold rows, actual rows, original IDs and official scores (trace Output). EX and official beta Soft F1 are separate from semantic correctness. Soft F1 is order-sensitive and grants partial credit for coinciding values: neither a positive score nor extra columns proves correctness. Check requested population, date boundaries, grain, measure, denominator, and target attribute. The native test suite supplies advisory LLM reasons only, using the same model family as the generator; it has no database access. Use the existing User feedback thumbs and a comment only when you can justify a decision. If question/evidence/Gold conflict, or the output/precision contract is unresolved, leave the item unscored and record the issue in a comment for domain review. Never turn pending review into zero or change the original EX. No expert approval has been prefilled.",
+  "scope": "trace",
+  "comments_enabled": true,
+  "feedback_definition_names": [
+    "User feedback"
+  ],
+  "reviewers": null,
+  "feedback_scores": null,
+  "items_count": 30,
+  "created_at": "2026-10-24T12:46:16.315514Z",
+  "created_by": "admin",
+  "last_updated_at": "2026-10-24T12:46:16.315514Z",
+  "last_updated_by": "admin",
+  "annotators_per_item": 1,
+  "lock_timeout_seconds": 300
+}

@@ -1,0 +1,26 @@
+{
+  "question": "What is the highest monthly consumption in the year 2012?",
+  "score": 0.0,
+  "details": {
+    "reason": "Complete results differ from Gold SQL; BIRD Soft F1 = 0.0",
+    "BIRD_Soft_F1": 0.0,
+    "actual_sql": "SELECT MAX(ym.consumption) AS highest_monthly_consumption_2012\nFROM yearmonth ym\nWHERE ym.date LIKE '2012%';",
+    "gold_sql": "SELECT SUM(CAST(consumption AS DOUBLE PRECISION)) FROM yearmonth WHERE SUBSTRING(date FROM 1 FOR 4) = '2012' GROUP BY SUBSTRING(date FROM 5 FOR 2) ORDER BY SUM(consumption) DESC NULLS LAST LIMIT 1",
+    "actual_result": [
+      [
+        {
+          "type": "Decimal",
+          "value": "445279.69"
+        }
+      ]
+    ],
+    "gold_result": [
+      [
+        51787161.73999976
+      ]
+    ],
+    "sql_error": null,
+    "scorer_ms": 70.38050000119256,
+    "max_parallel_workers_per_gather": 0
+  }
+}

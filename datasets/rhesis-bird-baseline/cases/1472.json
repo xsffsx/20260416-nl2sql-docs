@@ -1,0 +1,27 @@
+{
+  "question": "In 2012, who had the least consumption in LAM?",
+  "score": 0.0,
+  "details": {
+    "reason": "Complete results differ from Gold SQL; BIRD Soft F1 = 0.6666666666666666",
+    "BIRD_Soft_F1": 0.6666666666666666,
+    "actual_sql": "SELECT ym.customer_id, SUM(ym.consumption) AS total_consumption\nFROM yearmonth ym\nJOIN customers c ON c.customer_id = ym.customer_id\nWHERE c.segment = 'LAM'\n  AND ym.date LIKE '2012%'\nGROUP BY ym.customer_id\nORDER BY total_consumption ASC\nLIMIT 1;",
+    "gold_sql": "SELECT T1.customer_id FROM customers AS T1 INNER JOIN yearmonth AS T2 ON T1.customer_id = T2.customer_id WHERE T1.segment = 'LAM' AND SUBSTRING(T2.date FROM 1 FOR 4) = '2012' GROUP BY T1.customer_id ORDER BY SUM(T2.consumption) ASC NULLS FIRST LIMIT 1",
+    "actual_result": [
+      [
+        47273,
+        {
+          "type": "Decimal",
+          "value": "0.74"
+        }
+      ]
+    ],
+    "gold_result": [
+      [
+        47273
+      ]
+    ],
+    "sql_error": null,
+    "scorer_ms": 75.19270799821243,
+    "max_parallel_workers_per_gather": 0
+  }
+}

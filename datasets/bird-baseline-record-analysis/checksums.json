@@ -1,0 +1,9 @@
+{
+  "algorithm": "sha256",
+  "files": [
+    {
+      "file": "records.json",
+      "sha256": "daab67d4f1c7e810c8e38ff0420fcc430c367f4d5589070fff125e107beddcc9"
+    }
+  ]
+}

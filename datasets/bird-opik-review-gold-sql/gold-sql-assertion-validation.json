@@ -1,0 +1,234 @@
+{
+  "assertion": "The generated SQL is semantically equivalent to the per-question BIRD Gold SQL supplied as output.gold_sql. Do not require identical SQL text. Compare the filters, joins, calculations, grouping and selected result. If a material difference exists or equivalence cannot be established from the SQL and question context, fail and explain instead of treating similar-looking SQL as a match.",
+  "items_total": 30,
+  "judge_passed": 17,
+  "official_EX_passed": 9,
+  "agreement_count": 20,
+  "agreement_rate": 0.6666666666666666,
+  "false_positive_question_ids": [
+    "1533",
+    "1528",
+    "1493",
+    "1486",
+    "1484",
+    "1480",
+    "1476",
+    "1471",
+    "1472"
+  ],
+  "false_negative_question_ids": [
+    "1509"
+  ],
+  "cases": [
+    {
+      "case_id": "debit_card_specializing:1531",
+      "question_id": "1531",
+      "judge_passed": false,
+      "official_EX_passed": false,
+      "agreed": true
+    },
+    {
+      "case_id": "debit_card_specializing:1533",
+      "question_id": "1533",
+      "judge_passed": true,
+      "official_EX_passed": false,
+      "agreed": false
+    },
+    {
+      "case_id": "debit_card_specializing:1528",
+      "question_id": "1528",
+      "judge_passed": true,
+      "official_EX_passed": false,
+      "agreed": false
+    },
+    {
+      "case_id": "debit_card_specializing:1526",
+      "question_id": "1526",
+      "judge_passed": false,
+      "official_EX_passed": false,
+      "agreed": true
+    },
+    {
+      "case_id": "debit_card_specializing:1525",
+      "question_id": "1525",
+      "judge_passed": false,
+      "official_EX_passed": false,
+      "agreed": true
+    },
+    {
+      "case_id": "debit_card_specializing:1524",
+      "question_id": "1524",
+      "judge_passed": false,
+      "official_EX_passed": false,
+      "agreed": true
+    },
+    {
+      "case_id": "debit_card_specializing:1529",
+      "question_id": "1529",
+      "judge_passed": false,
+      "official_EX_passed": false,
+      "agreed": true
+    },
+    {
+      "case_id": "debit_card_specializing:1521",
+      "question_id": "1521",
+      "judge_passed": true,
+      "official_EX_passed": true,
+      "agreed": true
+    },
+    {
+      "case_id": "debit_card_specializing:1515",
+      "question_id": "1515",
+      "judge_passed": true,
+      "official_EX_passed": true,
+      "agreed": true
+    },
+    {
+      "case_id": "debit_card_specializing:1514",
+      "question_id": "1514",
+      "judge_passed": true,
+      "official_EX_passed": true,
+      "agreed": true
+    },
+    {
+      "case_id": "debit_card_specializing:1507",
+      "question_id": "1507",
+      "judge_passed": true,
+      "official_EX_passed": true,
+      "agreed": true
+    },
+    {
+      "case_id": "debit_card_specializing:1506",
+      "question_id": "1506",
+      "judge_passed": true,
+      "official_EX_passed": true,
+      "agreed": true
+    },
+    {
+      "case_id": "debit_card_specializing:1505",
+      "question_id": "1505",
+      "judge_passed": false,
+      "official_EX_passed": false,
+      "agreed": true
+    },
+    {
+      "case_id": "debit_card_specializing:1501",
+      "question_id": "1501",
+      "judge_passed": true,
+      "official_EX_passed": true,
+      "agreed": true
+    },
+    {
+      "case_id": "debit_card_specializing:1500",
+      "question_id": "1500",
+      "judge_passed": false,
+      "official_EX_passed": false,
+      "agreed": true
+    },
+    {
+      "case_id": "debit_card_specializing:1509",
+      "question_id": "1509",
+      "judge_passed": false,
+      "official_EX_passed": true,
+      "agreed": false
+    },
+    {
+      "case_id": "debit_card_specializing:1493",
+      "question_id": "1493",
+      "judge_passed": true,
+      "official_EX_passed": false,
+      "agreed": false
+    },
+    {
+      "case_id": "debit_card_specializing:1498",
+      "question_id": "1498",
+      "judge_passed": false,
+      "official_EX_passed": false,
+      "agreed": true
+    },
+    {
+      "case_id": "debit_card_specializing:1490",
+      "question_id": "1490",
+      "judge_passed": false,
+      "official_EX_passed": false,
+      "agreed": true
+    },
+    {
+      "case_id": "debit_card_specializing:1486",
+      "question_id": "1486",
+      "judge_passed": true,
+      "official_EX_passed": false,
+      "agreed": false
+    },
+    {
+      "case_id": "debit_card_specializing:1484",
+      "question_id": "1484",
+      "judge_passed": true,
+      "official_EX_passed": false,
+      "agreed": false
+    },
+    {
+      "case_id": "debit_card_specializing:1483",
+      "question_id": "1483",
+      "judge_passed": true,
+      "official_EX_passed": true,
+      "agreed": true
+    },
+    {
+      "case_id": "debit_card_specializing:1482",
+      "question_id": "1482",
+      "judge_passed": false,
+      "official_EX_passed": false,
+      "agreed": true
+    },
+    {
+      "case_id": "debit_card_specializing:1481",
+      "question_id": "1481",
+      "judge_passed": false,
+      "official_EX_passed": false,
+      "agreed": true
+    },
+    {
+      "case_id": "debit_card_specializing:1480",
+      "question_id": "1480",
+      "judge_passed": true,
+      "official_EX_passed": false,
+      "agreed": false
+    },
+    {
+      "case_id": "debit_card_specializing:1479",
+      "question_id": "1479",
+      "judge_passed": false,
+      "official_EX_passed": false,
+      "agreed": true
+    },
+    {
+      "case_id": "debit_card_specializing:1476",
+      "question_id": "1476",
+      "judge_passed": true,
+      "official_EX_passed": false,
+      "agreed": false
+    },
+    {
+      "case_id": "debit_card_specializing:1473",
+      "question_id": "1473",
+      "judge_passed": true,
+      "official_EX_passed": true,
+      "agreed": true
+    },
+    {
+      "case_id": "debit_card_specializing:1471",
+      "question_id": "1471",
+      "judge_passed": true,
+      "official_EX_passed": false,
+      "agreed": false
+    },
+    {
+      "case_id": "debit_card_specializing:1472",
+      "question_id": "1472",
+      "judge_passed": true,
+      "official_EX_passed": false,
+      "agreed": false
+    }
+  ]
+}

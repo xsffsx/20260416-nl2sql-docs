@@ -1,0 +1,67 @@
+{
+  "question": "Which of the three segments—SME, LAM and KAM—has the biggest and lowest percentage increases in consumption paid in EUR between 2012 and 2013?",
+  "score": 0.0,
+  "details": {
+    "reason": "Complete results differ from Gold SQL; BIRD Soft F1 = 0.0",
+    "BIRD_Soft_F1": 0.0,
+    "actual_sql": "WITH seg_consumption AS (\n  SELECT c.segment,\n         SUM(CASE WHEN ym.date LIKE '2012%' THEN ym.consumption ELSE 0 END) AS consumption_2012,\n         SUM(CASE WHEN ym.date LIKE '2013%' THEN ym.consumption ELSE 0 END) AS consumption_2013\n  FROM yearmonth ym\n  JOIN customers c ON c.customer_id = ym.customer_id\n  WHERE c.currency = 'EUR'\n    AND c.segment IN ('SME', 'LAM', 'KAM')\n    AND (ym.date LIKE '2012%' OR ym.date LIKE '2013%')\n  GROUP BY c.segment\n)\nSELECT segment,\n       consumption_2012,\n       consumption_2013,\n       ROUND((consumption_2013 - consumption_2012) / NULLIF(ABS(consumption_2012), 0) * 100, 2) AS pct_change\nFROM seg_consumption\nORDER BY pct_change DESC",
+    "gold_sql": "SELECT CAST((SUM(CASE WHEN T1.segment = 'SME' AND T2.date LIKE '2013%' THEN T2.consumption ELSE 0 END) - SUM(CASE WHEN T1.segment = 'SME' AND T2.date LIKE '2012%' THEN T2.consumption ELSE 0 END)) AS REAL) * 100 / NULLIF(SUM(CASE WHEN T1.segment = 'SME' AND T2.date LIKE '2012%' THEN T2.consumption ELSE 0 END), 0), CAST(SUM(CASE WHEN T1.segment = 'LAM' AND T2.date LIKE '2013%' THEN T2.consumption ELSE 0 END) - SUM(CASE WHEN T1.segment = 'LAM' AND T2.date LIKE '2012%' THEN T2.consumption ELSE 0 END) AS REAL) * 100 / NULLIF(SUM(CASE WHEN T1.segment = 'LAM' AND T2.date LIKE '2012%' THEN T2.consumption ELSE 0 END), 0), CAST(SUM(CASE WHEN T1.segment = 'KAM' AND T2.date LIKE '2013%' THEN T2.consumption ELSE 0 END) - SUM(CASE WHEN T1.segment = 'KAM' AND T2.date LIKE '2012%' THEN T2.consumption ELSE 0 END) AS REAL) * 100 / NULLIF(SUM(CASE WHEN T1.segment = 'KAM' AND T2.date LIKE '2012%' THEN T2.consumption ELSE 0 END), 0) FROM customers AS T1 INNER JOIN yearmonth AS T2 ON T1.customer_id = T2.customer_id",
+    "actual_result": [
+      [
+        "SME",
+        {
+          "type": "Decimal",
+          "value": "869537.52"
+        },
+        {
+          "type": "Decimal",
+          "value": "7258151.96"
+        },
+        {
+          "type": "Decimal",
+          "value": "734.71"
+        }
+      ],
+      [
+        "KAM",
+        {
+          "type": "Decimal",
+          "value": "646663.61"
+        },
+        {
+          "type": "Decimal",
+          "value": "4224041.47"
+        },
+        {
+          "type": "Decimal",
+          "value": "553.21"
+        }
+      ],
+      [
+        "LAM",
+        {
+          "type": "Decimal",
+          "value": "676212.68"
+        },
+        {
+          "type": "Decimal",
+          "value": "4326606.13"
+        },
+        {
+          "type": "Decimal",
+          "value": "539.83"
+        }
+      ]
+    ],
+    "gold_result": [
+      [
+        545.4018808857365,
+        681.5824507359695,
+        708.1124296835194
+      ]
+    ],
+    "sql_error": null,
+    "scorer_ms": 130.04333400022006,
+    "max_parallel_workers_per_gather": 0
+  }
+}

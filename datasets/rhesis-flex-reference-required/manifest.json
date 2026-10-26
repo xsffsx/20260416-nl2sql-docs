@@ -1,0 +1,339 @@
+{
+  "project": "bird_baseline_20261024",
+  "api_url": "http://localhost:4000",
+  "runtime": {
+    "projectId": "bird_baseline_20261024",
+    "artifactVersionId": "ea8a1aa0-46a1-4c99-aed0-18c5ac9c3a14",
+    "bundleHash": "50c0cc65c8c8fcd8aaac472f897ab6e1453ca8e8588380cec92bd8126ec7e0f7",
+    "runtimeIdentity": {
+      "bundleHash": "50c0cc65c8c8fcd8aaac472f897ab6e1453ca8e8588380cec92bd8126ec7e0f7",
+      "schemaVersionId": "489dff07-db00-4d4c-b66e-d75efa28fe65"
+    },
+    "schemaRag": {
+      "status": "active",
+      "consistency": "consistent",
+      "sourceArtifactVersionId": "ea8a1aa0-46a1-4c99-aed0-18c5ac9c3a14",
+      "sourceBundleHash": "50c0cc65c8c8fcd8aaac472f897ab6e1453ca8e8588380cec92bd8126ec7e0f7",
+      "activatedAt": "2026-10-24T07:37:49.382844+00:00"
+    },
+    "runtimePolicies": {
+      "ragTopK": 10,
+      "ragThreshold": 0.7,
+      "ragInstructionsTopK": 5,
+      "ragInstructionsThreshold": 0.65,
+      "ragHybridRrfK": 60,
+      "ragSchemaLinkingEnabled": true,
+      "ragUserInstructionEnabled": false,
+      "ragSchemaLinkingTableTopK": 5,
+      "ragSchemaLinkingTableThreshold": 0.35,
+      "ragSchemaLinkingTableOverfetchK": 50,
+      "ragSchemaLinkingColumnTopM": 10,
+      "ragSchemaLinkingColumnThreshold": 0.35,
+      "ragSchemaLinkingColumnOverfetchM": 20,
+      "ragSchemaLinkingSchemaTokenBudget": 5000,
+      "recommendationMaxCandidates": 8,
+      "recommendationMaxDisplay": 6,
+      "sqlExplainTimeoutMs": 5000,
+      "sqlCorrectionMaxRetries": 3,
+      "sqlValidationAskRetryOnEmpty": false,
+      "sqlResultRowLimit": 100,
+      "askingHistoriesMaxTurns": 5
+    },
+    "model_config": {
+      "LLM_CHAT_PROFILE": "MIMO_CHAT",
+      "LLM_PROFILE_MIMO_CHAT_PROVIDER": "openai-compatible",
+      "LLM_PROFILE_MIMO_CHAT_MODEL": "mimo-v2.6-flash",
+      "LLM_PROFILE_MIMO_CHAT_BASE_URL": "https://token-plan-cn.xiaomimimo.com/v1",
+      "LLM_PROFILE_MIMO_CHAT_TIMEOUT_MS": "90000",
+      "LLM_PROFILE_MIMO_CHAT_TEMPERATURE": "0.0",
+      "LLM_EMBEDDING_PROFILE": "LOCAL_EMBED",
+      "LLM_PROFILE_LOCAL_EMBED_PROVIDER": "openai-compatible",
+      "LLM_PROFILE_LOCAL_EMBED_MODEL": "text-embedding-nomic-embed-text-v1.5",
+      "LLM_PROFILE_LOCAL_EMBED_BASE_URL": "http://127.0.0.1:1234/v1",
+      "LLM_PROFILE_LOCAL_EMBED_TIMEOUT_MS": "90000",
+      "LLM_PROFILE_LOCAL_EMBED_DIMENSIONS": "768",
+      "LLM_PROFILE_LOCAL_EMBED_EMBEDDING_BATCH_SIZE": "32",
+      "provider_option_sha256": {}
+    }
+  },
+  "tables": [
+    {
+      "table": "customers",
+      "rows": 32461,
+      "typed_content_sha256": "1060429f2e2f96650be22465811ce3d4eb45db9cb3613220230cae3b25110d07"
+    },
+    {
+      "table": "gasstations",
+      "rows": 5716,
+      "typed_content_sha256": "157f1e1851a3c7ab7536c1be116564700928fd136163f7358c178989855137e2"
+    },
+    {
+      "table": "products",
+      "rows": 591,
+      "typed_content_sha256": "73e0b1ac46730f8208a29c589fd70a146b1d283b105e950bcdf3ae8e04799a6f"
+    },
+    {
+      "table": "transactions_1k",
+      "rows": 1000,
+      "typed_content_sha256": "dabd8b121b33e6f206fbc4bcf1a073d6753b591380fb3b54c3c9f28433b9aa2f"
+    },
+    {
+      "table": "yearmonth",
+      "rows": 383282,
+      "typed_content_sha256": "921f087634150377d1ef01a3b84c348cf38299f5bf14b3c29f6bae868194dab5"
+    }
+  ],
+  "schema": "customers.customer_id: bigint; nullable=YES\ncustomers.segment: text; nullable=YES\ncustomers.currency: text; nullable=YES\ngasstations.gas_station_id: bigint; nullable=YES\ngasstations.chain_id: bigint; nullable=YES\ngasstations.country: text; nullable=YES\ngasstations.segment: text; nullable=YES\nproducts.product_id: bigint; nullable=YES\nproducts.description: text; nullable=YES\ntransactions_1k.transaction_id: bigint; nullable=YES\ntransactions_1k.date: date; nullable=YES\ntransactions_1k.time: time without time zone; nullable=YES\ntransactions_1k.customer_id: bigint; nullable=YES\ntransactions_1k.card_id: bigint; nullable=YES\ntransactions_1k.gas_station_id: bigint; nullable=YES\ntransactions_1k.product_id: bigint; nullable=YES\ntransactions_1k.amount: bigint; nullable=YES\ntransactions_1k.price: numeric; nullable=YES\nyearmonth.customer_id: bigint; nullable=YES\nyearmonth.date: text; nullable=YES\nyearmonth.consumption: numeric; nullable=YES",
+  "schema_sha256": "cb02bea8a7124c517beb03ea81c49a5c51859bff87dacf121237aabed83d112d",
+  "source_lock_sha256": "51c5f72fb623a15be81f397a8ca480e0663eb84eb9a7b11cd0feb46bf837ae88",
+  "references_sha256": "46f002a38f534f5b912ff846c07cedda7339ec01421f4f29be495a9fffdd2370",
+  "question_ids": [
+    "1471",
+    "1472",
+    "1473",
+    "1476",
+    "1479",
+    "1480",
+    "1481",
+    "1482",
+    "1483",
+    "1484",
+    "1486",
+    "1490",
+    "1493",
+    "1498",
+    "1500",
+    "1501",
+    "1505",
+    "1506",
+    "1507",
+    "1509",
+    "1514",
+    "1515",
+    "1521",
+    "1524",
+    "1525",
+    "1526",
+    "1528",
+    "1529",
+    "1531",
+    "1533"
+  ],
+  "csv_sha256": {
+    "bird-flex-evidence-30.csv": "9b3be21167ea901fadee99bf819fb94ab1c429672fb9c23abf2fa52bf35c3175",
+    "bird-flex-gold-30.csv": "1e010093a5236f4e70a04c096cd1865ac9b35d00de91ccfdf1a71212ad6ad635",
+    "bird-flex-combined-30.csv": "75e55dbbfe49b829fdc33ed6765bc2d0300511ea33581fc5958de8644c124e71"
+  },
+  "flex_revision": "270abdba59306134adf0928b2ce92acb8fbd94eb",
+  "judge": {
+    "rhesis_model_id": "8c4ac3b8-8e3a-4c56-95e8-fb79339c607c",
+    "name": "GLM 5.3 BIRD Judge",
+    "model": "glm-5.3",
+    "base_url": "https://open.bigmodel.cn/api/coding/paas/v4",
+    "provider": "glm",
+    "temperature": 0,
+    "max_tokens": 8192,
+    "timeout_seconds": 180,
+    "thinking": {
+      "type": "enabled"
+    },
+    "reasoning_effort": "low",
+    "parameter_source": "https://docs.bigmodel.cn/cn/guide/models/text/glm-5.3"
+  },
+  "endpoint": {
+    "id": "35fae721-5122-42f9-ad32-f5e67c3847b3",
+    "url": "http://host.docker.internal:4000/api/nl2sql?projectId=bird_baseline_20261024",
+    "project_id": "8aa58678-d952-469f-af75-afefce0176a6",
+    "environment": "local",
+    "request_mapping": {
+      "query": "{{ input }}"
+    },
+    "response_mapping": {
+      "output": "$.sql"
+    }
+  },
+  "sql_timeout_ms": 30000,
+  "parallel_workers_per_gather": 0,
+  "generation_protocol": "three independent Fresh Outputs runs; question only; no SQL Pair Knowledge",
+  "evidence_internal_gold_dependency": "Gold used only for execution comparison/branch; never in evidence-only judge request",
+  "scorer_write_privileges": {
+    "customers": false,
+    "gasstations": false,
+    "products": false,
+    "transactions_1k": false,
+    "yearmonth": false
+  },
+  "postgres_semantics": {
+    "integer_division": 2,
+    "numeric_division": "2.5000000000000000",
+    "nullable_count": [
+      1,
+      2
+    ],
+    "text_integer_comparison": "operator rejected; explicit compatible casts required"
+  },
+  "gold_self_checks": [
+    {
+      "question_id": "1471",
+      "ex": 1,
+      "rows": 1
+    },
+    {
+      "question_id": "1472",
+      "ex": 1,
+      "rows": 1
+    },
+    {
+      "question_id": "1473",
+      "ex": 1,
+      "rows": 1
+    },
+    {
+      "question_id": "1476",
+      "ex": 1,
+      "rows": 1
+    },
+    {
+      "question_id": "1479",
+      "ex": 1,
+      "rows": 1
+    },
+    {
+      "question_id": "1480",
+      "ex": 1,
+      "rows": 1
+    },
+    {
+      "question_id": "1481",
+      "ex": 1,
+      "rows": 1
+    },
+    {
+      "question_id": "1482",
+      "ex": 1,
+      "rows": 1
+    },
+    {
+      "question_id": "1483",
+      "ex": 1,
+      "rows": 1
+    },
+    {
+      "question_id": "1484",
+      "ex": 1,
+      "rows": 1
+    },
+    {
+      "question_id": "1486",
+      "ex": 1,
+      "rows": 1
+    },
+    {
+      "question_id": "1490",
+      "ex": 1,
+      "rows": 1
+    },
+    {
+      "question_id": "1493",
+      "ex": 1,
+      "rows": 1
+    },
+    {
+      "question_id": "1498",
+      "ex": 1,
+      "rows": 1
+    },
+    {
+      "question_id": "1500",
+      "ex": 1,
+      "rows": 976
+    },
+    {
+      "question_id": "1501",
+      "ex": 1,
+      "rows": 2
+    },
+    {
+      "question_id": "1505",
+      "ex": 1,
+      "rows": 1
+    },
+    {
+      "question_id": "1506",
+      "ex": 1,
+      "rows": 21
+    },
+    {
+      "question_id": "1507",
+      "ex": 1,
+      "rows": 2
+    },
+    {
+      "question_id": "1509",
+      "ex": 1,
+      "rows": 1
+    },
+    {
+      "question_id": "1514",
+      "ex": 1,
+      "rows": 1
+    },
+    {
+      "question_id": "1515",
+      "ex": 1,
+      "rows": 1
+    },
+    {
+      "question_id": "1521",
+      "ex": 1,
+      "rows": 1
+    },
+    {
+      "question_id": "1524",
+      "ex": 1,
+      "rows": 1
+    },
+    {
+      "question_id": "1525",
+      "ex": 1,
+      "rows": 1
+    },
+    {
+      "question_id": "1526",
+      "ex": 1,
+      "rows": 1
+    },
+    {
+      "question_id": "1528",
+      "ex": 1,
+      "rows": 1
+    },
+    {
+      "question_id": "1529",
+      "ex": 1,
+      "rows": 1
+    },
+    {
+      "question_id": "1531",
+      "ex": 1,
+      "rows": 1
+    },
+    {
+      "question_id": "1533",
+      "ex": 1,
+      "rows": 10
+    }
+  ],
+  "evaluation_protocol": {
+    "name": "FLEX-based expected_response required",
+    "revision": 2,
+    "created_at": "2026-10-25T14:17:09.009385+00:00",
+    "judge_reference_source": "validated testcase expected_response; no private-reference substitution",
+    "missing_reference": "evaluation error before SQL/LLM; no score",
+    "supersedes_runs": {
+      "evidence": "2b581e62-e753-4a83-9f06-2b12a0a650ba",
+      "gold": "09f0086f-2928-41ef-82d0-d869a174618e",
+      "combined": "03aa59b6-0974-4edb-baf2-3392ba7946ae"
+    }
+  }
+}

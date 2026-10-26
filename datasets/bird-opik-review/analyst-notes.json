@@ -1,0 +1,98 @@
+[
+  {
+    "question_id": "1471",
+    "trace_id": "01a16d6f-0f74-76ee-9101-808c663c1ea9",
+    "comment": {
+      "id": "01a16d74-c875-75b7-bba3-5c4a5ac4a448",
+      "text": "Codex analyst note — not SME approval. The ratio formula and customer counts agree, but SQL rounds 0.06572769953051644 to 0.0657 and returns two explanatory counts. Strict EX remains 0; no business numeric tolerance or output-shape contract has been approved. The semantic assertion pass does not override this difference.",
+      "created_at": "2026-10-24T10:28:52.596409Z",
+      "last_updated_at": "2026-10-24T10:28:52.596409Z",
+      "created_by": "admin",
+      "last_updated_by": "admin"
+    }
+  },
+  {
+    "question_id": "1472",
+    "trace_id": "01a16d6f-0f70-787a-adc0-9af7fc178f78",
+    "comment": {
+      "id": "01a16d75-5055-77ca-bfa3-287495ae3543",
+      "text": "Codex analyst note — not SME approval. Both queries select customer 47273 using the LAM/2012 filters and per-customer SUM(consumption). Actual also returns consumption 0.74. EX=0 and official Soft F1=2/3. This is evidence for an output-shape difference, not evidence that the target customer is wrong. Domain acceptance of explanatory columns remains unapproved.",
+      "created_at": "2026-10-24T10:29:27.261784Z",
+      "last_updated_at": "2026-10-24T10:29:27.261784Z",
+      "created_by": "admin",
+      "last_updated_by": "admin"
+    }
+  },
+  {
+    "question_id": "1479",
+    "trace_id": "01a16d6f-0f64-73c5-a67a-caab7a16d5e8",
+    "comment": {
+      "id": "01a16d75-5175-70fa-b8c6-752cf84029c2",
+      "text": "Codex analyst note — not SME approval. Actual returns the same winning year as Gold, but omits the explicit CZK filter. Official Soft F1=2/3 grants partial credit for the coinciding year; the native filter assertion correctly fails. Containing a Gold value does not establish correct query semantics.",
+      "created_at": "2026-10-24T10:29:27.547834Z",
+      "last_updated_at": "2026-10-24T10:29:27.547834Z",
+      "created_by": "admin",
+      "last_updated_by": "admin"
+    }
+  },
+  {
+    "question_id": "1493",
+    "trace_id": "01a16d6f-0f44-778a-ac56-5ffad33fe4a7",
+    "comment": {
+      "id": "01a16d75-5242-7607-bc51-8e7fe2eca825",
+      "text": "Codex analyst note — not SME approval. Both SQL queries calculate the same threshold percentage; actual rounds to 66.62 instead of 66.62300807683911. EX=0 and official Soft F1=0. No numeric tolerance has been added. Review required before deciding that rounded output satisfies the business contract.",
+      "created_at": "2026-10-24T10:29:27.862386Z",
+      "last_updated_at": "2026-10-24T10:29:27.862386Z",
+      "created_by": "admin",
+      "last_updated_by": "admin"
+    }
+  },
+  {
+    "question_id": "1498",
+    "trace_id": "01a16d6f-0f40-7f4a-b341-fd0f0000be6a",
+    "comment": {
+      "id": "01a16d75-539a-7379-88fd-f3c1a098f1ce",
+      "text": "Codex analyst note — not SME approval. The native aggregation assertion passed, but its reason assumed a year-month grain. The archived generation schema also contains yearmonth.customer_id; actual orders individual consumption rows without GROUP BY month, while Gold sums customers per month. Actual is 445279.69 versus Gold 51787161.7399998. This judge pass is not adequate evidence for monthly-total correctness. The judge lacked the schema context seen by the generator.",
+      "created_at": "2026-10-24T10:29:28.096627Z",
+      "last_updated_at": "2026-10-24T10:29:28.096627Z",
+      "created_by": "admin",
+      "last_updated_by": "admin"
+    }
+  },
+  {
+    "question_id": "1506",
+    "trace_id": "01a16d6f-0f30-7d30-a8c5-2d0c73e2fa25",
+    "comment": {
+      "id": "01a16d75-5486-7628-a0af-9ac728cd164d",
+      "text": "Codex analyst note — not SME approval. Complete result sets contain the same 21 descriptions and strict EX=1. The unmodified official Soft F1 is 0.190476 because it pairs deduplicated rows by returned position. Preserve EX and the official metric separately; this order-sensitive beta diagnostic is not semantic accuracy.",
+      "created_at": "2026-10-24T10:29:28.436998Z",
+      "last_updated_at": "2026-10-24T10:29:28.436998Z",
+      "created_by": "admin",
+      "last_updated_by": "admin"
+    }
+  },
+  {
+    "question_id": "1526",
+    "trace_id": "01a16d6f-0f10-787e-9b13-b76fc0c5888f",
+    "comment": {
+      "id": "01a16d75-55c6-7559-b478-29394f392947",
+      "text": "Codex analyst note — not SME approval. The question targets price=634.8 on 2012-08-25; the evidence includes a different date (2012-08-24), and Gold uses price=1513.12 and returns NULL. Actual follows the question amount. The native judge passed and dismissed the date discrepancy. The reference amount mismatch and stale/contradictory hint require domain review; no human approval or Gold correction has been recorded.",
+      "created_at": "2026-10-24T10:29:28.652633Z",
+      "last_updated_at": "2026-10-24T10:29:28.652633Z",
+      "created_by": "admin",
+      "last_updated_by": "admin"
+    }
+  },
+  {
+    "question_id": "1533",
+    "trace_id": "01a16d6f-0f00-7c29-8656-22163419b0f5",
+    "comment": {
+      "id": "01a16d75-568f-7131-888d-d90fe2632eba",
+      "text": "Codex analyst note — not SME approval. The actual second-column set matches the nine distinct Gold consumption values, but complete rows include customer IDs. EX=0 is preserved. The official Soft F1 is only 0.074074 because row-position matching also affects this metric. Additional columns, duplicate rows and semantic correctness are distinct review questions.",
+      "created_at": "2026-10-24T10:29:28.965291Z",
+      "last_updated_at": "2026-10-24T10:29:28.965291Z",
+      "created_by": "admin",
+      "last_updated_by": "admin"
+    }
+  }
+]

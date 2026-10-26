@@ -1,0 +1,13 @@
+{
+  "execution_mode": "frozen_result_replay",
+  "source_experiment": "bird-debit-baseline-full-20261024-0800",
+  "records_sha256": "daab67d4f1c7e810c8e38ff0420fcc430c367f4d5589070fff125e107beddcc9",
+  "policy_sha256": "71b5020fca846a87ba37a2ba6eacaba2f86af8fdad64cabc17b65f000d38772b",
+  "script_sha256": "265412a1fb5b4a09d12994a95550e970e30b230c4ad4e2551be5e982eb78609d",
+  "official_evaluator": "https://github.com/bird-bench/mini_dev/blob/abd11b6db92a1c9f809b32f7564c7c71b34d67f0/evaluation/evaluation_f1.py",
+  "official_evaluator_sha256": "ba2700ee09b0c34d7e203788544757e6e6d6c99c0425bb92b3daa3927eee29bf",
+  "sdk_version": "1.10.56",
+  "new_nl2sql_calls": 0,
+  "sql_pair_knowledge_used": false,
+  "human_approved": false
+}

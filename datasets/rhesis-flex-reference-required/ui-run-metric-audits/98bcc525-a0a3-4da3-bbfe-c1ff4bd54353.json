@@ -1,0 +1,33 @@
+{
+  "id": "98bcc525-a0a3-4da3-bbfe-c1ff4bd54353",
+  "variant": "evidence",
+  "question": "What is the percentage of \"premium\" against the overall segment in Country = \"SVK\"?",
+  "actual_sql": "SELECT\n  CASE WHEN segment = 'Premium' THEN 1 ELSE 0 END AS is_premium,\n  COUNT(*) AS station_count,\n  ROUND(\n    COUNT(*) * 100.0 / SUM(COUNT(*)) OVER (),\n    2\n  ) AS pct_of_overall\nFROM gasstations\nWHERE country = 'SVK'\nGROUP BY CASE WHEN segment = 'Premium' THEN 1 ELSE 0 END\nORDER BY is_premium DESC;",
+  "actual_sql_sha256": "adea4167e83a70ad1503f9601d2972ad11c74722f662d3b776b0f3ed6941a970",
+  "judge": {
+    "rhesis_model_id": "8c4ac3b8-8e3a-4c56-95e8-fb79339c607c",
+    "name": "GLM 5.3 BIRD Judge",
+    "model": "glm-5.3",
+    "base_url": "https://open.bigmodel.cn/api/coding/paas/v4",
+    "provider": "glm",
+    "temperature": 0,
+    "max_tokens": 8192,
+    "timeout_seconds": 180,
+    "thinking": {
+      "type": "enabled"
+    },
+    "reasoning_effort": "low",
+    "parameter_source": "https://docs.bigmodel.cn/cn/guide/models/text/glm-5.3"
+  },
+  "score": null,
+  "status": "error",
+  "question_id": "1528",
+  "expected_response": "{\"evidence\": \"\"}",
+  "gold_sql": "SELECT CAST(SUM(CASE WHEN country = 'SVK' AND segment = 'Premium' THEN 1 ELSE 0 END) AS REAL) * 100 / NULLIF(SUM(CASE WHEN country = 'SVK' THEN 1 ELSE 0 END), 0) FROM gasstations",
+  "evidence": "",
+  "error": {
+    "type": "ValueError",
+    "message": "Missing expected_response reference: evidence is empty; judge was not called"
+  },
+  "elapsed_ms": 0.18316700879950076
+}

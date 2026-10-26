@@ -1,0 +1,28 @@
+{
+  "question": "What is the ratio of customers who pay in EUR against customers who pay in CZK?",
+  "score": 0.0,
+  "details": {
+    "reason": "Complete results differ from Gold SQL; BIRD Soft F1 = 0.0",
+    "BIRD_Soft_F1": 0.0,
+    "actual_sql": "SELECT\n  COUNT(*) FILTER (WHERE currency = 'EUR') AS eur_customers,\n  COUNT(*) FILTER (WHERE currency = 'CZK') AS czk_customers,\n  ROUND(\n    COUNT(*) FILTER (WHERE currency = 'EUR')::numeric\n    / NULLIF(COUNT(*) FILTER (WHERE currency = 'CZK'), 0), 4\n  ) AS eur_to_czk_ratio\nFROM customers\nWHERE currency IN ('EUR', 'CZK');",
+    "gold_sql": "SELECT CAST(SUM(CASE WHEN currency = 'EUR' THEN 1 ELSE 0 END) AS REAL) / NULLIF(SUM(CASE WHEN currency = 'CZK' THEN 1 ELSE 0 END), 0) FROM customers",
+    "actual_result": [
+      [
+        2002,
+        30459,
+        {
+          "type": "Decimal",
+          "value": "0.0657"
+        }
+      ]
+    ],
+    "gold_result": [
+      [
+        0.06572769953051644
+      ]
+    ],
+    "sql_error": null,
+    "scorer_ms": 11.247458001889754,
+    "max_parallel_workers_per_gather": 0
+  }
+}

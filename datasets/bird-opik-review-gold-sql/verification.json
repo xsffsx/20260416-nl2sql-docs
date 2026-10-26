@@ -1,0 +1,29 @@
+{
+  "persisted_assertion_items": 30,
+  "persisted_assertion_passes": 17,
+  "gold_sql_present_on_all_suite_items": true,
+  "gold_sql_present_in_judge_output": true,
+  "gold_sql_excluded_from_task_input": true,
+  "official_EX_passes": 9,
+  "gold_assertion_vs_official_EX": {
+    "agreement_count": 20,
+    "items_total": 30,
+    "false_positive_question_ids": [
+      "1533",
+      "1528",
+      "1493",
+      "1486",
+      "1484",
+      "1480",
+      "1476",
+      "1471",
+      "1472"
+    ],
+    "false_negative_question_ids": [
+      "1509"
+    ]
+  },
+  "source_scores_verified": true,
+  "new_nl2sql_calls": 0,
+  "human_approval_claimed": false
+}

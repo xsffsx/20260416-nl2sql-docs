@@ -1,0 +1,876 @@
+{
+  "experiment_date": "2026-10-24",
+  "run_name": "bird-debit-baseline-full-20261024-0800",
+  "project": "bird_baseline_20261024",
+  "cohort": {
+    "db_id": "debit_card_specializing",
+    "questions": 30,
+    "tables": 5,
+    "rows": 423050,
+    "source_qa": {
+      "revision": "f65faf4ae3b638c1fa6df1d3370c8d92c8366301",
+      "url": "https://huggingface.co/datasets/birdsql/bird_mini_dev/resolve/f65faf4ae3b638c1fa6df1d3370c8d92c8366301/data/mini_dev_pg-00000-of-00001.json",
+      "sha256": "7fa740ef9225389cff6c34432120e8325d0ca3008d73db1ae38731234bc10da7"
+    }
+  },
+  "model": {
+    "profile": "MIMO_CHAT",
+    "model": "mimo-v2.6-flash",
+    "temperature": 0,
+    "weight_revision": "not_disclosed"
+  },
+  "inputs": {
+    "official_evidence": "on",
+    "schema_rag": "on",
+    "sql_pair_knowledge": "verified_empty",
+    "gold_sql": "scorer_only"
+  },
+  "runtime": {
+    "artifactVersionId": "ea8a1aa0-46a1-4c99-aed0-18c5ac9c3a14",
+    "bundleHash": "50c0cc65c8c8fcd8aaac472f897ab6e1453ca8e8588380cec92bd8126ec7e0f7",
+    "runtimeIdentity": {
+      "bundleHash": "50c0cc65c8c8fcd8aaac472f897ab6e1453ca8e8588380cec92bd8126ec7e0f7",
+      "schemaVersionId": "489dff07-db00-4d4c-b66e-d75efa28fe65"
+    }
+  },
+  "dataset_id": "01a16cdd-e2f7-755b-824a-c8f49904d4ed",
+  "dataset_version": "01a16cdd-e44a-7565-b9d7-faa5dbb98333",
+  "dataset_version_name": "v1",
+  "opik_experiment_id": "01a16cf2-cfd0-7da4-bcf6-7c2e76472a8e",
+  "timeouts": {
+    "ask_seconds": 180,
+    "scoring_statement_ms": 30000
+  },
+  "metric": "BIRD exact Python set(rows) equality; no tolerance or column normalization",
+  "ask_ms_mean": 19813.821583336296,
+  "ask_ms_median": 16602.94306249125,
+  "knowledge_proof": {
+    "provider_responses": 30,
+    "empty_combined_inputs": 31,
+    "correction_phase": "not_executed",
+    "offline_verification": "passed all30 original traces",
+    "runner_sha256": "72ee27974637cecb3d148c0c0b5acdaa3a2046410d36bc1f54c71c91480a5409",
+    "verifier_sha256": "1b07c855649fa6417988a9744b64c7ba905eff07d4e33d8346823cbff43f9313"
+  },
+  "images": [
+    {
+      "file": "docs-site/static/img/examples/bird-baseline-no-sql-pair/02-confirm-import.png",
+      "source": "docs/20261024_evaluation/bird-ui-evidence/02-confirm-import.png",
+      "kind": "actual_baseline_capture",
+      "sha256": "80d7fe77afc838a4bcfd22b0548912804b8f1cf516e420532b7f8b6a7d917bf7"
+    },
+    {
+      "file": "docs-site/static/img/examples/bird-baseline-no-sql-pair/after-create-actual.png",
+      "source": "docs/20261024_evaluation/bird-ui-evidence/after-create-actual.png",
+      "kind": "actual_baseline_capture",
+      "sha256": "d6d8c74e977d565adaaaead639b852bf06ac97c04279fe127f03f45bb4a2715c"
+    },
+    {
+      "file": "docs-site/static/img/examples/bird-baseline-no-sql-pair/05-publish-review.png",
+      "source": "docs/20261024_evaluation/bird-ui-evidence/05-publish-review.png",
+      "kind": "actual_baseline_capture",
+      "sha256": "c6e4ff366ae20fbfb662bc444c6f602c4c03d2e2ac523012d66d81917518c909"
+    },
+    {
+      "file": "docs-site/static/img/examples/bird-baseline-no-sql-pair/07-opik-dataset-v1.png",
+      "source": "docs/20261024_evaluation/bird-ui-evidence/07-opik-dataset-v1.png",
+      "kind": "actual_baseline_capture",
+      "sha256": "fefafc1f52a0c6e8d6cfbc9fc6dcbbbac1954713fcb449289f3799a205cbac37"
+    },
+    {
+      "file": "docs-site/static/img/examples/bird-baseline-no-sql-pair/09-opik-full-reviewed.png",
+      "source": "docs/20261024_evaluation/bird-ui-evidence/09-opik-full-reviewed.png",
+      "kind": "actual_baseline_capture",
+      "sha256": "52039eab071773a877f95aa37abf9811803f5f1db48e4218f4cb217d5b8d68fd"
+    },
+    {
+      "file": "docs-site/static/img/examples/bird-baseline-no-sql-pair/active-reviewed.png",
+      "kind": "readonly_post_run_review",
+      "sha256": "8186224d07d5ccc08fd18ac0ccc31ba429a8a8e86058dc2e12524a685df958c3",
+      "project": "bird_baseline_20261024",
+      "artifactVersionId": "ea8a1aa0-46a1-4c99-aed0-18c5ac9c3a14",
+      "bundleHash": "50c0cc65c8c8fcd8aaac472f897ab6e1453ca8e8588380cec92bd8126ec7e0f7",
+      "captured_at": "2026-10-24T16:35:56+08:00"
+    },
+    {
+      "file": "docs-site/static/img/getting-started/project-modes/poc-csv/import-csv-and-qa/04-choose-csv-data.png",
+      "sha256": "460e36caff6b29851f0d8b5ea9c659c17444394f742060ae0eefff264d2a7c72",
+      "report_attachment": "monocart-report/11-poc-csv-reset/attachments/cca58335c56cf98f8e628715dbc4086161dd2099.png",
+      "source": "monocart-report/11-poc-csv-reset/attachments/cca58335c56cf98f8e628715dbc4086161dd2099.png",
+      "kind": "mock_ui_illustration",
+      "project": "poc_csv_reset",
+      "report": "monocart-report/11-poc-csv-reset/index.json",
+      "report_passed": 2,
+      "report_failed": 0
+    },
+    {
+      "file": "docs-site/static/img/getting-started/project-modes/poc-csv/import-csv-and-qa/15-readiness-passed.png",
+      "sha256": "c13805e241f679a3856956e64fea26a9757359a7e2132bf9b6db4faf0378af73",
+      "report_attachment": "monocart-report/11-poc-csv-reset/attachments/af954f1a2f3ce45c8fc8f2857ce554b93b7acfd5.png",
+      "source": "monocart-report/11-poc-csv-reset/attachments/af954f1a2f3ce45c8fc8f2857ce554b93b7acfd5.png",
+      "kind": "mock_ui_illustration",
+      "project": "poc_csv_reset",
+      "report": "monocart-report/11-poc-csv-reset/index.json",
+      "report_passed": 2,
+      "report_failed": 0
+    },
+    {
+      "file": "docs-site/static/img/examples/bird-baseline-no-sql-pair/opik-metrics-reviewed.png",
+      "kind": "readonly_post_run_review",
+      "sha256": "5fcf1807a5ff0526b3fae4fa95df1b191e84b9cc499518fdb2a6591e00515742",
+      "experiment_id": "01a16cf2-cfd0-7da4-bcf6-7c2e76472a8e",
+      "captured_at": "2026-10-24T16:44:52+08:00",
+      "region": "Native screenshot of actual experiment header; no image editing"
+    }
+  ],
+  "license": {
+    "benchmark": "CC BY-SA 4.0",
+    "attribution": "BIRD Team / BIRD-SQL; Li et al., BIRD, NeurIPS 2023",
+    "source": "https://github.com/bird-bench/mini_dev",
+    "adaptation": "Source table/column names mapped to POC names; result fields selected from frozen local run; no scoring change"
+  },
+  "source_files": [
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1471/outcome.json",
+      "sha256": "6b534223d87907be6a0ffac8426142faee69af22c488fc83981348a7f4d21450"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1471/score.json",
+      "sha256": "bb9ea818678f7a27141647f20302740e72420c63d3c69105741c18509fe8d471"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1471/request.json",
+      "sha256": "d0b9960bf2030ce7695f8d6ba7cda9fdcaa4909de25bd8cedfd6caa29e87b208"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1471/knowledge-audit.json",
+      "sha256": "faed4133b9c57d1a270da622443c330aab38a5cc26cb69e31343c4ff11f103e3"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1471/knowledge-proof.json",
+      "sha256": "da363032695be673354e173723cd7688c8c535884461ed8c009dfd5ac6a844dc"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1471/trace-events.json",
+      "sha256": "c151147e95fa3b66a11e45406772d7664924e992c6aa51b8a1d70e9180b599a9"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1472/outcome.json",
+      "sha256": "3c5312d7ce4315f2b8185589feb67ba867d8cc83127edaae718dad7808cda891"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1472/score.json",
+      "sha256": "17c4765ef29c51696e3b84d72a91c7012babda546570dea9a3312ef9e5c6dd1e"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1472/request.json",
+      "sha256": "d25b3cc68c43a14c940467fef72ee890387a3887e61b2b0e293501f47ec2fe5e"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1472/knowledge-audit.json",
+      "sha256": "c08480ead5946d66f7858c1108fd56ce774efe00a6c983be643ac8317689c120"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1472/knowledge-proof.json",
+      "sha256": "da363032695be673354e173723cd7688c8c535884461ed8c009dfd5ac6a844dc"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1472/trace-events.json",
+      "sha256": "c3a3784f8937f86444c2fc2309026bf9bbd3115f36178772d6ab3fdf8564c0dc"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1473/outcome.json",
+      "sha256": "0e0a9b65dd85e53b4878b70cf9cf95773ea87802da787b069504155e9615f5bf"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1473/score.json",
+      "sha256": "f2fa0c6b04660853946f8de4d05e12b34f19d706a5440bf8f6f04c89bddfb51e"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1473/request.json",
+      "sha256": "7dd9ce63026f8e5abc147bae50e6667d5dd6428a8843fa172da45f4d559f15fd"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1473/knowledge-audit.json",
+      "sha256": "ca3b44fd0acd54c4490ef03637ece0c2380847f890454e1587972afdd7cb25c3"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1473/knowledge-proof.json",
+      "sha256": "da363032695be673354e173723cd7688c8c535884461ed8c009dfd5ac6a844dc"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1473/trace-events.json",
+      "sha256": "77992fb15ff65288d2bbf2212433ceff4f94fb8535b74af497a14a7cd9c33ca5"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1476/outcome.json",
+      "sha256": "fa117a777fbb6d125006d5bc8d5e9f70c25c2fa66a4d3b5660b0c50046428ac2"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1476/score.json",
+      "sha256": "6b707efb9c293df0ce89f463b7ad4c5a027ffd447b54a9c2c7d05dd230386c22"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1476/request.json",
+      "sha256": "d012bc5b3d52a2565f2c3ab4ebedc699818ae134cb1ffd62a61f80bfcd48986f"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1476/knowledge-audit.json",
+      "sha256": "58f3eeaa2b3212e394a5d19a9098f95d696c9b7f9f678605bfc57f95383504ed"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1476/knowledge-proof.json",
+      "sha256": "da363032695be673354e173723cd7688c8c535884461ed8c009dfd5ac6a844dc"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1476/trace-events.json",
+      "sha256": "7263ede9abde184f47a55d332ee4460588ee7588b890b64fdefdaf2a4edf0989"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1479/outcome.json",
+      "sha256": "d42d7a45fdde76d2afa57e32e5b9b09a1ec6213564f4a7eeed4cf92c4542a0bc"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1479/score.json",
+      "sha256": "cd5d426383d45ce23bb4a3e416180aa352ad56bc255732d35697d27521dd1b0e"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1479/request.json",
+      "sha256": "24df667808a0d0068abc5b119efadd4073b356a51f2992dab3499c7d2d855820"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1479/knowledge-audit.json",
+      "sha256": "44dc763fe3774417e2cfc9a02e2de5128670fe7f9f9907ad657427bfbfbe6b3e"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1479/knowledge-proof.json",
+      "sha256": "da363032695be673354e173723cd7688c8c535884461ed8c009dfd5ac6a844dc"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1479/trace-events.json",
+      "sha256": "90233592cf8486b9c85761c16b3d4aa31e7dac773fc4e3f5fc1072a649360e12"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1480/outcome.json",
+      "sha256": "754415b5b5fe19fbce5ea1f9431492edaf2a87a4bd2519afedfd832dd075eda3"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1480/score.json",
+      "sha256": "e5e770802d3624b7d24065480dabd8887b73a5c1ef7c01661f8a4b15bdfe3769"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1480/request.json",
+      "sha256": "f9aa941d8a216f2fc861edac29e23b682952afc3af33e51013fbb27bbe18da67"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1480/knowledge-audit.json",
+      "sha256": "6f6393cd0721e3df1ffc2ccbb330cce41c93a8d31858c93eae210254bcba67c4"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1480/knowledge-proof.json",
+      "sha256": "da363032695be673354e173723cd7688c8c535884461ed8c009dfd5ac6a844dc"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1480/trace-events.json",
+      "sha256": "aaedd9357bd70b99799865b7f2e42f64a1c6051a89e4c9c328362157c2d65b11"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1481/outcome.json",
+      "sha256": "8d5b6ab45f3aff08107c9401949ef5575da8c0327fb0fb7f26d3e5d5ef194d0f"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1481/score.json",
+      "sha256": "06d474a92d64edd06f82c4d5e51d8cfc86422b3d47329def28d74518b90852ac"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1481/request.json",
+      "sha256": "bf65a8b37630f0db9fca7aa39623848e964814d85789adcc68fe91359ec82a61"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1481/knowledge-audit.json",
+      "sha256": "f95cc1dfa2c5dc17aad0da79029bc42f32f445d4f16f4d36a9c6f10faf8d204c"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1481/knowledge-proof.json",
+      "sha256": "da363032695be673354e173723cd7688c8c535884461ed8c009dfd5ac6a844dc"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1481/trace-events.json",
+      "sha256": "6bfa2ad183e7f8064dde7b3466f533b6686ef53811ad0d4f06d254b950fd0826"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1482/outcome.json",
+      "sha256": "05a2c39e6ff5d99a7ec5fd7a716e69725ee2b3da16768ddb2a295dc6daf07b44"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1482/score.json",
+      "sha256": "6ebbd0aa4212359d37e7d28fb33c82a5416c7a9be2ad551d0cc78b2252a22c83"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1482/request.json",
+      "sha256": "897564ab65271afdd0ccd09701a1580b8deb8b756e024433a85a79e76ed73ced"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1482/knowledge-audit.json",
+      "sha256": "a5d92daa1bf7ca08532ae20aca33d9e2ed6284a70a89493b8e15ece3917f952a"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1482/knowledge-proof.json",
+      "sha256": "da363032695be673354e173723cd7688c8c535884461ed8c009dfd5ac6a844dc"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1482/trace-events.json",
+      "sha256": "2329bade1dfc2c2051dc42828dd8a44ef6a18dadd387d76b053d7da5b689e61b"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1483/outcome.json",
+      "sha256": "214ac4fd12cb4625a509374290d7f7f8a9975bce4202560d68561012f938ced7"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1483/score.json",
+      "sha256": "099c8f5ca87c165fdfa6ece51f7574efc9c40305f43c37eea1c33ab5f40128af"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1483/request.json",
+      "sha256": "3079f91b693aa86ecf7664ef577b28bd422fddce00bf91bc5ae6452c9d3a753e"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1483/knowledge-audit.json",
+      "sha256": "fc5afa77fbec9942616027267bb1edec082211b7586c98ab7db1e098b2b93cc0"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1483/knowledge-proof.json",
+      "sha256": "da363032695be673354e173723cd7688c8c535884461ed8c009dfd5ac6a844dc"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1483/trace-events.json",
+      "sha256": "02ca63ba3d22a433e6bc56628e58ea113e41d2d2ddf73217d5b524cbb1bdfb6b"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1484/outcome.json",
+      "sha256": "a8203f2a70180ae1816767393ce24f89d252d4fb76a6e36da0df60ba686f1424"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1484/score.json",
+      "sha256": "e11a861edebadffa5f71b19d2d2937f97d747c9a6ebc47728427af91342f4114"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1484/request.json",
+      "sha256": "bdfb0a6733a734c1b3b8ad5c943bd93556eca224095d1af8ff22c9fd684d8095"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1484/knowledge-audit.json",
+      "sha256": "fe7e167541302c3ed0d2afeb2f62a0ceb0f050789683ced6f0dd12334431572f"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1484/knowledge-proof.json",
+      "sha256": "da363032695be673354e173723cd7688c8c535884461ed8c009dfd5ac6a844dc"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1484/trace-events.json",
+      "sha256": "80802243833f086dd1b2525b1959a947bffa275e2dd34f11f3eed6891f8603da"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1486/outcome.json",
+      "sha256": "92855d0c7c02f9aeb44f95ba91cf131b748aa94836bfb2c970351b0e58a9a6c4"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1486/score.json",
+      "sha256": "c788ebd3a6ae8bd9fb05bdf1e6ea792edba7ddbe5dd70a2583aa2ad38f6fa625"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1486/request.json",
+      "sha256": "cc855e1ba2598579fdd50b1c0ac657f44850329c9ce2f26e9e101940e52c77e3"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1486/knowledge-audit.json",
+      "sha256": "487aadadd833f25448a4511f6f5384cbe2dd5df5fe6a25f51c2cfc15ce1896c5"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1486/knowledge-proof.json",
+      "sha256": "da363032695be673354e173723cd7688c8c535884461ed8c009dfd5ac6a844dc"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1486/trace-events.json",
+      "sha256": "644baeb9cc2e72bb51890e2f8855eb2a4f12ff77e9e2ea313f9014dd94af2c92"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1490/outcome.json",
+      "sha256": "dacd4716946b33b61153b32d3b6b0117df2e298104e83918e8ee222aa065a671"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1490/score.json",
+      "sha256": "044dc2368321ee67bb0602a3df5f1831e326975033a6977bef8dbd1f93a4264c"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1490/request.json",
+      "sha256": "b1cb63fb28b6fcdd84ab679bc958e8e4cc8210dee6ba5a5d9d05517a859caa4c"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1490/knowledge-audit.json",
+      "sha256": "6821c083d0a32e1970f130d0bfe0fa6275b71b8e801c202edf3a5944b67abcb2"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1490/knowledge-proof.json",
+      "sha256": "da363032695be673354e173723cd7688c8c535884461ed8c009dfd5ac6a844dc"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1490/trace-events.json",
+      "sha256": "5447f52f1685faacf72f62898d338747228a6908774c187394fafa62d9bb8c4e"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1493/outcome.json",
+      "sha256": "92db94afaef72334ef249b13965e823f2ce44632342b24aa2edcec908509ff48"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1493/score.json",
+      "sha256": "6bb9361a2e377fe1844740dc75394a66a7b601d671e0e9e58a38ed04fa8bc671"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1493/request.json",
+      "sha256": "4231c3137150b4904dc1fa49048d908f5aa5edb36656a836a7e4fcebb50686f7"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1493/knowledge-audit.json",
+      "sha256": "194d149d14009e4b84a778eb127fcf0ee75e9fdce009039d56005ae5e3c3ba7a"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1493/knowledge-proof.json",
+      "sha256": "da363032695be673354e173723cd7688c8c535884461ed8c009dfd5ac6a844dc"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1493/trace-events.json",
+      "sha256": "c7008dd9bc773acf9a51d57ed53ef1374a61811ae17550e8536bf0022a3e1fa9"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1498/outcome.json",
+      "sha256": "5acb058fb2ae21011faafd9d53f8b1915a90beca6d936b88ad0288b2e439600e"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1498/score.json",
+      "sha256": "122a32c8bb173905a6e458e6533cd68cdaa6105a10c169821adc75e122884ea6"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1498/request.json",
+      "sha256": "4e3100f00372346db3780c4de7dfe354a8aa4043546eef6a392c51937f532b11"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1498/knowledge-audit.json",
+      "sha256": "a8d51e6f176243f6268b12063076c9d129529b903430820a4927e728700bf7f0"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1498/knowledge-proof.json",
+      "sha256": "da363032695be673354e173723cd7688c8c535884461ed8c009dfd5ac6a844dc"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1498/trace-events.json",
+      "sha256": "53696578d9fc66b05f0b2af0df3b08a997aa66ec66c5caa72b5cde32fbda3255"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1500/outcome.json",
+      "sha256": "ad5ee0c33a11386c21141a71a97e2de97b092a439ef602dd88590ea665f8dd79"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1500/score.json",
+      "sha256": "8e20a3b8bab9fc86f2d2c364d6184f2975668d73c433420830a26fed1d0bbf32"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1500/request.json",
+      "sha256": "6e9b939b81edb9cac99f70f4a3627105cfc99a00e18215259a929e83b043ddb5"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1500/knowledge-audit.json",
+      "sha256": "a7050e6c6572234f99db8a699f59e5a716181b9881596ae67cd26220087488c8"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1500/knowledge-proof.json",
+      "sha256": "da363032695be673354e173723cd7688c8c535884461ed8c009dfd5ac6a844dc"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1500/trace-events.json",
+      "sha256": "9205dab80274a5c334333c00ab99a2341ffea7d3da99f3b479f88cd9a2612b07"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1501/outcome.json",
+      "sha256": "539e3b0e487480c64d849f2ed2018240b2ebabd79925b1e37616da478cb9de37"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1501/score.json",
+      "sha256": "9590d9c1d8a9de12e80fa3a04ae8be7caa17f49ab4a7e767ea478d64f4ed9767"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1501/request.json",
+      "sha256": "65b7f663d2ee2ff22938661300f6197c2426961018145c55b0d262f2e77e0cd0"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1501/knowledge-audit.json",
+      "sha256": "fc7c6603c8f2cb0391546c7dd46782e107e7ef46c00ff426bb39e9b7b3a75b6d"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1501/knowledge-proof.json",
+      "sha256": "da363032695be673354e173723cd7688c8c535884461ed8c009dfd5ac6a844dc"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1501/trace-events.json",
+      "sha256": "0323db747efaa6653286bf8b7446c7063346608fd173dbc67bfe557f5646b9a8"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1505/outcome.json",
+      "sha256": "14750ca3ba5a470f1c9c1029de0f268f2fea9b16009a774ff94680808d6d91e8"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1505/score.json",
+      "sha256": "01272478a308a741d9f95a88d22b1b690154b900577a3f91ca6b764de44c1f3c"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1505/request.json",
+      "sha256": "c1fec2b51d60bfdf6c5c902fb219b39ee2f1d8e29166636ae1e851b4f6cf36ea"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1505/knowledge-audit.json",
+      "sha256": "afa24e9ea885abc3680d80a9d8166ec353885232d89babd399136a1e6533b3eb"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1505/knowledge-proof.json",
+      "sha256": "da363032695be673354e173723cd7688c8c535884461ed8c009dfd5ac6a844dc"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1505/trace-events.json",
+      "sha256": "63454a70d948b8ed6d97a1271eafa4cb5aa99b568bddc4918a1da065673b6dee"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1506/outcome.json",
+      "sha256": "85d64515432b20b06c27f6ff1ee955206d0f26db5a92622419d6908e8de8075d"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1506/score.json",
+      "sha256": "9d4392b302d7e9a9911cfc65994fd6c0148918fbff139b6e7c85bd77fa742cc1"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1506/request.json",
+      "sha256": "d7a5c486bfeca2329964c60c5373711c1ea210256e967602af0108fcb5014da1"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1506/knowledge-audit.json",
+      "sha256": "4a919c7d1913ac853fe63bf2a7e4f1d8cc019364ba4ef100c92fd03a36d8eba1"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1506/knowledge-proof.json",
+      "sha256": "80f1fdb71857252b05383be43ed144be630adfe5cbfded882a9e2e8c4fd39903"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1506/trace-events.json",
+      "sha256": "d62b129853261a1cfe8c1287ab04ff1d26d32dc29bb06c3c607362d73fefdc95"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1507/outcome.json",
+      "sha256": "474614484d9155efee5966d69e24310cddade10a55053400ba4af0866fcd29f6"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1507/score.json",
+      "sha256": "2e985d8e7a0f10694c148baeee26fbc98e91191f0cbd55d79ffca14002ca3756"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1507/request.json",
+      "sha256": "7a68f3609286404b098f4f33c1e2562ec48e4077d5ffab5c9edc4053f53b24c8"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1507/knowledge-audit.json",
+      "sha256": "b443ad093712207de32fc667389c150bb749c1ff09e6cb73398289102d554ef3"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1507/knowledge-proof.json",
+      "sha256": "da363032695be673354e173723cd7688c8c535884461ed8c009dfd5ac6a844dc"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1507/trace-events.json",
+      "sha256": "10d868fe708338199775f2f6e48c40f801ea729749f2225647b253c17042e5f7"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1509/outcome.json",
+      "sha256": "6f122113282f7324d72bfe8fecc4889bfd6b79c6181a11052898b1581036c60b"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1509/score.json",
+      "sha256": "e419a2cb7306764e86960db349f69e410d51204f2fa3d2b894010bb2cf343ef5"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1509/request.json",
+      "sha256": "eccc1a768af71e251037c9d56ea5ba78a6517ab109efb8467d7a9751ec0c03c3"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1509/knowledge-audit.json",
+      "sha256": "7179124b15c849820e6895d5282fa1bd1d7c9fa23c65aeb98678ac6ad388cf03"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1509/knowledge-proof.json",
+      "sha256": "da363032695be673354e173723cd7688c8c535884461ed8c009dfd5ac6a844dc"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1509/trace-events.json",
+      "sha256": "bacfdbb68837cc6f3defd00cc0379ff2331592cbc3c7b499fa48cb71392cdea2"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1514/outcome.json",
+      "sha256": "3f76d6a9becda6018f0eabc7046dcc16207b5bdf0aeb0600d7dabec65be6097d"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1514/score.json",
+      "sha256": "7531a1a556607630e746d12f41200f9578adeb6dc7f15a8ed4cca0cdb395c2bb"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1514/request.json",
+      "sha256": "9f30acd9a22bbbbfa5802b4e0ef6ad229be5107dcce2f6e8b614464bd8ebcb1f"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1514/knowledge-audit.json",
+      "sha256": "3bae66a33d7b2764077b224c5be34775b3b331e94c6dbad4e626f4f2b9629c9c"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1514/knowledge-proof.json",
+      "sha256": "da363032695be673354e173723cd7688c8c535884461ed8c009dfd5ac6a844dc"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1514/trace-events.json",
+      "sha256": "77da6674bf6bb498b007f3a1eae72253ec0575d26921b089ccf8e48b1006f343"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1515/outcome.json",
+      "sha256": "d4282954f8f15845bd6a24945a1c8e52828d1d9caa2e18ab3e5078800095d407"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1515/score.json",
+      "sha256": "af9553a8cf11df2ac46b4fc8c2c6bb41d8d1b6c3b294d8c5680c2279ebce3b1b"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1515/request.json",
+      "sha256": "c82e61836304f482078b00c44f0582fae2bf5301b77f354ba5cf8e4d523ec60a"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1515/knowledge-audit.json",
+      "sha256": "7fe8418948558d419f0ea0693099a33e856792d6fc159bae3703fb3436a80be5"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1515/knowledge-proof.json",
+      "sha256": "da363032695be673354e173723cd7688c8c535884461ed8c009dfd5ac6a844dc"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1515/trace-events.json",
+      "sha256": "000c3b1ac9c96720ac0ed51473ab201a238bf1673ef776ace7fdeaaeb0d050f3"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1521/outcome.json",
+      "sha256": "970fa58bea6c18d1cf57315d3894e78ceae4b05ed5632755a63ecf5014af2bc5"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1521/score.json",
+      "sha256": "7d8c21ed9eb667de00b3f38d8d88b2b2ac611a9d429e35af063ecd4c21254dcb"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1521/request.json",
+      "sha256": "8bfb4ccc49065e82fac6e58818df67172450d06dbd6b8d0810eb38a30baf3961"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1521/knowledge-audit.json",
+      "sha256": "c917b7a244a470bd44380855100f1a76bc813cbf3ec82479d3c0de6494c88465"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1521/knowledge-proof.json",
+      "sha256": "da363032695be673354e173723cd7688c8c535884461ed8c009dfd5ac6a844dc"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1521/trace-events.json",
+      "sha256": "f410817072ee075ad1978f445288feb724de37073e47db292718a2cb7dd4fef2"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1524/outcome.json",
+      "sha256": "9a97fdfa1e7576f3731c2bd7e66968c48c8a8c0e4ddce7d40757d51446583853"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1524/score.json",
+      "sha256": "7f8a24adf2a9dde24e3318904bdb22f5cf7c90441b268ade7831c8049cd1ab1b"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1524/request.json",
+      "sha256": "ae16edddbb0c79af9dddbb3b8d934a70a1febcc08265686d583e7897a7336ca8"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1524/knowledge-audit.json",
+      "sha256": "e6c735376bfbb20d91bbee422a8c362e2b2401e886cec38ea939667d21212cb0"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1524/knowledge-proof.json",
+      "sha256": "da363032695be673354e173723cd7688c8c535884461ed8c009dfd5ac6a844dc"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1524/trace-events.json",
+      "sha256": "46155b352e7ac2de4f910ae499aa9fd0b6f59a1fec3a7b58a1e67d6e9bd15591"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1525/outcome.json",
+      "sha256": "57521429b23f57e9806b9495c64392ddf03e1a3ed8c3fa33572236802fbadc54"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1525/score.json",
+      "sha256": "7846107c1f3fbead7441dd1b226c64eba4118c93c8ee9ca93e83054aaeb75b51"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1525/request.json",
+      "sha256": "e43528f111c91d7f0b31f65e660f693197535b8240a9def25d28f685e00091d2"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1525/knowledge-audit.json",
+      "sha256": "f0b83d67f151693ea871f84e51180184a81ad822c8d9a9afffe4808b7d24ea9d"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1525/knowledge-proof.json",
+      "sha256": "da363032695be673354e173723cd7688c8c535884461ed8c009dfd5ac6a844dc"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1525/trace-events.json",
+      "sha256": "c5de705699ff5ffdb0f521bf1c9995e65b6a45e8645288128c2e0af992a42023"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1526/outcome.json",
+      "sha256": "39221c2c19b7409575a5f199a369843b21454f7ffe3568da65794151d925ef08"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1526/score.json",
+      "sha256": "dc647349bc21799b80219c7cc91a7d2f8ef610e72c3c95a9209f93f0291e93e2"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1526/request.json",
+      "sha256": "c5ae38f75a23a19de69e1cb4d0b45eab1fac4bf349b401a4b19ed88e8b8ca623"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1526/knowledge-audit.json",
+      "sha256": "b4b25f8a0f78cca6671644026b6aa8b5ba7ebb4bd755f78d27a1505e65ff2924"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1526/knowledge-proof.json",
+      "sha256": "da363032695be673354e173723cd7688c8c535884461ed8c009dfd5ac6a844dc"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1526/trace-events.json",
+      "sha256": "80c2463307397faa63ab773406bbbb2f5b28f7c50042b68aa54371b5080e6a5e"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1528/outcome.json",
+      "sha256": "ad069f70069f85b5b756a4214fc729abf826db43a47eeec42c03af7f53199a0f"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1528/score.json",
+      "sha256": "941f1c1978fd3f5a9f4b57197861c5619878c62d6214836548cb4539afb4d640"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1528/request.json",
+      "sha256": "c09a8483e1fb3cc3accc974d6d7c219c2d6a92650be07d2896cd3d520ccfebfe"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1528/knowledge-audit.json",
+      "sha256": "f28d140952852c9438c4e9510bed48e45a2ee0e69b4f13a66262b00f9ca5c8d5"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1528/knowledge-proof.json",
+      "sha256": "da363032695be673354e173723cd7688c8c535884461ed8c009dfd5ac6a844dc"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1528/trace-events.json",
+      "sha256": "b976d019f8d31130a3ff0c9891be03fe620a04e13aa4ddb17c23bb975d95c094"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1529/outcome.json",
+      "sha256": "aaeec9a5e1b91d14b66099771bb0c07a454a6e8f79a51c069bb87965539ae5c0"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1529/score.json",
+      "sha256": "b418fcc7f9c7f4c6c1f9559a1985af3a577e111a524209aa47608ba2c56f802f"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1529/request.json",
+      "sha256": "9efd938545fa885557179ada03e1ec888025a52779c0dee1fa75e094d6f8260d"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1529/knowledge-audit.json",
+      "sha256": "2aba3b790da3403c8fe492ae623f33be3918e935c1223d43a4b593f7ac1e71dc"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1529/knowledge-proof.json",
+      "sha256": "da363032695be673354e173723cd7688c8c535884461ed8c009dfd5ac6a844dc"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1529/trace-events.json",
+      "sha256": "25221ff48fe2223be808b4d55820e383eacffdbec5bcbe3f2f068d73cee97ba8"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1531/outcome.json",
+      "sha256": "b0c072f8d151a4a36faec95f4e84a665bdeb4b916249c60fc16f85f8eed8011f"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1531/score.json",
+      "sha256": "197b99fadefd43e2abeddaad993dbb5822ab1c88844b7aa63104d56fa373f9a1"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1531/request.json",
+      "sha256": "379ad940e3341170eb4287cd510c8238b41dcd53ce28cc8e71e9bc12044879d6"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1531/knowledge-audit.json",
+      "sha256": "cfb1bbf80d96222999bc3318911b570cf13b5583c90421730f4652f0536994f6"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1531/knowledge-proof.json",
+      "sha256": "da363032695be673354e173723cd7688c8c535884461ed8c009dfd5ac6a844dc"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1531/trace-events.json",
+      "sha256": "91d070f6905d0368fe67f465b58e9d47dd582a078e538bad71b45400143d0bc5"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1533/outcome.json",
+      "sha256": "978922801b29dc7379289ebe21e0d4bfd507a61799f0a96a6ee37b3202066a57"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1533/score.json",
+      "sha256": "f69466c525228a314c53b7f4aa17355834174e496b8012118c8bec763fa6a926"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1533/request.json",
+      "sha256": "56c1d10dd921d086ac4506b8fe05c3d0131f40ce38c37049288487601cd6ccf1"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1533/knowledge-audit.json",
+      "sha256": "c6c0360a86928a963cdbb63c7bcc25511f1e36a24d6f0c16cb4612d7ffbc3bf9"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1533/knowledge-proof.json",
+      "sha256": "da363032695be673354e173723cd7688c8c535884461ed8c009dfd5ac6a844dc"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/1533/trace-events.json",
+      "sha256": "254243736991043c8a7c826e6af460a9467b8181100556982347a16513773835"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/summary.json",
+      "sha256": "d5ed8b0bf2e1bb4c2174bc49670d1fce94925d735fe72ee75a451217c710afd9"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/run-manifest.json",
+      "sha256": "2a2d4363d2fc7c315bb1c8b0b64d44670000a4823279fd744228b607c8534f4e"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/opik-readback.json",
+      "sha256": "62e85282c5881d31e553a47714bf871421ccc78649810a6a2b2fc6442b93ec65"
+    },
+    {
+      "file": "docs/20261024_evaluation/runs/bird-debit-baseline-full-20261024-0800/strict-proof-verification.json",
+      "sha256": "46dcfa7c3af6c50e8023cb80d33c34e3ed9c641834982c07debb5752e71ce49c"
+    }
+  ],
+  "mock_ui_source": {
+    "report": "monocart-report/11-poc-csv-reset/index.json",
+    "report_sha256": "dacda95dbe7dae01b03a6231e721f8732fd77411396637fd026c11923faa80e9",
+    "passed": 2,
+    "failed": 0
+  }
+}

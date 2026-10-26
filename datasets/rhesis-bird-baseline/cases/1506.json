@@ -1,0 +1,161 @@
+{
+  "question": "Please list the product descriptions of the transactions taken place in the gas stations in the Czech Republic.",
+  "score": 0.0,
+  "details": {
+    "reason": "Complete results differ from Gold SQL; BIRD Soft F1 = 0.0",
+    "BIRD_Soft_F1": 0.0,
+    "actual_sql": "SELECT DISTINCT p.description\nFROM transactions_1k t\nJOIN products p ON p.product_id = t.product_id\nJOIN gasstations g ON g.gas_station_id = t.gas_station_id\nORDER BY p.description;",
+    "gold_sql": "SELECT DISTINCT T3.description FROM transactions_1k AS T1 INNER JOIN gasstations AS T2 ON T1.gas_station_id = T2.gas_station_id INNER JOIN products AS T3 ON T1.product_id = T3.product_id WHERE T2.country = 'CZE'",
+    "actual_result": [
+      [
+        "Additivum"
+      ],
+      [
+        "Autokosmet."
+      ],
+      [
+        "Autokozmetik"
+      ],
+      [
+        "Autoprísluš."
+      ],
+      [
+        "Dalnic.popl."
+      ],
+      [
+        "Diesel"
+      ],
+      [
+        "Diesel +"
+      ],
+      [
+        "Diesel aditiv"
+      ],
+      [
+        "Knihy,nov."
+      ],
+      [
+        "LPG"
+      ],
+      [
+        "Mytí vozidel"
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Nafta Plus"
+      ],
+      [
+        "Nat.Super"
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural +"
+      ],
+      [
+        "Natural Plus"
+      ],
+      [
+        "Natural Spec"
+      ],
+      [
+        "Nemrz.kapal."
+      ],
+      [
+        "Obcerstvení"
+      ],
+      [
+        "Oleje,tuky"
+      ],
+      [
+        "Potraviny"
+      ],
+      [
+        "Prev.náplne"
+      ],
+      [
+        "Provoz.nápl."
+      ],
+      [
+        "Umývanie voz"
+      ],
+      [
+        "Zboží nesp."
+      ],
+      [
+        "Zpr.nakupu"
+      ]
+    ],
+    "gold_result": [
+      [
+        "Dalnic.popl."
+      ],
+      [
+        "Zpr.nakupu"
+      ],
+      [
+        "Autoprísluš."
+      ],
+      [
+        "Zboží nesp."
+      ],
+      [
+        "Diesel +"
+      ],
+      [
+        "Obcerstvení"
+      ],
+      [
+        "Nemrz.kapal."
+      ],
+      [
+        "Nafta"
+      ],
+      [
+        "Natural Plus"
+      ],
+      [
+        "Autokosmet."
+      ],
+      [
+        "Natural"
+      ],
+      [
+        "Natural +"
+      ],
+      [
+        "Knihy,nov."
+      ],
+      [
+        "Provoz.nápl."
+      ],
+      [
+        "Oleje,tuky"
+      ],
+      [
+        "Potraviny"
+      ],
+      [
+        "Mytí vozidel"
+      ],
+      [
+        "LPG"
+      ],
+      [
+        "Additivum"
+      ],
+      [
+        "Natural Spec"
+      ],
+      [
+        "Nafta Plus"
+      ]
+    ],
+    "sql_error": null,
+    "scorer_ms": 6.630000003497116,
+    "max_parallel_workers_per_gather": 0
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "question": "In February 2012, what percentage of customers consumed more than 528.3?",
+  "score": 0.0,
+  "details": {
+    "reason": "Complete results differ from Gold SQL; BIRD Soft F1 = 0.0",
+    "BIRD_Soft_F1": 0.0,
+    "actual_sql": "WITH feb_customers AS (\n  SELECT customer_id, consumption\n  FROM yearmonth\n  WHERE date = '201202'\n)\nSELECT\n  ROUND(\n    100.0 * SUM(CASE WHEN consumption > 528.3 THEN 1 ELSE 0 END) / NULLIF(COUNT(*), 0),\n    2\n  ) AS pct_customers_above_threshold\nFROM feb_customers;",
+    "gold_sql": "SELECT CAST(SUM(CASE WHEN consumption > 528.3 THEN 1 ELSE 0 END) AS REAL) * 100 / NULLIF(COUNT(customer_id), 0) FROM yearmonth WHERE date = '201202'",
+    "actual_result": [
+      [
+        {
+          "type": "Decimal",
+          "value": "66.62"
+        }
+      ]
+    ],
+    "gold_result": [
+      [
+        66.62300807683911
+      ]
+    ],
+    "sql_error": null,
+    "scorer_ms": 36.77037499437574,
+    "max_parallel_workers_per_gather": 0
+  }
+}

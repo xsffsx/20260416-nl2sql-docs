@@ -1,0 +1,16 @@
+{
+  "source_experiment": "bird-debit-baseline-full-20261024-0800",
+  "execution_mode": "frozen_result_replay",
+  "EX": 0.3,
+  "BIRD_SoftF1": 0.3594532627865961,
+  "records": 30,
+  "metrics_experiment_id": "01a16d6f-0d8c-7cfb-bd68-16e25f1a3bf3",
+  "suite_id": "01a16d6f-1ad1-7790-adfc-1dd6d40ba658",
+  "suite_experiment_id": "01a16d6f-1cd3-7943-a576-58bc5e863bf1",
+  "assertion_items_passed": 26,
+  "assertion_items_total": 30,
+  "annotation_queue_id": "01a16d72-6804-75d4-88f2-4095b136e622",
+  "human_annotations_submitted": 0,
+  "new_nl2sql_calls": 0,
+  "new_judge_evaluation": true
+}

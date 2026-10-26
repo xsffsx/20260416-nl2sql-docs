@@ -1,0 +1,2569 @@
+{
+  "experiment": {
+    "id": "01a16deb-fbd8-7145-9c82-59f3a9e300f1",
+    "dataset_name": "bird-opik-review-20261024-2038-gold-sql",
+    "dataset_id": "01a16deb-f955-73d1-8cb9-bf1d02c410a1",
+    "project_id": "01a16caf-2b08-740a-9dfb-6749c7da485f",
+    "project_name": "nl2sql_followup",
+    "name": "bird-opik-review-20261024-2038-gold-sql-run",
+    "metadata": {
+      "execution_mode": "frozen_result_replay",
+      "source_experiment": "bird-debit-baseline-full-20261024-0800",
+      "records_sha256": "daab67d4f1c7e810c8e38ff0420fcc430c367f4d5589070fff125e107beddcc9",
+      "policy_sha256": "71b5020fca846a87ba37a2ba6eacaba2f86af8fdad64cabc17b65f000d38772b",
+      "script_sha256": "265412a1fb5b4a09d12994a95550e970e30b230c4ad4e2551be5e982eb78609d",
+      "official_evaluator": "https://github.com/bird-bench/mini_dev/blob/abd11b6db92a1c9f809b32f7564c7c71b34d67f0/evaluation/evaluation_f1.py",
+      "official_evaluator_sha256": "ba2700ee09b0c34d7e203788544757e6e6d6c99c0425bb92b3daa3927eee29bf",
+      "sdk_version": "1.10.56",
+      "new_nl2sql_calls": 0,
+      "sql_pair_knowledge_used": false,
+      "human_approved": false,
+      "judge_model": "openai/mimo-v2.6-flash"
+    },
+    "tags": null,
+    "type": "regular",
+    "evaluation_method": "evaluation_suite",
+    "optimization_id": null,
+    "feedback_scores": null,
+    "comments": null,
+    "trace_count": 30,
+    "dataset_item_count": null,
+    "created_at": "2026-10-24T12:39:04.424030Z",
+    "duration": {
+      "p50": 17741.55,
+      "p90": 50018.8525,
+      "p99": 124511.16377
+    },
+    "total_estimated_cost": null,
+    "total_estimated_cost_avg": null,
+    "usage": {
+      "completion_tokens": 1201.5333333333333,
+      "original_usage.completion_tokens": 1201.5333333333333,
+      "original_usage.completion_tokens_details.reasoning_tokens": 782.3666666666667,
+      "original_usage.prompt_tokens": 906.6,
+      "original_usage.prompt_tokens_details.cached_tokens": 115.2,
+      "original_usage.total_tokens": 2108.133333333333,
+      "prompt_tokens": 906.6,
+      "total_tokens": 2108.133333333333
+    },
+    "last_updated_at": "2026-10-24T12:54:20.618396Z",
+    "created_by": "admin",
+    "last_updated_by": "admin",
+    "status": "completed",
+    "experiment_scores": null,
+    "prompt_version": null,
+    "prompt_versions": null,
+    "dataset_version_id": "01a16deb-fa2f-7290-91ed-501e446f17f2",
+    "dataset_version_summary": {
+      "id": "01a16deb-fa2f-7290-91ed-501e446f17f2",
+      "version_hash": "446f17f2",
+      "version_name": "v2",
+      "change_description": "Auto-created from SDK batch operation",
+      "tags": [
+        "latest"
+      ]
+    },
+    "pass_rate": 0.566666666,
+    "passed_count": 17,
+    "total_count": 30,
+    "assertion_scores": [
+      {
+        "name": "The SQL and returned rows provide the requested target attribute or answer, with its meaning identifiable from the selected expressions or aliases. Extra explanatory columns alone are acceptable for this semantic check. Returning a proxy attribute, omitting the requested answer, or returning an empty result does not establish that the requested answer was supplied. Do not infer nationality from currency or customer segment.",
+        "value": 0.933333333
+      },
+      {
+        "name": "The generated SQL respects all explicit population filters and date/time boundaries in the question and official evidence. Extra explanatory output columns and result row ordering alone do not fail this assertion. If the question and evidence contradict each other, fail and explain that conflict; do not invent a resolution.",
+        "value": 0.966666666
+      },
+      {
+        "name": "The generated SQL is semantically equivalent to the per-question BIRD Gold SQL supplied as output.gold_sql. Do not require identical SQL text. Compare the filters, joins, calculations, grouping and selected result. If a material difference exists or equivalence cannot be established from the SQL and question context, fail and explain instead of treating similar-looking SQL as a match.",
+        "value": 0.566666666
+      },
+      {
+        "name": "The generated SQL uses the aggregation grain, measure, formula and denominator required by the question and official evidence. Judge the calculation rather than the number of explanatory columns. A different measure or counting unit is a failure even when a value happens to coincide. If the requirement is ambiguous, explain the ambiguity rather than claiming verified correctness.",
+        "value": 0.866666666
+      }
+    ]
+  },
+  "items": [
+    {
+      "id": "01a16df2-8736-749a-9d60-716b49b58eb1",
+      "experiment_id": "01a16deb-fbd8-7145-9c82-59f3a9e300f1",
+      "dataset_item_id": "01a16deb-fa12-727f-ac22-c68aa52ca066",
+      "trace_id": "01a16df2-1abf-7274-80cd-5cabea87df16",
+      "project_id": "01a16caf-2b08-740a-9dfb-6749c7da485f",
+      "input": {
+        "question": "In 2012, who had the least consumption in LAM?",
+        "evidence": "Year 2012 can be presented as Between 201201 And 201212; The first 4 strings of the Date values in the yearmonth table can represent year.",
+        "case_id": "debit_card_specializing:1472",
+        "gold_sql": "SELECT T1.customer_id FROM customers AS T1 INNER JOIN yearmonth AS T2 ON T1.customer_id = T2.customer_id WHERE T1.segment = 'LAM' AND SUBSTRING(T2.date FROM 1 FOR 4) = '2012' GROUP BY T1.customer_id ORDER BY SUM(T2.consumption) ASC NULLS FIRST LIMIT 1",
+        "question_id": "1472",
+        "id": "01a16deb-fa12-727f-ac22-c68aa52ca066"
+      },
+      "output": {
+        "input": {
+          "question": "In 2012, who had the least consumption in LAM?",
+          "evidence": "Year 2012 can be presented as Between 201201 And 201212; The first 4 strings of the Date values in the yearmonth table can represent year."
+        },
+        "output": {
+          "sql": "SELECT\n    ym.customer_id,\n    SUM(ym.consumption) AS total_consumption\nFROM yearmonth AS ym\nJOIN customers AS c\n    ON c.customer_id = ym.customer_id\nWHERE c.segment = 'LAM'\n  AND ym.date BETWEEN '201201' AND '201212'\nGROUP BY ym.customer_id\nORDER BY total_consumption ASC\nLIMIT 1;",
+          "rows": [
+            [
+              47273,
+              {
+                "type": "Decimal",
+                "value": "0.74"
+              }
+            ]
+          ],
+          "gold_sql": "SELECT T1.customer_id FROM customers AS T1 INNER JOIN yearmonth AS T2 ON T1.customer_id = T2.customer_id WHERE T1.segment = 'LAM' AND SUBSTRING(T2.date FROM 1 FOR 4) = '2012' GROUP BY T1.customer_id ORDER BY SUM(T2.consumption) ASC NULLS FIRST LIMIT 1"
+        }
+      },
+      "duration": 27767.434,
+      "usage": {
+        "completion_tokens": 1271,
+        "original_usage.completion_tokens": 1271,
+        "original_usage.completion_tokens_details.reasoning_tokens": 869,
+        "original_usage.prompt_tokens": 806,
+        "original_usage.prompt_tokens_details.cached_tokens": 0,
+        "original_usage.total_tokens": 2077,
+        "prompt_tokens": 806,
+        "total_tokens": 2077
+      },
+      "created_at": "2026-10-24T12:46:13.400968059Z",
+      "last_updated_at": "2026-10-24T12:46:13.400968059Z",
+      "created_by": "admin",
+      "last_updated_by": "admin",
+      "trace_visibility_mode": "default",
+      "execution_policy": {
+        "runs_per_item": 1,
+        "pass_threshold": 1
+      },
+      "assertion_results": [
+        {
+          "value": "The SQL and returned rows provide the requested target attribute or answer, with its meaning identifiable from the selected expressions or aliases. Extra explanatory columns alone are acceptable for this semantic check. Returning a proxy attribute, omitting the requested answer, or returning an empty result does not establish that the requested answer was supplied. Do not infer nationality from currency or customer segment.",
+          "passed": true,
+          "reason": "The question asks 'who' had the least consumption, and the query returns the customer_id (47273) of that customer, which is the requested target attribute. The extra total_consumption column is only supplementary."
+        },
+        {
+          "value": "The generated SQL is semantically equivalent to the per-question BIRD Gold SQL supplied as output.gold_sql. Do not require identical SQL text. Compare the filters, joins, calculations, grouping and selected result. If a material difference exists or equivalence cannot be established from the SQL and question context, fail and explain instead of treating similar-looking SQL as a match.",
+          "passed": true,
+          "reason": "Filters (LAM segment, 2012 date range), join, aggregation (SUM of consumption grouped by customer), ordering (ASC) and selection (LIMIT 1 customer_id) match the gold SQL. The date condition differs in form (BETWEEN '201201' AND '201212' vs SUBSTRING(date,1,4)='2012') but is equivalent per the evidence's stated YYYYMM convention; NULL handling is equivalent in the underlying engine's default ASC ordering, consistent with the gold's NULLS FIRST. Extra SELECT column does not affect equivalence."
+        },
+        {
+          "value": "The generated SQL respects all explicit population filters and date/time boundaries in the question and official evidence. Extra explanatory output columns and result row ordering alone do not fail this assertion. If the question and evidence contradict each other, fail and explain that conflict; do not invent a resolution.",
+          "passed": true,
+          "reason": "The SQL filters segment = 'LAM' and restricts the date to BETWEEN '201201' AND '201212', which matches the official evidence's explicit statement that year 2012 can be represented as Between 201201 And 201212. There is no contradiction between the question and evidence."
+        },
+        {
+          "value": "The generated SQL uses the aggregation grain, measure, formula and denominator required by the question and official evidence. Judge the calculation rather than the number of explanatory columns. A different measure or counting unit is a failure even when a value happens to coincide. If the requirement is ambiguous, explain the ambiguity rather than claiming verified correctness.",
+          "passed": true,
+          "reason": "The calculation aggregates at the per-customer grain (GROUP BY customer_id) using SUM(consumption), then orders ascending and takes the minimum via LIMIT 1. This matches the required 'least consumption' measure and counting unit (total consumption per customer)."
+        }
+      ],
+      "status": "passed"
+    },
+    {
+      "id": "01a16df2-60cd-7756-b24b-8c414211d71d",
+      "experiment_id": "01a16deb-fbd8-7145-9c82-59f3a9e300f1",
+      "dataset_item_id": "01a16deb-fa11-746f-b772-12de2ecd2fe9",
+      "trace_id": "01a16df2-26eb-725c-bb64-cbb25531f1dd",
+      "project_id": "01a16caf-2b08-740a-9dfb-6749c7da485f",
+      "input": {
+        "question": "What is the ratio of customers who pay in EUR against customers who pay in CZK?",
+        "evidence": "ratio of customers who pay in EUR against customers who pay in CZK = count(Currency = 'EUR') / count(Currency = 'CZK').",
+        "case_id": "debit_card_specializing:1471",
+        "gold_sql": "SELECT CAST(SUM(CASE WHEN currency = 'EUR' THEN 1 ELSE 0 END) AS REAL) / NULLIF(SUM(CASE WHEN currency = 'CZK' THEN 1 ELSE 0 END), 0) FROM customers",
+        "question_id": "1471",
+        "id": "01a16deb-fa11-746f-b772-12de2ecd2fe9"
+      },
+      "output": {
+        "input": {
+          "question": "What is the ratio of customers who pay in EUR against customers who pay in CZK?",
+          "evidence": "ratio of customers who pay in EUR against customers who pay in CZK = count(Currency = 'EUR') / count(Currency = 'CZK')."
+        },
+        "output": {
+          "sql": "SELECT\n  COUNT(*) FILTER (WHERE c.currency = 'EUR') AS eur_customer_count,\n  COUNT(*) FILTER (WHERE c.currency = 'CZK') AS czk_customer_count,\n  ROUND(\n    COUNT(*) FILTER (WHERE c.currency = 'EUR')::NUMERIC\n    / NULLIF(COUNT(*) FILTER (WHERE c.currency = 'CZK'), 0),\n    4\n  ) AS eur_to_czk_ratio\nFROM customers c\nWHERE c.currency IN ('EUR', 'CZK');",
+          "rows": [
+            [
+              2002,
+              30459,
+              {
+                "type": "Decimal",
+                "value": "0.0657"
+              }
+            ]
+          ],
+          "gold_sql": "SELECT CAST(SUM(CASE WHEN currency = 'EUR' THEN 1 ELSE 0 END) AS REAL) / NULLIF(SUM(CASE WHEN currency = 'CZK' THEN 1 ELSE 0 END), 0) FROM customers"
+        }
+      },
+      "duration": 14818.357,
+      "usage": {
+        "completion_tokens": 617,
+        "original_usage.completion_tokens": 617,
+        "original_usage.completion_tokens_details.reasoning_tokens": 219,
+        "original_usage.prompt_tokens": 798,
+        "original_usage.total_tokens": 1415,
+        "prompt_tokens": 798,
+        "total_tokens": 1415
+      },
+      "created_at": "2026-10-24T12:46:04.626972266Z",
+      "last_updated_at": "2026-10-24T12:46:04.626972266Z",
+      "created_by": "admin",
+      "last_updated_by": "admin",
+      "trace_visibility_mode": "default",
+      "execution_policy": {
+        "runs_per_item": 1,
+        "pass_threshold": 1
+      },
+      "assertion_results": [
+        {
+          "value": "The SQL and returned rows provide the requested target attribute or answer, with its meaning identifiable from the selected expressions or aliases. Extra explanatory columns alone are acceptable for this semantic check. Returning a proxy attribute, omitting the requested answer, or returning an empty result does not establish that the requested answer was supplied. Do not infer nationality from currency or customer segment.",
+          "passed": true,
+          "reason": "The query returns a column aliased eur_to_czk_ratio with value 0.0657, and the two supporting count columns (2002 EUR, 30459 CZK) make the answer's meaning clear. The requested ratio is directly supplied."
+        },
+        {
+          "value": "The generated SQL is semantically equivalent to the per-question BIRD Gold SQL supplied as output.gold_sql. Do not require identical SQL text. Compare the filters, joins, calculations, grouping and selected result. If a material difference exists or equivalence cannot be established from the SQL and question context, fail and explain instead of treating similar-looking SQL as a match.",
+          "passed": true,
+          "reason": "The Gold SQL counts EUR and CZK via SUM(CASE...) across all rows; the agent's SQL counts the same EUR and CZK populations but restricts the table to those two currencies first. Since currencies other than EUR and CZK contribute to neither the numerator nor the denominator in the Gold SQL, both queries produce the identical ratio. The additional count columns and rounding do not affect semantic equivalence of the ratio computation."
+        },
+        {
+          "value": "The generated SQL respects all explicit population filters and date/time boundaries in the question and official evidence. Extra explanatory output columns and result row ordering alone do not fail this assertion. If the question and evidence contradict each other, fail and explain that conflict; do not invent a resolution.",
+          "passed": true,
+          "reason": "The question and evidence specify no population filters or date/time boundaries beyond the currency measure itself. The agent's added WHERE currency IN ('EUR','CZK') filter does not exclude any rows that would contribute to either the EUR numerator or CZK denominator, so the result is unaffected."
+        },
+        {
+          "value": "The generated SQL uses the aggregation grain, measure, formula and denominator required by the question and official evidence. Judge the calculation rather than the number of explanatory columns. A different measure or counting unit is a failure even when a value happens to coincide. If the requirement is ambiguous, explain the ambiguity rather than claiming verified correctness.",
+          "passed": true,
+          "reason": "The SQL computes the ratio as COUNT(Currency='EUR') / COUNT(Currency='CZK') using COUNT(*) FILTER expressions, matching the evidence formula. The extra EUR and CZK count columns are explanatory and do not change the calculation (2002/30459 ≈ 0.0657)."
+        }
+      ],
+      "status": "passed"
+    },
+    {
+      "id": "01a16df2-26ea-7eae-8baa-d7542ca59e21",
+      "experiment_id": "01a16deb-fbd8-7145-9c82-59f3a9e300f1",
+      "dataset_item_id": "01a16deb-fa13-71db-a30c-295e8fdd4e64",
+      "trace_id": "01a16df1-f9de-7b70-a1bc-d1c9d94dccea",
+      "project_id": "01a16caf-2b08-740a-9dfb-6749c7da485f",
+      "input": {
+        "question": "What was the average monthly consumption of customers in SME for the year 2013?",
+        "evidence": "Average Monthly consumption = AVG(Consumption) / 12; Year 2013 can be presented as Between 201301 And 201312; The first 4 strings of the Date values in the yearmonth table can represent year.",
+        "case_id": "debit_card_specializing:1473",
+        "gold_sql": "SELECT AVG(T2.consumption) / NULLIF(12, 0) FROM customers AS T1 INNER JOIN yearmonth AS T2 ON T1.customer_id = T2.customer_id WHERE SUBSTRING(T2.date FROM 1 FOR 4) = '2013' AND T1.segment = 'SME'",
+        "question_id": "1473",
+        "id": "01a16deb-fa13-71db-a30c-295e8fdd4e64"
+      },
+      "output": {
+        "input": {
+          "question": "What was the average monthly consumption of customers in SME for the year 2013?",
+          "evidence": "Average Monthly consumption = AVG(Consumption) / 12; Year 2013 can be presented as Between 201301 And 201312; The first 4 strings of the Date values in the yearmonth table can represent year."
+        },
+        "output": {
+          "sql": "SELECT\n  AVG(ym.consumption) / 12 AS avg_monthly_consumption_sme_2013\nFROM yearmonth AS ym\nJOIN customers AS c\n  ON ym.customer_id = c.customer_id\nWHERE c.segment = 'SME'\n  AND LEFT(ym.date, 4) = '2013';",
+          "rows": [
+            [
+              {
+                "type": "Decimal",
+                "value": "459.9562642870894243"
+              }
+            ]
+          ],
+          "gold_sql": "SELECT AVG(T2.consumption) / NULLIF(12, 0) FROM customers AS T1 INNER JOIN yearmonth AS T2 ON T1.customer_id = T2.customer_id WHERE SUBSTRING(T2.date FROM 1 FOR 4) = '2013' AND T1.segment = 'SME'"
+        }
+      },
+      "duration": 11532.474,
+      "usage": {
+        "completion_tokens": 512,
+        "original_usage.completion_tokens": 512,
+        "original_usage.completion_tokens_details.reasoning_tokens": 132,
+        "original_usage.prompt_tokens": 803,
+        "original_usage.total_tokens": 1315,
+        "prompt_tokens": 803,
+        "total_tokens": 1315
+      },
+      "created_at": "2026-10-24T12:45:49.245542909Z",
+      "last_updated_at": "2026-10-24T12:45:49.245542909Z",
+      "created_by": "admin",
+      "last_updated_by": "admin",
+      "trace_visibility_mode": "default",
+      "execution_policy": {
+        "runs_per_item": 1,
+        "pass_threshold": 1
+      },
+      "assertion_results": [
+        {
+          "value": "The SQL and returned rows provide the requested target attribute or answer, with its meaning identifiable from the selected expressions or aliases. Extra explanatory columns alone are acceptable for this semantic check. Returning a proxy attribute, omitting the requested answer, or returning an empty result does not establish that the requested answer was supplied. Do not infer nationality from currency or customer segment.",
+          "passed": true,
+          "reason": "The query returns a single non-null value aliased as avg_monthly_consumption_sme_2013, which clearly identifies the requested average monthly consumption answer for SME customers in 2013."
+        },
+        {
+          "value": "The generated SQL is semantically equivalent to the per-question BIRD Gold SQL supplied as output.gold_sql. Do not require identical SQL text. Compare the filters, joins, calculations, grouping and selected result. If a material difference exists or equivalence cannot be established from the SQL and question context, fail and explain instead of treating similar-looking SQL as a match.",
+          "passed": true,
+          "reason": "The generated SQL joins yearmonth to customers on customer_id, filters segment='SME' and the first 4 characters of the date for '2013' (LEFT is equivalent to SUBSTRING FROM 1 FOR 4), and selects AVG(consumption)/12 (NULLIF(12,0) is a divide-by-zero guard that is numerically identical here). The calculation and selected result are equivalent to the gold SQL."
+        },
+        {
+          "value": "The generated SQL respects all explicit population filters and date/time boundaries in the question and official evidence. Extra explanatory output columns and result row ordering alone do not fail this assertion. If the question and evidence contradict each other, fail and explain that conflict; do not invent a resolution.",
+          "passed": true,
+          "reason": "The SQL filters on the explicit population (segment = 'SME') and the required date boundary (first 4 characters of the date = '2013'), which is consistent with the evidence stating that the first 4 strings of the date values can represent the year. No contradictory or extra filters are applied."
+        },
+        {
+          "value": "The generated SQL uses the aggregation grain, measure, formula and denominator required by the question and official evidence. Judge the calculation rather than the number of explanatory columns. A different measure or counting unit is a failure even when a value happens to coincide. If the requirement is ambiguous, explain the ambiguity rather than claiming verified correctness.",
+          "passed": true,
+          "reason": "The measure is AVG(consumption) with denominator 12, computed at the overall (ungrouped) grain for the SME population in 2013, exactly matching the evidence formula Average Monthly consumption = AVG(Consumption) / 12."
+        }
+      ],
+      "status": "passed"
+    },
+    {
+      "id": "01a16df2-1abe-7262-8f60-32baf7d0332d",
+      "experiment_id": "01a16deb-fbd8-7145-9c82-59f3a9e300f1",
+      "dataset_item_id": "01a16deb-fa14-7176-b19f-5cda52081b8d",
+      "trace_id": "01a16df1-dc30-792f-988b-dd699ed6e002",
+      "project_id": "01a16caf-2b08-740a-9dfb-6749c7da485f",
+      "input": {
+        "question": "What was the difference in gas consumption between CZK-paying customers and EUR-paying customers in 2012?",
+        "evidence": "cast the consumption into float when perform calculation; Year 2012 can be presented as Between 201201 And 201212; The first 4 strings of the Date values in the yearmonth table can represent year; Difference in Consumption = CZK customers consumption in 2012 - EUR customers consumption in 2012",
+        "case_id": "debit_card_specializing:1476",
+        "gold_sql": "SELECT SUM(CASE WHEN T1.currency = 'CZK' THEN CAST(T2.consumption AS DOUBLE PRECISION) ELSE 0 END) - SUM(CASE WHEN T1.currency = 'EUR' THEN CAST(T2.consumption AS DOUBLE PRECISION) ELSE 0 END) FROM customers AS T1 INNER JOIN yearmonth AS T2 ON T1.customer_id = T2.customer_id WHERE SUBSTRING(T2.date FROM 1 FOR 4) = '2012'",
+        "question_id": "1476",
+        "id": "01a16deb-fa14-7176-b19f-5cda52081b8d"
+      },
+      "output": {
+        "input": {
+          "question": "What was the difference in gas consumption between CZK-paying customers and EUR-paying customers in 2012?",
+          "evidence": "cast the consumption into float when perform calculation; Year 2012 can be presented as Between 201201 And 201212; The first 4 strings of the Date values in the yearmonth table can represent year; Difference in Consumption = CZK customers consumption in 2012 - EUR customers consumption in 2012"
+        },
+        "output": {
+          "sql": "SELECT\n  SUM(CASE WHEN c.currency = 'CZK' THEN CAST(ym.consumption AS FLOAT) ELSE 0 END) AS czk_consumption_2012,\n  SUM(CASE WHEN c.currency = 'EUR' THEN CAST(ym.consumption AS FLOAT) ELSE 0 END) AS eur_consumption_2012,\n  SUM(CASE WHEN c.currency = 'CZK' THEN CAST(ym.consumption AS FLOAT) ELSE 0 END)\n    - SUM(CASE WHEN c.currency = 'EUR' THEN CAST(ym.consumption AS FLOAT) ELSE 0 END) AS consumption_difference\nFROM yearmonth ym\nJOIN customers c\n  ON c.customer_id = ym.customer_id\nWHERE ym.date BETWEEN '201201' AND '201212'",
+          "rows": [
+            [
+              404716983.980001,
+              2192413.809999997,
+              402524570.170001
+            ]
+          ],
+          "gold_sql": "SELECT SUM(CASE WHEN T1.currency = 'CZK' THEN CAST(T2.consumption AS DOUBLE PRECISION) ELSE 0 END) - SUM(CASE WHEN T1.currency = 'EUR' THEN CAST(T2.consumption AS DOUBLE PRECISION) ELSE 0 END) FROM customers AS T1 INNER JOIN yearmonth AS T2 ON T1.customer_id = T2.customer_id WHERE SUBSTRING(T2.date FROM 1 FOR 4) = '2012'"
+        }
+      },
+      "duration": 16014.488,
+      "usage": {
+        "completion_tokens": 618,
+        "original_usage.completion_tokens": 618,
+        "original_usage.completion_tokens_details.reasoning_tokens": 209,
+        "original_usage.prompt_tokens": 986,
+        "original_usage.total_tokens": 1604,
+        "prompt_tokens": 986,
+        "total_tokens": 1604
+      },
+      "created_at": "2026-10-24T12:45:46.129079626Z",
+      "last_updated_at": "2026-10-24T12:45:46.129079626Z",
+      "created_by": "admin",
+      "last_updated_by": "admin",
+      "trace_visibility_mode": "default",
+      "execution_policy": {
+        "runs_per_item": 1,
+        "pass_threshold": 1
+      },
+      "assertion_results": [
+        {
+          "value": "The SQL and returned rows provide the requested target attribute or answer, with its meaning identifiable from the selected expressions or aliases. Extra explanatory columns alone are acceptable for this semantic check. Returning a proxy attribute, omitting the requested answer, or returning an empty result does not establish that the requested answer was supplied. Do not infer nationality from currency or customer segment.",
+          "passed": true,
+          "reason": "The query returns an aliased column consumption_difference (alongside two explanatory columns) with a non-empty result row, so the requested difference in gas consumption between CZK- and EUR-paying customers in 2012 is supplied. The extra columns are only explanatory and do not fail this semantic check."
+        },
+        {
+          "value": "The generated SQL is semantically equivalent to the per-question BIRD Gold SQL supplied as output.gold_sql. Do not require identical SQL text. Compare the filters, joins, calculations, grouping and selected result. If a material difference exists or equivalence cannot be established from the SQL and question context, fail and explain instead of treating similar-looking SQL as a match.",
+          "passed": true,
+          "reason": "The agent's SQL performs the same INNER JOIN between yearmonth and customers on customer_id, applies an equivalent year-2012 filter (BETWEEN '201201' AND '201212' vs SUBSTRING(date FROM 1 FOR 4) = '2012', both endorsed by the evidence given YYYYMM date formatting), and computes the same SUM(CZK) − SUM(EUR) difference with consumption cast to a floating type. Selecting the two intermediate sums as extra columns does not break semantic equivalence."
+        },
+        {
+          "value": "The generated SQL respects all explicit population filters and date/time boundaries in the question and official evidence. Extra explanatory output columns and result row ordering alone do not fail this assertion. If the question and evidence contradict each other, fail and explain that conflict; do not invent a resolution.",
+          "passed": true,
+          "reason": "The agent filters with WHERE ym.date BETWEEN '201201' AND '201212', which the evidence explicitly endorses as a way to express year 2012 (alongside the first-4-characters approach used by the Gold SQL). No extra population filters are applied, so the date boundary requirement is respected."
+        },
+        {
+          "value": "The generated SQL uses the aggregation grain, measure, formula and denominator required by the question and official evidence. Judge the calculation rather than the number of explanatory columns. A different measure or counting unit is a failure even when a value happens to coincide. If the requirement is ambiguous, explain the ambiguity rather than claiming verified correctness.",
+          "passed": true,
+          "reason": "The SQL computes the aggregate grain: SUM of consumption for CZK customers minus SUM of consumption for EUR customers, with consumption cast to FLOAT as required by the evidence. The measure (consumption), formula (CZK − EUR), and casting instruction all match the stated requirements; no incorrect denominator is involved."
+        }
+      ],
+      "status": "passed"
+    },
+    {
+      "id": "01a16df1-f9dd-71da-9158-c256bfe46fb4",
+      "experiment_id": "01a16deb-fbd8-7145-9c82-59f3a9e300f1",
+      "dataset_item_id": "01a16deb-fa15-7627-8756-ede8d3005713",
+      "trace_id": "01a16df1-b5d6-70d7-8729-7fa9b9145503",
+      "project_id": "01a16caf-2b08-740a-9dfb-6749c7da485f",
+      "input": {
+        "question": "Which year recorded the most consumption of gas paid in CZK?",
+        "evidence": "The first 4 strings of the Date values in the yearmonth table can represent year.",
+        "case_id": "debit_card_specializing:1479",
+        "gold_sql": "SELECT SUBSTRING(T2.date FROM 1 FOR 4) FROM customers AS T1 INNER JOIN yearmonth AS T2 ON T1.customer_id = T2.customer_id WHERE T1.currency = 'CZK' GROUP BY SUBSTRING(T2.date FROM 1 FOR 4) ORDER BY SUM(T2.consumption) DESC NULLS LAST LIMIT 1",
+        "question_id": "1479",
+        "id": "01a16deb-fa15-7627-8756-ede8d3005713"
+      },
+      "output": {
+        "input": {
+          "question": "Which year recorded the most consumption of gas paid in CZK?",
+          "evidence": "The first 4 strings of the Date values in the yearmonth table can represent year."
+        },
+        "output": {
+          "sql": "SELECT LEFT(date, 4) AS year, SUM(consumption) AS total_consumption FROM yearmonth GROUP BY LEFT(date, 4) ORDER BY total_consumption DESC LIMIT 1",
+          "rows": [
+            [
+              "2013",
+              {
+                "type": "Decimal",
+                "value": "3008566555.28"
+              }
+            ]
+          ],
+          "gold_sql": "SELECT SUBSTRING(T2.date FROM 1 FOR 4) FROM customers AS T1 INNER JOIN yearmonth AS T2 ON T1.customer_id = T2.customer_id WHERE T1.currency = 'CZK' GROUP BY SUBSTRING(T2.date FROM 1 FOR 4) ORDER BY SUM(T2.consumption) DESC NULLS LAST LIMIT 1"
+        }
+      },
+      "duration": 17416.019,
+      "usage": {
+        "completion_tokens": 676,
+        "original_usage.completion_tokens": 676,
+        "original_usage.completion_tokens_details.reasoning_tokens": 352,
+        "original_usage.prompt_tokens": 725,
+        "original_usage.prompt_tokens_details.cached_tokens": 128,
+        "original_usage.total_tokens": 1401,
+        "prompt_tokens": 725,
+        "total_tokens": 1401
+      },
+      "created_at": "2026-10-24T12:45:40.059141894Z",
+      "last_updated_at": "2026-10-24T12:45:40.059141894Z",
+      "created_by": "admin",
+      "last_updated_by": "admin",
+      "trace_visibility_mode": "default",
+      "execution_policy": {
+        "runs_per_item": 1,
+        "pass_threshold": 1
+      },
+      "assertion_results": [
+        {
+          "value": "The SQL and returned rows provide the requested target attribute or answer, with its meaning identifiable from the selected expressions or aliases. Extra explanatory columns alone are acceptable for this semantic check. Returning a proxy attribute, omitting the requested answer, or returning an empty result does not establish that the requested answer was supplied. Do not infer nationality from currency or customer segment.",
+          "passed": true,
+          "reason": "The query returns a year value (2013) with an alias 'year', which is the requested target attribute (the year with the most consumption). The answer is identifiable from the selected expressions/aliases, and no proxy attribute or empty result is returned."
+        },
+        {
+          "value": "The generated SQL is semantically equivalent to the per-question BIRD Gold SQL supplied as output.gold_sql. Do not require identical SQL text. Compare the filters, joins, calculations, grouping and selected result. If a material difference exists or equivalence cannot be established from the SQL and question context, fail and explain instead of treating similar-looking SQL as a match.",
+          "passed": false,
+          "reason": "The gold SQL joins customers to yearmonth and filters T1.currency = 'CZK' before grouping by year and ordering by SUM(consumption). The agent's SQL omits the join and the CZK filter entirely, grouping over all currencies. This is a material difference, so the two are not semantically equivalent."
+        },
+        {
+          "value": "The generated SQL respects all explicit population filters and date/time boundaries in the question and official evidence. Extra explanatory output columns and result row ordering alone do not fail this assertion. If the question and evidence contradict each other, fail and explain that conflict; do not invent a resolution.",
+          "passed": false,
+          "reason": "The question requires consumption 'paid in CZK', and the gold SQL applies a currency = 'CZK' filter via a join to customers. The agent's SQL has no currency filter or join, so it does not respect this explicit population restriction."
+        },
+        {
+          "value": "The generated SQL uses the aggregation grain, measure, formula and denominator required by the question and official evidence. Judge the calculation rather than the number of explanatory columns. A different measure or counting unit is a failure even when a value happens to coincide. If the requirement is ambiguous, explain the ambiguity rather than claiming verified correctness.",
+          "passed": true,
+          "reason": "The aggregation grain (year, derived from the first 4 characters of the date as stated in evidence), the measure (SUM of consumption) and formula match the requirements. The missing CZK filter is a population filter issue covered by assertion 1, not a grain/measure difference."
+        }
+      ],
+      "status": "failed"
+    },
+    {
+      "id": "01a16df1-dc2f-77c1-beaf-a476480ed764",
+      "experiment_id": "01a16deb-fbd8-7145-9c82-59f3a9e300f1",
+      "dataset_item_id": "01a16deb-fa16-7852-be6d-c37b1ab676aa",
+      "trace_id": "01a16df1-6237-71ed-878c-337248847460",
+      "project_id": "01a16caf-2b08-740a-9dfb-6749c7da485f",
+      "input": {
+        "question": "What was the gas consumption peak month for SME customers in 2013?",
+        "evidence": "Year 2013 can be presented as Between 201301 And 201312; The first 4 strings of the Date values in the yearmonth table can represent year; The 5th and 6th string of the date can refer to month.",
+        "case_id": "debit_card_specializing:1480",
+        "gold_sql": "SELECT SUBSTRING(T2.date FROM 5 FOR 2) FROM customers AS T1 INNER JOIN yearmonth AS T2 ON T1.customer_id = T2.customer_id WHERE SUBSTRING(T2.date FROM 1 FOR 4) = '2013' AND T1.segment = 'SME' GROUP BY SUBSTRING(T2.date FROM 5 FOR 2) ORDER BY SUM(T2.consumption) DESC NULLS LAST LIMIT 1",
+        "question_id": "1480",
+        "id": "01a16deb-fa16-7852-be6d-c37b1ab676aa"
+      },
+      "output": {
+        "input": {
+          "question": "What was the gas consumption peak month for SME customers in 2013?",
+          "evidence": "Year 2013 can be presented as Between 201301 And 201312; The first 4 strings of the Date values in the yearmonth table can represent year; The 5th and 6th string of the date can refer to month."
+        },
+        "output": {
+          "sql": "SELECT ym.date AS year_month, SUM(ym.consumption) AS total_consumption\nFROM yearmonth ym\nJOIN customers c ON c.customer_id = ym.customer_id\nWHERE c.segment = 'SME'\n  AND ym.date BETWEEN '201301' AND '201312'\nGROUP BY ym.date\nORDER BY total_consumption DESC\nLIMIT 1;",
+          "rows": [
+            [
+              "201304",
+              {
+                "type": "Decimal",
+                "value": "126047776.92"
+              }
+            ]
+          ],
+          "gold_sql": "SELECT SUBSTRING(T2.date FROM 5 FOR 2) FROM customers AS T1 INNER JOIN yearmonth AS T2 ON T1.customer_id = T2.customer_id WHERE SUBSTRING(T2.date FROM 1 FOR 4) = '2013' AND T1.segment = 'SME' GROUP BY SUBSTRING(T2.date FROM 5 FOR 2) ORDER BY SUM(T2.consumption) DESC NULLS LAST LIMIT 1"
+        }
+      },
+      "duration": 31223.997,
+      "usage": {
+        "completion_tokens": 1328,
+        "original_usage.completion_tokens": 1328,
+        "original_usage.completion_tokens_details.reasoning_tokens": 823,
+        "original_usage.prompt_tokens": 842,
+        "original_usage.prompt_tokens_details.cached_tokens": 0,
+        "original_usage.total_tokens": 2170,
+        "prompt_tokens": 842,
+        "total_tokens": 2170
+      },
+      "created_at": "2026-10-24T12:45:30.823433261Z",
+      "last_updated_at": "2026-10-24T12:45:30.823433261Z",
+      "created_by": "admin",
+      "last_updated_by": "admin",
+      "trace_visibility_mode": "default",
+      "execution_policy": {
+        "runs_per_item": 1,
+        "pass_threshold": 1
+      },
+      "assertion_results": [
+        {
+          "value": "The SQL and returned rows provide the requested target attribute or answer, with its meaning identifiable from the selected expressions or aliases. Extra explanatory columns alone are acceptable for this semantic check. Returning a proxy attribute, omitting the requested answer, or returning an empty result does not establish that the requested answer was supplied. Do not infer nationality from currency or customer segment.",
+          "passed": true,
+          "reason": "The query returns the peak month, identified as '201304' (April 2013) in the aliased year_month column. Although the gold SQL returns just the month substring ('04'), the returned value still unambiguously identifies the requested peak month, and it is not a proxy attribute."
+        },
+        {
+          "value": "The generated SQL is semantically equivalent to the per-question BIRD Gold SQL supplied as output.gold_sql. Do not require identical SQL text. Compare the filters, joins, calculations, grouping and selected result. If a material difference exists or equivalence cannot be established from the SQL and question context, fail and explain instead of treating similar-looking SQL as a match.",
+          "passed": true,
+          "reason": "The two SQLs are semantically equivalent: both inner-join customers and yearmonth on customer_id, filter segment='SME' and year 2013 (BETWEEN '201301'-'201312' on a YYYYMM string equals SUBSTRING(date FROM 1 FOR 4)='2013'), group by month (full date within a single year is one row per month), sum consumption, and take the top 1. Selecting the full '201304' versus month '04' is a representational difference only. The only minor divergence is gold's NULLS LAST, which would matter only if a month's consumption were entirely NULL; no evidence of such data exists, so this is not a material difference."
+        },
+        {
+          "value": "The generated SQL respects all explicit population filters and date/time boundaries in the question and official evidence. Extra explanatory output columns and result row ordering alone do not fail this assertion. If the question and evidence contradict each other, fail and explain that conflict; do not invent a resolution.",
+          "passed": true,
+          "reason": "The SQL applies the required population filter (c.segment = 'SME') and the required 2013 date boundary (ym.date BETWEEN '201301' AND '201312'), consistent with the evidence's year/month string interpretation. The returned row value '201304' confirms the date is stored as a 6-character YYYYMM string, so the boundary filter behaves correctly. No contradictions between question and evidence."
+        },
+        {
+          "value": "The generated SQL uses the aggregation grain, measure, formula and denominator required by the question and official evidence. Judge the calculation rather than the number of explanatory columns. A different measure or counting unit is a failure even when a value happens to coincide. If the requirement is ambiguous, explain the ambiguity rather than claiming verified correctness.",
+          "passed": true,
+          "reason": "The calculation matches the requirement: it aggregates SUM(consumption) at the per-month grain (grouped by ym.date, which within the 2013 filter is one row per month), then orders descending and takes the top month. This is the same measure and grain as the gold SQL's GROUP BY month substring with ORDER BY SUM(consumption) DESC LIMIT 1."
+        }
+      ],
+      "status": "passed"
+    },
+    {
+      "id": "01a16df1-b5d5-7196-947a-2223cad436f3",
+      "experiment_id": "01a16deb-fbd8-7145-9c82-59f3a9e300f1",
+      "dataset_item_id": "01a16deb-fa17-73d6-af41-08e1fb0597eb",
+      "trace_id": "01a16df0-f4ca-7f0e-a180-ac2f67e28527",
+      "project_id": "01a16caf-2b08-740a-9dfb-6749c7da485f",
+      "input": {
+        "question": "What is the difference in the annual average consumption of the customers with the least amount of consumption paid in CZK for 2013 between SME and LAM, LAM and KAM, and KAM and SME?",
+        "evidence": "annual average consumption of customer with the lowest consumption in each segment = total consumption per year / the number of customer with lowest consumption in each segment; Difference in annual average = SME's annual average - LAM's annual average; Difference in annual average = LAM's annual average - KAM's annual average; Year 2013 can be presented as Between 201301 And 201312; The first 4 strings of the Date values in the yearmonth table can represent year.",
+        "case_id": "debit_card_specializing:1481",
+        "gold_sql": "SELECT CAST(SUM(CASE WHEN T1.segment = 'SME' THEN T2.consumption ELSE 0 END) AS REAL) / NULLIF(COUNT(T1.customer_id), 0) - CAST(SUM(CASE WHEN T1.segment = 'LAM' THEN T2.consumption ELSE 0 END) AS REAL) / NULLIF(COUNT(T1.customer_id), 0), CAST(SUM(CASE WHEN T1.segment = 'LAM' THEN T2.consumption ELSE 0 END) AS REAL) / NULLIF(COUNT(T1.customer_id), 0) - CAST(SUM(CASE WHEN T1.segment = 'KAM' THEN T2.consumption ELSE 0 END) AS REAL) / NULLIF(COUNT(T1.customer_id), 0), CAST(SUM(CASE WHEN T1.segment = 'KAM' THEN T2.consumption ELSE 0 END) AS REAL) / NULLIF(COUNT(T1.customer_id), 0) - CAST(SUM(CASE WHEN T1.segment = 'SME' THEN T2.consumption ELSE 0 END) AS REAL) / NULLIF(COUNT(T1.customer_id), 0) FROM customers AS T1 INNER JOIN yearmonth AS T2 ON T1.customer_id = T2.customer_id WHERE T1.currency = 'CZK' AND T2.consumption = (SELECT MIN(consumption) FROM yearmonth) AND CAST(T2.date AS TEXT) BETWEEN '201301' AND '201312'",
+        "question_id": "1481",
+        "id": "01a16deb-fa17-73d6-af41-08e1fb0597eb"
+      },
+      "output": {
+        "input": {
+          "question": "What is the difference in the annual average consumption of the customers with the least amount of consumption paid in CZK for 2013 between SME and LAM, LAM and KAM, and KAM and SME?",
+          "evidence": "annual average consumption of customer with the lowest consumption in each segment = total consumption per year / the number of customer with lowest consumption in each segment; Difference in annual average = SME's annual average - LAM's annual average; Difference in annual average = LAM's annual average - KAM's annual average; Year 2013 can be presented as Between 201301 And 201312; The first 4 strings of the Date values in the yearmonth table can represent year."
+        },
+        "output": {
+          "sql": "WITH czk_2013 AS (\n  SELECT ym.customer_id,\n         SUM(ym.consumption) AS annual_consumption\n  FROM yearmonth ym\n  JOIN customers c ON c.customer_id = ym.customer_id\n  WHERE c.currency = 'CZK'\n    AND ym.date BETWEEN '201301' AND '201312'\n  GROUP BY ym.customer_id\n),\ncustomer_segment AS (\n  SELECT ct.customer_id,\n         ct.annual_consumption,\n         c.segment\n  FROM czk_2013 ct\n  JOIN customers c ON c.customer_id = ct.customer_id\n  WHERE c.segment IN ('SME', 'LAM', 'KAM')\n),\nsegment_min AS (\n  SELECT segment,\n         MIN(annual_consumption) AS min_consumption\n  FROM customer_segment\n  GROUP BY segment\n),\nlowest_customers AS (\n  SELECT cs.segment,\n         cs.annual_consumption\n  FROM customer_segment cs\n  JOIN segment_min sm\n    ON sm.segment = cs.segment\n   AND sm.min_consumption = cs.annual_consumption\n),\nsegment_avg AS (\n  SELECT segment,\n         SUM(annual_consumption) / COUNT(*) AS annual_avg_consumption\n  FROM lowest_customers\n  GROUP BY segment\n),\npivoted AS (\n  SELECT MAX(CASE WHEN segment = 'SME' THEN annual_avg_consumption END) AS sme_avg,\n         MAX(CASE WHEN segment = 'LAM' THEN annual_avg_consumption END) AS lam_avg,\n         MAX(CASE WHEN segment = 'KAM' THEN annual_avg_consumption END) AS kam_avg\n  FROM segment_avg\n)\nSELECT sme_avg - lam_avg AS sme_minus_lam,\n       lam_avg - kam_avg AS lam_minus_kam,\n       kam_avg - sme_avg AS kam_minus_sme\nFROM pivoted;",
+          "rows": [
+            [
+              {
+                "type": "Decimal",
+                "value": "-14009.3400000000000000"
+              },
+              {
+                "type": "Decimal",
+                "value": "6046.6200000000000000"
+              },
+              {
+                "type": "Decimal",
+                "value": "7962.7200000000000000"
+              }
+            ]
+          ],
+          "gold_sql": "SELECT CAST(SUM(CASE WHEN T1.segment = 'SME' THEN T2.consumption ELSE 0 END) AS REAL) / NULLIF(COUNT(T1.customer_id), 0) - CAST(SUM(CASE WHEN T1.segment = 'LAM' THEN T2.consumption ELSE 0 END) AS REAL) / NULLIF(COUNT(T1.customer_id), 0), CAST(SUM(CASE WHEN T1.segment = 'LAM' THEN T2.consumption ELSE 0 END) AS REAL) / NULLIF(COUNT(T1.customer_id), 0) - CAST(SUM(CASE WHEN T1.segment = 'KAM' THEN T2.consumption ELSE 0 END) AS REAL) / NULLIF(COUNT(T1.customer_id), 0), CAST(SUM(CASE WHEN T1.segment = 'KAM' THEN T2.consumption ELSE 0 END) AS REAL) / NULLIF(COUNT(T1.customer_id), 0) - CAST(SUM(CASE WHEN T1.segment = 'SME' THEN T2.consumption ELSE 0 END) AS REAL) / NULLIF(COUNT(T1.customer_id), 0) FROM customers AS T1 INNER JOIN yearmonth AS T2 ON T1.customer_id = T2.customer_id WHERE T1.currency = 'CZK' AND T2.consumption = (SELECT MIN(consumption) FROM yearmonth) AND CAST(T2.date AS TEXT) BETWEEN '201301' AND '201312'"
+        }
+      },
+      "duration": 49419.472,
+      "usage": {
+        "completion_tokens": 2905,
+        "original_usage.completion_tokens": 2905,
+        "original_usage.completion_tokens_details.reasoning_tokens": 2461,
+        "original_usage.prompt_tokens": 1557,
+        "original_usage.prompt_tokens_details.cached_tokens": 0,
+        "original_usage.total_tokens": 4462,
+        "prompt_tokens": 1557,
+        "total_tokens": 4462
+      },
+      "created_at": "2026-10-24T12:45:21.562028047Z",
+      "last_updated_at": "2026-10-24T12:45:21.562028047Z",
+      "created_by": "admin",
+      "last_updated_by": "admin",
+      "trace_visibility_mode": "default",
+      "execution_policy": {
+        "runs_per_item": 1,
+        "pass_threshold": 1
+      },
+      "assertion_results": [
+        {
+          "value": "The SQL and returned rows provide the requested target attribute or answer, with its meaning identifiable from the selected expressions or aliases. Extra explanatory columns alone are acceptable for this semantic check. Returning a proxy attribute, omitting the requested answer, or returning an empty result does not establish that the requested answer was supplied. Do not infer nationality from currency or customer segment.",
+          "passed": true,
+          "reason": "The SQL returns three values aliased as sme_minus_lam, lam_minus_kam, and kam_minus_sme, directly corresponding to the three requested pairwise differences in annual average consumption. The meaning is clearly identifiable from the aliases."
+        },
+        {
+          "value": "The generated SQL is semantically equivalent to the per-question BIRD Gold SQL supplied as output.gold_sql. Do not require identical SQL text. Compare the filters, joins, calculations, grouping and selected result. If a material difference exists or equivalence cannot be established from the SQL and question context, fail and explain instead of treating similar-looking SQL as a match.",
+          "passed": false,
+          "reason": "Material differences exist. (1) Lowest consumption definition: the gold SQL filters individual records where T2.consumption = (SELECT MIN(consumption) FROM yearmonth) — a record-level global minimum — while the agent computes annual totals per customer first and finds the minimum annual consumption per segment. (2) Denominator: gold SQL divides by COUNT(T1.customer_id) across ALL matched rows (all segments), while the agent divides per-segment only. (3) The gold SQL does not filter to specific segments explicitly, relying on CASE WHEN for column selection, whereas the agent adds segment IN (...). These are not semantically equivalent."
+        },
+        {
+          "value": "The generated SQL respects all explicit population filters and date/time boundaries in the question and official evidence. Extra explanatory output columns and result row ordering alone do not fail this assertion. If the question and evidence contradict each other, fail and explain that conflict; do not invent a resolution.",
+          "passed": true,
+          "reason": "The agent's SQL correctly filters for currency='CZK', date between '201301' and '201312' (matching the evidence guidance for year 2013), and segments IN ('SME','LAM','KAM'). These population and date/time boundaries are all explicitly respected."
+        },
+        {
+          "value": "The generated SQL uses the aggregation grain, measure, formula and denominator required by the question and official evidence. Judge the calculation rather than the number of explanatory columns. A different measure or counting unit is a failure even when a value happens to coincide. If the requirement is ambiguous, explain the ambiguity rather than claiming verified correctness.",
+          "passed": true,
+          "reason": "The agent computes annual consumption per customer first, then finds the minimum annual consumption per segment, selects customers achieving that minimum within each segment, and calculates SUM(annual_consumption)/COUNT(*) for those lowest-consumption customers per segment. This matches the evidence formula: 'total consumption per year / the number of customer with lowest consumption in each segment.'"
+        }
+      ],
+      "status": "failed"
+    },
+    {
+      "id": "01a16df1-6236-7997-ab16-77feb97c772d",
+      "experiment_id": "01a16deb-fbd8-7145-9c82-59f3a9e300f1",
+      "dataset_item_id": "01a16deb-fa18-73f9-8c41-5a7ad537c245",
+      "trace_id": "01a16df0-eb80-782d-ab5a-24128111cae2",
+      "project_id": "01a16caf-2b08-740a-9dfb-6749c7da485f",
+      "input": {
+        "question": "Which of the three segments—SME, LAM and KAM—has the biggest and lowest percentage increases in consumption paid in EUR between 2012 and 2013?",
+        "evidence": "Increase or Decrease = consumption for 2013 - consumption for 2012; Percentage of Increase = (Increase or Decrease / consumption for 2013) * 100%; The first 4 strings of the Date values in the yearmonth table can represent year",
+        "case_id": "debit_card_specializing:1482",
+        "gold_sql": "SELECT CAST((SUM(CASE WHEN T1.segment = 'SME' AND T2.date LIKE '2013%' THEN T2.consumption ELSE 0 END) - SUM(CASE WHEN T1.segment = 'SME' AND T2.date LIKE '2012%' THEN T2.consumption ELSE 0 END)) AS REAL) * 100 / NULLIF(SUM(CASE WHEN T1.segment = 'SME' AND T2.date LIKE '2012%' THEN T2.consumption ELSE 0 END), 0), CAST(SUM(CASE WHEN T1.segment = 'LAM' AND T2.date LIKE '2013%' THEN T2.consumption ELSE 0 END) - SUM(CASE WHEN T1.segment = 'LAM' AND T2.date LIKE '2012%' THEN T2.consumption ELSE 0 END) AS REAL) * 100 / NULLIF(SUM(CASE WHEN T1.segment = 'LAM' AND T2.date LIKE '2012%' THEN T2.consumption ELSE 0 END), 0), CAST(SUM(CASE WHEN T1.segment = 'KAM' AND T2.date LIKE '2013%' THEN T2.consumption ELSE 0 END) - SUM(CASE WHEN T1.segment = 'KAM' AND T2.date LIKE '2012%' THEN T2.consumption ELSE 0 END) AS REAL) * 100 / NULLIF(SUM(CASE WHEN T1.segment = 'KAM' AND T2.date LIKE '2012%' THEN T2.consumption ELSE 0 END), 0) FROM customers AS T1 INNER JOIN yearmonth AS T2 ON T1.customer_id = T2.customer_id",
+        "question_id": "1482",
+        "id": "01a16deb-fa18-73f9-8c41-5a7ad537c245"
+      },
+      "output": {
+        "input": {
+          "question": "Which of the three segments—SME, LAM and KAM—has the biggest and lowest percentage increases in consumption paid in EUR between 2012 and 2013?",
+          "evidence": "Increase or Decrease = consumption for 2013 - consumption for 2012; Percentage of Increase = (Increase or Decrease / consumption for 2013) * 100%; The first 4 strings of the Date values in the yearmonth table can represent year"
+        },
+        "output": {
+          "sql": "WITH eur_customers AS (\n  SELECT customer_id, segment\n  FROM customers\n  WHERE currency = 'EUR'\n    AND segment IN ('SME', 'LAM', 'KAM')\n),\nconsumption_by_year AS (\n  SELECT\n    c.segment,\n    LEFT(ym.date, 4) AS yr,\n    SUM(ym.consumption) AS total_consumption\n  FROM yearmonth ym\n  INNER JOIN eur_customers c ON c.customer_id = ym.customer_id\n  WHERE LEFT(ym.date, 4) IN ('2012', '2013')\n  GROUP BY c.segment, LEFT(ym.date, 4)\n),\nsegment_totals AS (\n  SELECT\n    segment,\n    MAX(total_consumption) FILTER (WHERE yr = '2012') AS consumption_2012,\n    MAX(total_consumption) FILTER (WHERE yr = '2013') AS consumption_2013\n  FROM consumption_by_year\n  GROUP BY segment\n),\nsegment_pct AS (\n  SELECT\n    segment,\n    consumption_2012,\n    consumption_2013,\n    consumption_2013 - consumption_2012 AS increase_or_decrease,\n    ROUND((consumption_2013 - consumption_2012) / NULLIF(consumption_2013, 0) * 100, 4) AS pct_increase\n  FROM segment_totals\n)\nSELECT\n  'Biggest percentage increase' AS result_type,\n  segment,\n  consumption_2012,\n  consumption_2013,\n  increase_or_decrease,\n  pct_increase\nFROM segment_pct\nWHERE pct_increase = (SELECT MAX(pct_increase) FROM segment_pct)\nUNION ALL\nSELECT\n  'Lowest percentage increase' AS result_type,\n  segment,\n  consumption_2012,\n  consumption_2013,\n  increase_or_decrease,\n  pct_increase\nFROM segment_pct\nWHERE pct_increase = (SELECT MIN(pct_increase) FROM segment_pct)\nORDER BY pct_increase DESC;",
+          "rows": [
+            [
+              "Biggest percentage increase",
+              "SME",
+              {
+                "type": "Decimal",
+                "value": "869537.52"
+              },
+              {
+                "type": "Decimal",
+                "value": "7258151.96"
+              },
+              {
+                "type": "Decimal",
+                "value": "6388614.44"
+              },
+              {
+                "type": "Decimal",
+                "value": "88.0198"
+              }
+            ],
+            [
+              "Lowest percentage increase",
+              "LAM",
+              {
+                "type": "Decimal",
+                "value": "676212.68"
+              },
+              {
+                "type": "Decimal",
+                "value": "4326606.13"
+              },
+              {
+                "type": "Decimal",
+                "value": "3650393.45"
+              },
+              {
+                "type": "Decimal",
+                "value": "84.3708"
+              }
+            ]
+          ],
+          "gold_sql": "SELECT CAST((SUM(CASE WHEN T1.segment = 'SME' AND T2.date LIKE '2013%' THEN T2.consumption ELSE 0 END) - SUM(CASE WHEN T1.segment = 'SME' AND T2.date LIKE '2012%' THEN T2.consumption ELSE 0 END)) AS REAL) * 100 / NULLIF(SUM(CASE WHEN T1.segment = 'SME' AND T2.date LIKE '2012%' THEN T2.consumption ELSE 0 END), 0), CAST(SUM(CASE WHEN T1.segment = 'LAM' AND T2.date LIKE '2013%' THEN T2.consumption ELSE 0 END) - SUM(CASE WHEN T1.segment = 'LAM' AND T2.date LIKE '2012%' THEN T2.consumption ELSE 0 END) AS REAL) * 100 / NULLIF(SUM(CASE WHEN T1.segment = 'LAM' AND T2.date LIKE '2012%' THEN T2.consumption ELSE 0 END), 0), CAST(SUM(CASE WHEN T1.segment = 'KAM' AND T2.date LIKE '2013%' THEN T2.consumption ELSE 0 END) - SUM(CASE WHEN T1.segment = 'KAM' AND T2.date LIKE '2012%' THEN T2.consumption ELSE 0 END) AS REAL) * 100 / NULLIF(SUM(CASE WHEN T1.segment = 'KAM' AND T2.date LIKE '2012%' THEN T2.consumption ELSE 0 END), 0) FROM customers AS T1 INNER JOIN yearmonth AS T2 ON T1.customer_id = T2.customer_id"
+        }
+      },
+      "duration": 30391.018,
+      "usage": {
+        "completion_tokens": 1048,
+        "original_usage.completion_tokens": 1048,
+        "original_usage.completion_tokens_details.reasoning_tokens": 616,
+        "original_usage.prompt_tokens": 1754,
+        "original_usage.total_tokens": 2802,
+        "prompt_tokens": 1754,
+        "total_tokens": 2802
+      },
+      "created_at": "2026-10-24T12:45:00.179344899Z",
+      "last_updated_at": "2026-10-24T12:45:00.179344899Z",
+      "created_by": "admin",
+      "last_updated_by": "admin",
+      "trace_visibility_mode": "default",
+      "execution_policy": {
+        "runs_per_item": 1,
+        "pass_threshold": 1
+      },
+      "assertion_results": [
+        {
+          "value": "The SQL and returned rows provide the requested target attribute or answer, with its meaning identifiable from the selected expressions or aliases. Extra explanatory columns alone are acceptable for this semantic check. Returning a proxy attribute, omitting the requested answer, or returning an empty result does not establish that the requested answer was supplied. Do not infer nationality from currency or customer segment.",
+          "passed": true,
+          "reason": "The returned rows explicitly label the results as 'Biggest percentage increase' (SME, 88.02%) and 'Lowest percentage increase' (LAM, 84.37%), directly answering which segments have the biggest and lowest percentage increases in EUR consumption between 2012 and 2013. The requested answer is present and identifiable."
+        },
+        {
+          "value": "The generated SQL is semantically equivalent to the per-question BIRD Gold SQL supplied as output.gold_sql. Do not require identical SQL text. Compare the filters, joins, calculations, grouping and selected result. If a material difference exists or equivalence cannot be established from the SQL and question context, fail and explain instead of treating similar-looking SQL as a match.",
+          "passed": false,
+          "reason": "Material differences exist between the agent SQL and the Gold SQL. The Gold SQL computes the percentage increase using consumption_2012 as the denominator (increase/2012*100), whereas the agent's SQL uses consumption_2013 as the denominator per the evidence text. This changes the computed values (and potentially the segment ranking) and is not semantically equivalent. Additionally, the agent adds a currency='EUR' filter not present in the Gold SQL, which further restricts the population."
+        },
+        {
+          "value": "The generated SQL respects all explicit population filters and date/time boundaries in the question and official evidence. Extra explanatory output columns and result row ordering alone do not fail this assertion. If the question and evidence contradict each other, fail and explain that conflict; do not invent a resolution.",
+          "passed": true,
+          "reason": "The SQL applies the explicit EUR currency population filter (currency='EUR') and restricts to segments SME/LAM/KAM, and correctly extracts year from the first 4 characters of the Date values (LEFT(date,4)) for 2012 and 2013 as the evidence instructs. No contradiction between question and evidence exists on the population/date boundaries."
+        },
+        {
+          "value": "The generated SQL uses the aggregation grain, measure, formula and denominator required by the question and official evidence. Judge the calculation rather than the number of explanatory columns. A different measure or counting unit is a failure even when a value happens to coincide. If the requirement is ambiguous, explain the ambiguity rather than claiming verified correctness.",
+          "passed": true,
+          "reason": "The aggregation sums consumption per segment per year (the correct grain for year-over-year comparison), computes Increase = consumption_2013 - consumption_2012, and computes the percentage using the denominator explicitly required by the evidence: consumption for 2013 (Increase/consumption_2013*100). This matches the official evidence formula."
+        }
+      ],
+      "status": "failed"
+    },
+    {
+      "id": "01a16df0-f4c9-757b-bb7b-ef5eaf42f2c3",
+      "experiment_id": "01a16deb-fbd8-7145-9c82-59f3a9e300f1",
+      "dataset_item_id": "01a16deb-fa19-738f-8629-b2369b61ecc5",
+      "trace_id": "01a16df0-c7dd-79ec-97c0-8b6c20a31a3d",
+      "project_id": "01a16caf-2b08-740a-9dfb-6749c7da485f",
+      "input": {
+        "question": "How much did customer 6 consume in total between August and November 2013?",
+        "evidence": "Between August And November 2013 refers to Between 201308 And 201311; The first 4 strings of the Date values in the yearmonth table can represent year; The 5th and 6th string of the date can refer to month.",
+        "case_id": "debit_card_specializing:1483",
+        "gold_sql": "SELECT SUM(consumption) FROM yearmonth WHERE customer_id = 6 AND date BETWEEN '201308' AND '201311'",
+        "question_id": "1483",
+        "id": "01a16deb-fa19-738f-8629-b2369b61ecc5"
+      },
+      "output": {
+        "input": {
+          "question": "How much did customer 6 consume in total between August and November 2013?",
+          "evidence": "Between August And November 2013 refers to Between 201308 And 201311; The first 4 strings of the Date values in the yearmonth table can represent year; The 5th and 6th string of the date can refer to month."
+        },
+        "output": {
+          "sql": "SELECT SUM(consumption) AS total_consumption FROM yearmonth WHERE customer_id = 6 AND date >= '201308' AND date <= '201311';",
+          "rows": [
+            [
+              {
+                "type": "Decimal",
+                "value": "1224.96"
+              }
+            ]
+          ],
+          "gold_sql": "SELECT SUM(consumption) FROM yearmonth WHERE customer_id = 6 AND date BETWEEN '201308' AND '201311'"
+        }
+      },
+      "duration": 11500.318,
+      "usage": {
+        "completion_tokens": 539,
+        "original_usage.completion_tokens": 539,
+        "original_usage.completion_tokens_details.reasoning_tokens": 215,
+        "original_usage.prompt_tokens": 724,
+        "original_usage.total_tokens": 1263,
+        "prompt_tokens": 724,
+        "total_tokens": 1263
+      },
+      "created_at": "2026-10-24T12:44:32.447180629Z",
+      "last_updated_at": "2026-10-24T12:44:32.447180629Z",
+      "created_by": "admin",
+      "last_updated_by": "admin",
+      "trace_visibility_mode": "default",
+      "execution_policy": {
+        "runs_per_item": 1,
+        "pass_threshold": 1
+      },
+      "assertion_results": [
+        {
+          "value": "The SQL and returned rows provide the requested target attribute or answer, with its meaning identifiable from the selected expressions or aliases. Extra explanatory columns alone are acceptable for this semantic check. Returning a proxy attribute, omitting the requested answer, or returning an empty result does not establish that the requested answer was supplied. Do not infer nationality from currency or customer segment.",
+          "passed": true,
+          "reason": "The query returns a single value, 1224.96, aliased as total_consumption, which clearly supplies the requested total consumption amount."
+        },
+        {
+          "value": "The generated SQL is semantically equivalent to the per-question BIRD Gold SQL supplied as output.gold_sql. Do not require identical SQL text. Compare the filters, joins, calculations, grouping and selected result. If a material difference exists or equivalence cannot be established from the SQL and question context, fail and explain instead of treating similar-looking SQL as a match.",
+          "passed": true,
+          "reason": "The generated SQL is semantically equivalent to the gold SQL: same table, same filters (customer_id = 6 and inclusive date range over '201308'–'201311', with >=/<= being identical to BETWEEN), and the same SUM(consumption) selection; only the alias differs."
+        },
+        {
+          "value": "The generated SQL respects all explicit population filters and date/time boundaries in the question and official evidence. Extra explanatory output columns and result row ordering alone do not fail this assertion. If the question and evidence contradict each other, fail and explain that conflict; do not invent a resolution.",
+          "passed": true,
+          "reason": "The SQL filters on customer_id = 6 and date between '201308' and '201311' (using >= and <=, which is inclusive like BETWEEN), matching the question's 'customer 6' and the evidence's August–November 2013 boundaries."
+        },
+        {
+          "value": "The generated SQL uses the aggregation grain, measure, formula and denominator required by the question and official evidence. Judge the calculation rather than the number of explanatory columns. A different measure or counting unit is a failure even when a value happens to coincide. If the requirement is ambiguous, explain the ambiguity rather than claiming verified correctness.",
+          "passed": true,
+          "reason": "The query computes SUM(consumption) grouped at the whole-result grain (no grouping), which is the correct total consumption measure and aggregation for the question."
+        }
+      ],
+      "status": "passed"
+    },
+    {
+      "id": "01a16df0-eb7f-7c0a-b267-a10596d4c69d",
+      "experiment_id": "01a16deb-fbd8-7145-9c82-59f3a9e300f1",
+      "dataset_item_id": "01a16deb-fa1a-73a8-b51c-e93ef7a0314a",
+      "trace_id": "01a16df0-bf55-75f3-b10c-d818240b54ae",
+      "project_id": "01a16caf-2b08-740a-9dfb-6749c7da485f",
+      "input": {
+        "question": "How many more \"discount\" gas stations does the Czech Republic have compared to Slovakia?",
+        "evidence": "Czech Republic can be represented as the Country value in gasstations table is 'CZE'; Slovakia can be represented as the Country value in the gasstations table is 'SVK';  Computation of more \"discount\" gas stations= Total no. of discount gas stations in Czech Republic - Total no. of discount gas stations in Slovakia",
+        "case_id": "debit_card_specializing:1484",
+        "gold_sql": "SELECT SUM(CASE WHEN country = 'CZE' THEN 1 ELSE 0 END) - SUM(CASE WHEN country = 'SVK' THEN 1 ELSE 0 END) FROM gasstations WHERE segment = 'Discount'",
+        "question_id": "1484",
+        "id": "01a16deb-fa1a-73a8-b51c-e93ef7a0314a"
+      },
+      "output": {
+        "input": {
+          "question": "How many more \"discount\" gas stations does the Czech Republic have compared to Slovakia?",
+          "evidence": "Czech Republic can be represented as the Country value in gasstations table is 'CZE'; Slovakia can be represented as the Country value in the gasstations table is 'SVK';  Computation of more \"discount\" gas stations= Total no. of discount gas stations in Czech Republic - Total no. of discount gas stations in Slovakia"
+        },
+        "output": {
+          "sql": "SELECT\n  COUNT(*) FILTER (WHERE gs.country = 'CZE') AS cze_discount_stations,\n  COUNT(*) FILTER (WHERE gs.country = 'SVK') AS svk_discount_stations,\n  COUNT(*) FILTER (WHERE gs.country = 'CZE') - COUNT(*) FILTER (WHERE gs.country = 'SVK') AS difference\nFROM gasstations gs\nWHERE gs.segment = 'Discount';",
+          "rows": [
+            [
+              235,
+              59,
+              176
+            ]
+          ],
+          "gold_sql": "SELECT SUM(CASE WHEN country = 'CZE' THEN 1 ELSE 0 END) - SUM(CASE WHEN country = 'SVK' THEN 1 ELSE 0 END) FROM gasstations WHERE segment = 'Discount'"
+        }
+      },
+      "duration": 11306.58,
+      "usage": {
+        "completion_tokens": 547,
+        "original_usage.completion_tokens": 547,
+        "original_usage.completion_tokens_details.reasoning_tokens": 191,
+        "original_usage.prompt_tokens": 777,
+        "original_usage.total_tokens": 1324,
+        "prompt_tokens": 777,
+        "total_tokens": 1324
+      },
+      "created_at": "2026-10-24T12:44:29.352072691Z",
+      "last_updated_at": "2026-10-24T12:44:29.352072691Z",
+      "created_by": "admin",
+      "last_updated_by": "admin",
+      "trace_visibility_mode": "default",
+      "execution_policy": {
+        "runs_per_item": 1,
+        "pass_threshold": 1
+      },
+      "assertion_results": [
+        {
+          "value": "The SQL and returned rows provide the requested target attribute or answer, with its meaning identifiable from the selected expressions or aliases. Extra explanatory columns alone are acceptable for this semantic check. Returning a proxy attribute, omitting the requested answer, or returning an empty result does not establish that the requested answer was supplied. Do not infer nationality from currency or customer segment.",
+          "passed": true,
+          "reason": "The SQL returns the difference of 176 as the 'difference' column, directly answering the question of how many more discount gas stations the Czech Republic has compared to Slovakia. The meaning is identifiable from the alias and expressions."
+        },
+        {
+          "value": "The generated SQL is semantically equivalent to the per-question BIRD Gold SQL supplied as output.gold_sql. Do not require identical SQL text. Compare the filters, joins, calculations, grouping and selected result. If a material difference exists or equivalence cannot be established from the SQL and question context, fail and explain instead of treating similar-looking SQL as a match.",
+          "passed": true,
+          "reason": "The agent's SQL is semantically equivalent to the gold SQL. Both filter on segment = 'Discount' and compute COUNT(CZE) - COUNT(SVK). The agent uses COUNT(*) FILTER (WHERE ...) while gold uses SUM(CASE WHEN ... THEN 1 ELSE 0 END), but these are functionally identical. The agent additionally returns the individual counts as extra columns, which does not change the equivalence of the core computation."
+        },
+        {
+          "value": "The generated SQL respects all explicit population filters and date/time boundaries in the question and official evidence. Extra explanatory output columns and result row ordering alone do not fail this assertion. If the question and evidence contradict each other, fail and explain that conflict; do not invent a resolution.",
+          "passed": true,
+          "reason": "The SQL correctly filters on segment = 'Discount' and uses country = 'CZE' and country = 'SVK' as specified in the evidence. There are no population filters or date/time boundaries to apply here."
+        },
+        {
+          "value": "The generated SQL uses the aggregation grain, measure, formula and denominator required by the question and official evidence. Judge the calculation rather than the number of explanatory columns. A different measure or counting unit is a failure even when a value happens to coincide. If the requirement is ambiguous, explain the ambiguity rather than claiming verified correctness.",
+          "passed": true,
+          "reason": "The SQL counts gas stations (COUNT(*)) where segment = 'Discount' for each country and computes the difference (CZE - SVK), exactly matching the formula described in the evidence. The measure is the count of discount gas stations, which is correct."
+        }
+      ],
+      "status": "passed"
+    },
+    {
+      "id": "01a16df0-c7dc-7eb3-a03e-f41a8dbfd3cd",
+      "experiment_id": "01a16deb-fbd8-7145-9c82-59f3a9e300f1",
+      "dataset_item_id": "01a16deb-fa1b-7ee1-a193-561a008d8124",
+      "trace_id": "01a16df0-94ff-704f-9c69-e00a516ef752",
+      "project_id": "01a16caf-2b08-740a-9dfb-6749c7da485f",
+      "input": {
+        "question": "Is it true that more SMEs pay in Czech koruna than in euros? If so, how many more?",
+        "evidence": "Amount of more SMEs = Total of SMEs pay using Currency CZK - Total of SMEs pay using Currency EUR",
+        "case_id": "debit_card_specializing:1486",
+        "gold_sql": "SELECT SUM(CASE WHEN currency = 'CZK' THEN 1 ELSE 0 END) - SUM(CASE WHEN currency = 'EUR' THEN 1 ELSE 0 END) FROM customers WHERE segment = 'SME'",
+        "question_id": "1486",
+        "id": "01a16deb-fa1b-7ee1-a193-561a008d8124"
+      },
+      "output": {
+        "input": {
+          "question": "Is it true that more SMEs pay in Czech koruna than in euros? If so, how many more?",
+          "evidence": "Amount of more SMEs = Total of SMEs pay using Currency CZK - Total of SMEs pay using Currency EUR"
+        },
+        "output": {
+          "sql": "SELECT\n  SUM(CASE WHEN currency = 'CZK' THEN 1 ELSE 0 END) AS sme_czk_count,\n  SUM(CASE WHEN currency = 'EUR' THEN 1 ELSE 0 END) AS sme_eur_count,\n  SUM(CASE WHEN currency = 'CZK' THEN 1 ELSE 0 END)\n    - SUM(CASE WHEN currency = 'EUR' THEN 1 ELSE 0 END) AS diff_czk_minus_eur,\n  CASE\n    WHEN SUM(CASE WHEN currency = 'CZK' THEN 1 ELSE 0 END)\n       > SUM(CASE WHEN currency = 'EUR' THEN 1 ELSE 0 END) THEN 'Yes'\n    ELSE 'No'\n  END AS more_smes_pay_czk\nFROM customers\nWHERE segment = 'SME';",
+          "rows": [
+            [
+              25134,
+              1629,
+              23505,
+              "Yes"
+            ]
+          ],
+          "gold_sql": "SELECT SUM(CASE WHEN currency = 'CZK' THEN 1 ELSE 0 END) - SUM(CASE WHEN currency = 'EUR' THEN 1 ELSE 0 END) FROM customers WHERE segment = 'SME'"
+        }
+      },
+      "duration": 13021.079,
+      "usage": {
+        "completion_tokens": 523,
+        "original_usage.completion_tokens": 523,
+        "original_usage.completion_tokens_details.reasoning_tokens": 177,
+        "original_usage.prompt_tokens": 842,
+        "original_usage.total_tokens": 1365,
+        "prompt_tokens": 842,
+        "total_tokens": 1365
+      },
+      "created_at": "2026-10-24T12:44:20.098890236Z",
+      "last_updated_at": "2026-10-24T12:44:20.098890236Z",
+      "created_by": "admin",
+      "last_updated_by": "admin",
+      "trace_visibility_mode": "default",
+      "execution_policy": {
+        "runs_per_item": 1,
+        "pass_threshold": 1
+      },
+      "assertion_results": [
+        {
+          "value": "The SQL and returned rows provide the requested target attribute or answer, with its meaning identifiable from the selected expressions or aliases. Extra explanatory columns alone are acceptable for this semantic check. Returning a proxy attribute, omitting the requested answer, or returning an empty result does not establish that the requested answer was supplied. Do not infer nationality from currency or customer segment.",
+          "passed": true,
+          "reason": "The result rows include the diff_czk_minus_eur column (23505) answering 'how many more' and a more_smes_pay_czk column ('Yes') answering 'is it true'. The target answer is present and identifiable from the aliases; extra explanatory columns are acceptable."
+        },
+        {
+          "value": "The generated SQL is semantically equivalent to the per-question BIRD Gold SQL supplied as output.gold_sql. Do not require identical SQL text. Compare the filters, joins, calculations, grouping and selected result. If a material difference exists or equivalence cannot be established from the SQL and question context, fail and explain instead of treating similar-looking SQL as a match.",
+          "passed": true,
+          "reason": "The Gold SQL computes SUM(CASE WHEN currency='CZK' ...) - SUM(CASE WHEN currency='EUR' ...) FROM customers WHERE segment='SME'. The agent's SQL computes the identical difference (third selected column) with the same filter, and additionally selects the component counts and a boolean indicator, which does not alter the core result. The SQLs are semantically equivalent."
+        },
+        {
+          "value": "The generated SQL respects all explicit population filters and date/time boundaries in the question and official evidence. Extra explanatory output columns and result row ordering alone do not fail this assertion. If the question and evidence contradict each other, fail and explain that conflict; do not invent a resolution.",
+          "passed": true,
+          "reason": "The question and evidence specify only the SME population (customers with segment = 'SME') with no date/time boundaries. The generated SQL correctly applies WHERE segment = 'SME', matching the Gold SQL filter, and introduces no conflicting or missing population filters."
+        },
+        {
+          "value": "The generated SQL uses the aggregation grain, measure, formula and denominator required by the question and official evidence. Judge the calculation rather than the number of explanatory columns. A different measure or counting unit is a failure even when a value happens to coincide. If the requirement is ambiguous, explain the ambiguity rather than claiming verified correctness.",
+          "passed": true,
+          "reason": "The aggregation counts SME customers by currency (CZK and EUR) and computes the difference as CZK count minus EUR count, exactly matching the required formula 'Total of SMEs pay using Currency CZK - Total of SMEs pay using Currency EUR'. The counting unit and grain are correct."
+        }
+      ],
+      "status": "passed"
+    },
+    {
+      "id": "01a16df0-bf54-7cc4-84ea-40644dc7c657",
+      "experiment_id": "01a16deb-fbd8-7145-9c82-59f3a9e300f1",
+      "dataset_item_id": "01a16deb-fa1c-7c22-9ecc-7d8692258413",
+      "trace_id": "01a16df0-806a-74d8-8ec7-9850c8fe69fa",
+      "project_id": "01a16caf-2b08-740a-9dfb-6749c7da485f",
+      "input": {
+        "question": "How many percent of LAM customer consumed more than 46.73?",
+        "evidence": "Percentage of LAM customer consumed more than 46.73 = (Total no. of LAM customers who consumed more than 46.73 / Total no. of LAM customers) * 100.",
+        "case_id": "debit_card_specializing:1490",
+        "gold_sql": "SELECT CAST(SUM(CASE WHEN T2.consumption > 46.73 THEN 1 ELSE 0 END) AS REAL) * 100 / NULLIF(COUNT(T1.customer_id), 0) FROM customers AS T1 INNER JOIN yearmonth AS T2 ON T1.customer_id = T2.customer_id WHERE T1.segment = 'LAM'",
+        "question_id": "1490",
+        "id": "01a16deb-fa1c-7c22-9ecc-7d8692258413"
+      },
+      "output": {
+        "input": {
+          "question": "How many percent of LAM customer consumed more than 46.73?",
+          "evidence": "Percentage of LAM customer consumed more than 46.73 = (Total no. of LAM customers who consumed more than 46.73 / Total no. of LAM customers) * 100."
+        },
+        "output": {
+          "sql": "SELECT\n    ROUND(\n      COUNT(*) FILTER (WHERE customer_total_amount > 46.73) * 100.0\n      / NULLIF(COUNT(*), 0),\n      4\n    ) AS pct_lam_customers_over_threshold\nFROM (\n    SELECT\n        c.customer_id,\n        SUM(t.amount) AS customer_total_amount\n    FROM customers c\n    JOIN transactions_1k t\n      ON t.customer_id = c.customer_id\n    WHERE c.segment = 'LAM'\n    GROUP BY c.customer_id\n) AS customer_totals",
+          "rows": [
+            [
+              {
+                "type": "Decimal",
+                "value": "15.1515"
+              }
+            ]
+          ],
+          "gold_sql": "SELECT CAST(SUM(CASE WHEN T2.consumption > 46.73 THEN 1 ELSE 0 END) AS REAL) * 100 / NULLIF(COUNT(T1.customer_id), 0) FROM customers AS T1 INNER JOIN yearmonth AS T2 ON T1.customer_id = T2.customer_id WHERE T1.segment = 'LAM'"
+        }
+      },
+      "duration": 16106.266,
+      "usage": {
+        "completion_tokens": 664,
+        "original_usage.completion_tokens": 664,
+        "original_usage.completion_tokens_details.reasoning_tokens": 292,
+        "original_usage.prompt_tokens": 835,
+        "original_usage.total_tokens": 1499,
+        "prompt_tokens": 835,
+        "total_tokens": 1499
+      },
+      "created_at": "2026-10-24T12:44:17.087938089Z",
+      "last_updated_at": "2026-10-24T12:44:17.087938089Z",
+      "created_by": "admin",
+      "last_updated_by": "admin",
+      "trace_visibility_mode": "default",
+      "execution_policy": {
+        "runs_per_item": 1,
+        "pass_threshold": 1
+      },
+      "assertion_results": [
+        {
+          "value": "The SQL and returned rows provide the requested target attribute or answer, with its meaning identifiable from the selected expressions or aliases. Extra explanatory columns alone are acceptable for this semantic check. Returning a proxy attribute, omitting the requested answer, or returning an empty result does not establish that the requested answer was supplied. Do not infer nationality from currency or customer segment.",
+          "passed": true,
+          "reason": "The SQL returns a single percentage value (15.1515) which is identifiable as the percentage of LAM customers exceeding the threshold, as requested."
+        },
+        {
+          "value": "The generated SQL is semantically equivalent to the per-question BIRD Gold SQL supplied as output.gold_sql. Do not require identical SQL text. Compare the filters, joins, calculations, grouping and selected result. If a material difference exists or equivalence cannot be established from the SQL and question context, fail and explain instead of treating similar-looking SQL as a match.",
+          "passed": false,
+          "reason": "The agent's SQL is not semantically equivalent to the gold SQL. The gold SQL joins with the yearmonth table and checks individual monthly consumption values (T2.consumption > 46.73), counting per-row. The agent instead sums all amounts per customer and checks if the cumulative total exceeds 46.73. The denominators also differ (distinct customers vs. all customer-month rows). These produce different results."
+        },
+        {
+          "value": "The generated SQL respects all explicit population filters and date/time boundaries in the question and official evidence. Extra explanatory output columns and result row ordering alone do not fail this assertion. If the question and evidence contradict each other, fail and explain that conflict; do not invent a resolution.",
+          "passed": true,
+          "reason": "The agent correctly filters for segment = 'LAM' and uses a threshold of > 46.73, matching the question's requirements. No date/time boundaries are specified in the question."
+        },
+        {
+          "value": "The generated SQL uses the aggregation grain, measure, formula and denominator required by the question and official evidence. Judge the calculation rather than the number of explanatory columns. A different measure or counting unit is a failure even when a value happens to coincide. If the requirement is ambiguous, explain the ambiguity rather than claiming verified correctness.",
+          "passed": false,
+          "reason": "The agent uses SUM(t.amount) per customer and then checks if the total exceeds 46.73. The gold SQL instead checks individual monthly consumption values (T2.consumption > 46.73) per customer-month row. These are different measures: per-month consumption vs. cumulative total. The denominator also differs — the agent counts distinct customers while the gold SQL counts all customer-month rows."
+        }
+      ],
+      "status": "failed"
+    },
+    {
+      "id": "01a16df0-94fe-7d3e-aa55-3f659b992943",
+      "experiment_id": "01a16deb-fbd8-7145-9c82-59f3a9e300f1",
+      "dataset_item_id": "01a16deb-fa1e-7497-b98d-a733de2b562d",
+      "trace_id": "01a16df0-3538-7304-8204-352b21887450",
+      "project_id": "01a16caf-2b08-740a-9dfb-6749c7da485f",
+      "input": {
+        "question": "What is the highest monthly consumption in the year 2012?",
+        "evidence": "cast the consumption into float when perform calculation; The first 4 strings of the Date values in the yearmonth table can represent year; The 5th and 6th string of the date can refer to month.",
+        "case_id": "debit_card_specializing:1498",
+        "gold_sql": "SELECT SUM(CAST(consumption AS DOUBLE PRECISION)) FROM yearmonth WHERE SUBSTRING(date FROM 1 FOR 4) = '2012' GROUP BY SUBSTRING(date FROM 5 FOR 2) ORDER BY SUM(consumption) DESC NULLS LAST LIMIT 1",
+        "question_id": "1498",
+        "id": "01a16deb-fa1e-7497-b98d-a733de2b562d"
+      },
+      "output": {
+        "input": {
+          "question": "What is the highest monthly consumption in the year 2012?",
+          "evidence": "cast the consumption into float when perform calculation; The first 4 strings of the Date values in the yearmonth table can represent year; The 5th and 6th string of the date can refer to month."
+        },
+        "output": {
+          "sql": "SELECT\n  date AS year_month,\n  CAST(consumption AS DOUBLE PRECISION) AS consumption\nFROM yearmonth\nWHERE LEFT(date, 4) = '2012'\nORDER BY CAST(consumption AS DOUBLE PRECISION) DESC\nLIMIT 1;",
+          "rows": [
+            [
+              "201201",
+              445279.69
+            ]
+          ],
+          "gold_sql": "SELECT SUM(CAST(consumption AS DOUBLE PRECISION)) FROM yearmonth WHERE SUBSTRING(date FROM 1 FOR 4) = '2012' GROUP BY SUBSTRING(date FROM 5 FOR 2) ORDER BY SUM(consumption) DESC NULLS LAST LIMIT 1"
+        }
+      },
+      "duration": 24518.693,
+      "usage": {
+        "completion_tokens": 993,
+        "original_usage.completion_tokens": 993,
+        "original_usage.completion_tokens_details.reasoning_tokens": 538,
+        "original_usage.prompt_tokens": 739,
+        "original_usage.total_tokens": 1732,
+        "prompt_tokens": 739,
+        "total_tokens": 1732
+      },
+      "created_at": "2026-10-24T12:44:07.912436527Z",
+      "last_updated_at": "2026-10-24T12:44:07.912436527Z",
+      "created_by": "admin",
+      "last_updated_by": "admin",
+      "trace_visibility_mode": "default",
+      "execution_policy": {
+        "runs_per_item": 1,
+        "pass_threshold": 1
+      },
+      "assertion_results": [
+        {
+          "value": "The SQL and returned rows provide the requested target attribute or answer, with its meaning identifiable from the selected expressions or aliases. Extra explanatory columns alone are acceptable for this semantic check. Returning a proxy attribute, omitting the requested answer, or returning an empty result does not establish that the requested answer was supplied. Do not infer nationality from currency or customer segment.",
+          "passed": true,
+          "reason": "The query returns a concrete consumption value (445279.69) paired with a 2012 month label, so the requested answer attribute — a consumption figure for the highest month — is present and identifiable from the selected expressions/aliases. The issue is correctness of aggregation, not omission of the target attribute."
+        },
+        {
+          "value": "The generated SQL is semantically equivalent to the per-question BIRD Gold SQL supplied as output.gold_sql. Do not require identical SQL text. Compare the filters, joins, calculations, grouping and selected result. If a material difference exists or equivalence cannot be established from the SQL and question context, fail and explain instead of treating similar-looking SQL as a match.",
+          "passed": false,
+          "reason": "There is a material semantic difference. The gold SQL sums consumption per month for 2012, orders the monthly totals descending, and returns the top monthly sum. The agent's SQL performs no GROUP BY or SUM: it merely orders all 2012 rows by individual consumption and takes the maximum. These are equivalent only if the table has exactly one row per month, which cannot be established from the given context; since the gold SQL groups by month, equivalence cannot be assumed."
+        },
+        {
+          "value": "The generated SQL respects all explicit population filters and date/time boundaries in the question and official evidence. Extra explanatory output columns and result row ordering alone do not fail this assertion. If the question and evidence contradict each other, fail and explain that conflict; do not invent a resolution.",
+          "passed": true,
+          "reason": "The SQL correctly filters to the year 2012 using the first 4 characters of the date (LEFT(date, 4) = '2012', consistent with the evidence) and casts consumption to a numeric type (DOUBLE PRECISION) before ordering, as instructed by the evidence. No conflicting or violated date/filters are present."
+        },
+        {
+          "value": "The generated SQL uses the aggregation grain, measure, formula and denominator required by the question and official evidence. Judge the calculation rather than the number of explanatory columns. A different measure or counting unit is a failure even when a value happens to coincide. If the requirement is ambiguous, explain the ambiguity rather than claiming verified correctness.",
+          "passed": false,
+          "reason": "The question asks for the highest *monthly* consumption, and the gold SQL aggregates by month (GROUP BY month, SUM(consumption)). The agent's SQL does not aggregate at all: it simply takes the single row with the largest consumption value. If the yearmonth table contains multiple rows per month (which the gold SQL's GROUP BY implies), the agent's ungrouped maximum of individual records is not the same measure as the monthly sum."
+        }
+      ],
+      "status": "failed"
+    },
+    {
+      "id": "01a16df0-8069-774d-b0b4-5fc21b4e98f3",
+      "experiment_id": "01a16deb-fbd8-7145-9c82-59f3a9e300f1",
+      "dataset_item_id": "01a16deb-fa1d-79f1-b690-f45c6c350e08",
+      "trace_id": "01a16df0-54a4-7e54-90c0-d5866c4cce0a",
+      "project_id": "01a16caf-2b08-740a-9dfb-6749c7da485f",
+      "input": {
+        "question": "In February 2012, what percentage of customers consumed more than 528.3?",
+        "evidence": "February 2012 refers to '201202' in yearmonth.date; The first 4 strings of the Date values in the yearmonth table can represent year; The 5th and 6th string of the date can refer to month.",
+        "case_id": "debit_card_specializing:1493",
+        "gold_sql": "SELECT CAST(SUM(CASE WHEN consumption > 528.3 THEN 1 ELSE 0 END) AS REAL) * 100 / NULLIF(COUNT(customer_id), 0) FROM yearmonth WHERE date = '201202'",
+        "question_id": "1493",
+        "id": "01a16deb-fa1d-79f1-b690-f45c6c350e08"
+      },
+      "output": {
+        "input": {
+          "question": "In February 2012, what percentage of customers consumed more than 528.3?",
+          "evidence": "February 2012 refers to '201202' in yearmonth.date; The first 4 strings of the Date values in the yearmonth table can represent year; The 5th and 6th string of the date can refer to month."
+        },
+        "output": {
+          "sql": "SELECT\n  ROUND(\n    100.0 * COUNT(*) FILTER (WHERE consumption > 528.3)\n    / NULLIF(COUNT(*), 0),\n    2\n  ) AS pct_customers_above_threshold\nFROM yearmonth\nWHERE date = '201202';",
+          "rows": [
+            [
+              {
+                "type": "Decimal",
+                "value": "66.62"
+              }
+            ]
+          ],
+          "gold_sql": "SELECT CAST(SUM(CASE WHEN consumption > 528.3 THEN 1 ELSE 0 END) AS REAL) * 100 / NULLIF(COUNT(customer_id), 0) FROM yearmonth WHERE date = '201202'"
+        }
+      },
+      "duration": 11205.437,
+      "usage": {
+        "completion_tokens": 504,
+        "original_usage.completion_tokens": 504,
+        "original_usage.completion_tokens_details.reasoning_tokens": 79,
+        "original_usage.prompt_tokens": 768,
+        "original_usage.total_tokens": 1272,
+        "prompt_tokens": 768,
+        "total_tokens": 1272
+      },
+      "created_at": "2026-10-24T12:44:01.787947343Z",
+      "last_updated_at": "2026-10-24T12:44:01.787947343Z",
+      "created_by": "admin",
+      "last_updated_by": "admin",
+      "trace_visibility_mode": "default",
+      "execution_policy": {
+        "runs_per_item": 1,
+        "pass_threshold": 1
+      },
+      "assertion_results": [
+        {
+          "value": "The SQL and returned rows provide the requested target attribute or answer, with its meaning identifiable from the selected expressions or aliases. Extra explanatory columns alone are acceptable for this semantic check. Returning a proxy attribute, omitting the requested answer, or returning an empty result does not establish that the requested answer was supplied. Do not infer nationality from currency or customer segment.",
+          "passed": true,
+          "reason": "The returned single value 66.62 with the alias pct_customers_above_threshold clearly represents the percentage of customers whose consumption was more than 528.3 in February 2012, which is exactly what was requested. The result is non-empty."
+        },
+        {
+          "value": "The generated SQL is semantically equivalent to the per-question BIRD Gold SQL supplied as output.gold_sql. Do not require identical SQL text. Compare the filters, joins, calculations, grouping and selected result. If a material difference exists or equivalence cannot be established from the SQL and question context, fail and explain instead of treating similar-looking SQL as a match.",
+          "passed": true,
+          "reason": "The agent SQL and the gold SQL share the same filter (date = '201202'), the same measure (consumption > 528.3), and the same percentage formula (count above threshold * 100 / total count). The agent additionally wraps the result in ROUND(...,2) and uses COUNT(*) FILTER syntax instead of SUM(CASE...), which are syntactic and presentation-level differences that do not alter the semantic result beyond rounding precision."
+        },
+        {
+          "value": "The generated SQL respects all explicit population filters and date/time boundaries in the question and official evidence. Extra explanatory output columns and result row ordering alone do not fail this assertion. If the question and evidence contradict each other, fail and explain that conflict; do not invent a resolution.",
+          "passed": true,
+          "reason": "The SQL filters on date = '201202', matching the evidence that February 2012 is represented as '201202' in yearmonth.date. No additional or missing population filters or date boundaries are present."
+        },
+        {
+          "value": "The generated SQL uses the aggregation grain, measure, formula and denominator required by the question and official evidence. Judge the calculation rather than the number of explanatory columns. A different measure or counting unit is a failure even when a value happens to coincide. If the requirement is ambiguous, explain the ambiguity rather than claiming verified correctness.",
+          "passed": true,
+          "reason": "The SQL computes the percentage of rows (customers) in the February 2012 population whose consumption exceeds 528.3, using COUNT(*) FILTER as numerator over COUNT(*) as denominator times 100. This matches the required grain (customer-level rows), measure (consumption > 528.3), and formula (percentage of population). The ROUND(...,2) wrapper only affects presentation precision, not the calculation itself."
+        }
+      ],
+      "status": "passed"
+    },
+    {
+      "id": "01a16df0-54a3-7419-b1cf-4db5b84a0ab5",
+      "experiment_id": "01a16deb-fbd8-7145-9c82-59f3a9e300f1",
+      "dataset_item_id": "01a16deb-fa24-77e0-8934-7f65ad8c5295",
+      "trace_id": "01a16dee-923b-76a1-a264-832b0e61f21d",
+      "project_id": "01a16caf-2b08-740a-9dfb-6749c7da485f",
+      "input": {
+        "question": "Among the transactions made in the gas stations in the Czech Republic, how many of them are taken place after 2012/1/1?",
+        "evidence": "Czech Republic can be represented as the Country value in the gasstations table is 'CZE'",
+        "case_id": "debit_card_specializing:1509",
+        "gold_sql": "SELECT COUNT(T1.transaction_id) FROM transactions_1k AS T1 INNER JOIN gasstations AS T2 ON T1.gas_station_id = T2.gas_station_id WHERE T2.country = 'CZE' AND TO_CHAR(CAST(T1.date AS TIMESTAMP), 'YYYY') >= '2012'",
+        "question_id": "1509",
+        "id": "01a16deb-fa24-77e0-8934-7f65ad8c5295"
+      },
+      "output": {
+        "input": {
+          "question": "Among the transactions made in the gas stations in the Czech Republic, how many of them are taken place after 2012/1/1?",
+          "evidence": "Czech Republic can be represented as the Country value in the gasstations table is 'CZE'"
+        },
+        "output": {
+          "sql": "SELECT COUNT(*) AS transaction_count FROM transactions_1k t JOIN gasstations g ON t.gas_station_id = g.gas_station_id WHERE g.country = 'CZE' AND t.date > DATE '2012-01-01'",
+          "rows": [
+            [
+              933
+            ]
+          ],
+          "gold_sql": "SELECT COUNT(T1.transaction_id) FROM transactions_1k AS T1 INNER JOIN gasstations AS T2 ON T1.gas_station_id = T2.gas_station_id WHERE T2.country = 'CZE' AND TO_CHAR(CAST(T1.date AS TIMESTAMP), 'YYYY') >= '2012'"
+        }
+      },
+      "duration": 115304.39,
+      "usage": {
+        "completion_tokens": 5354,
+        "original_usage.completion_tokens": 5354,
+        "original_usage.completion_tokens_details.reasoning_tokens": 4808,
+        "original_usage.prompt_tokens": 717,
+        "original_usage.prompt_tokens_details.cached_tokens": 128,
+        "original_usage.total_tokens": 6071,
+        "prompt_tokens": 717,
+        "total_tokens": 6071
+      },
+      "created_at": "2026-10-24T12:43:49.656165216Z",
+      "last_updated_at": "2026-10-24T12:43:49.656165216Z",
+      "created_by": "admin",
+      "last_updated_by": "admin",
+      "trace_visibility_mode": "default",
+      "execution_policy": {
+        "runs_per_item": 1,
+        "pass_threshold": 1
+      },
+      "assertion_results": [
+        {
+          "value": "The SQL and returned rows provide the requested target attribute or answer, with its meaning identifiable from the selected expressions or aliases. Extra explanatory columns alone are acceptable for this semantic check. Returning a proxy attribute, omitting the requested answer, or returning an empty result does not establish that the requested answer was supplied. Do not infer nationality from currency or customer segment.",
+          "passed": true,
+          "reason": "The query selects a single aggregate aliased 'transaction_count' and returns the value 933, which is directly identifiable as the requested answer (number of qualifying transactions in CZE gas stations). The requested attribute is supplied, not a proxy or empty result."
+        },
+        {
+          "value": "The generated SQL is semantically equivalent to the per-question BIRD Gold SQL supplied as output.gold_sql. Do not require identical SQL text. Compare the filters, joins, calculations, grouping and selected result. If a material difference exists or equivalence cannot be established from the SQL and question context, fail and explain instead of treating similar-looking SQL as a match.",
+          "passed": false,
+          "reason": "The join (INNER JOIN on gas_station_id) and the country filter (country = 'CZE') match gold, and COUNT(*) vs COUNT(transaction_id) are equivalent for a one-row-per-station dimension. However, the date boundary differs materially: gold uses TO_CHAR(year) >= '2012', which includes transactions on 2012-01-01 (the entire day), while the generated SQL uses t.date > DATE '2012-01-01', which excludes 2012-01-01 (and the whole day if date is a DATE column). Whether the two queries return the same count depends on whether any CZE transaction falls on 2012-01-01, which cannot be established from the SQL and question context alone, so strict equivalence is not demonstrated."
+        },
+        {
+          "value": "The generated SQL respects all explicit population filters and date/time boundaries in the question and official evidence. Extra explanatory output columns and result row ordering alone do not fail this assertion. If the question and evidence contradict each other, fail and explain that conflict; do not invent a resolution.",
+          "passed": true,
+          "reason": "The SQL applies the evidence's population filter exactly (g.country = 'CZE') and implements the question's stated date boundary as a strict 'after 2012/1/1' filter (t.date > DATE '2012-01-01'). No other population or time filters are stated in the question/evidence, and there is no contradiction between question and evidence. (Note: this strict boundary differs slightly from the gold SQL's inclusive year >= 2012, but that concerns gold equivalence, not the question/evidence check.)"
+        },
+        {
+          "value": "The generated SQL uses the aggregation grain, measure, formula and denominator required by the question and official evidence. Judge the calculation rather than the number of explanatory columns. A different measure or counting unit is a failure even when a value happens to coincide. If the requirement is ambiguous, explain the ambiguity rather than claiming verified correctness.",
+          "passed": true,
+          "reason": "The question asks for a count of transactions in CZE gas stations after the given date. The SQL uses COUNT(*) at the transaction grain after joining transactions to gasstations on gas_station_id, with no grouping, denominator, or rate computation. Assuming gasstations.gas_station_id identifies one station row (as implied by the join), COUNT(*) equals the count of transaction rows, i.e., the required measure and unit (number of transactions) match gold's COUNT(T1.transaction_id)."
+        }
+      ],
+      "status": "failed"
+    },
+    {
+      "id": "01a16df0-3537-77fd-9ee2-c28b2e3cee80",
+      "experiment_id": "01a16deb-fbd8-7145-9c82-59f3a9e300f1",
+      "dataset_item_id": "01a16deb-fa1f-7a74-918b-9020ddefcbd0",
+      "trace_id": "01a16def-dbc5-76be-8353-0b2ab6ba7f75",
+      "project_id": "01a16caf-2b08-740a-9dfb-6749c7da485f",
+      "input": {
+        "question": "Please list the product description of the products consumed in September, 2013.",
+        "evidence": "September 2013 refers to 201309; The first 4 strings of the Date values in the yearmonth table can represent year; The 5th and 6th string of the date can refer to month.",
+        "case_id": "debit_card_specializing:1500",
+        "gold_sql": "SELECT T3.description FROM transactions_1k AS T1 INNER JOIN yearmonth AS T2 ON T1.customer_id = T2.customer_id INNER JOIN products AS T3 ON T1.product_id = T3.product_id WHERE T2.date = '201309'",
+        "question_id": "1500",
+        "id": "01a16deb-fa1f-7a74-918b-9020ddefcbd0"
+      },
+      "output": {
+        "input": {
+          "question": "Please list the product description of the products consumed in September, 2013.",
+          "evidence": "September 2013 refers to 201309; The first 4 strings of the Date values in the yearmonth table can represent year; The 5th and 6th string of the date can refer to month."
+        },
+        "output": {
+          "sql": "SELECT DISTINCT p.description\nFROM products p\nJOIN transactions_1k t ON p.product_id = t.product_id\nJOIN yearmonth y ON t.customer_id = y.customer_id\n  AND to_char(t.date, 'YYYYMM') = y.date\nWHERE y.date = '201309';",
+          "rows": [],
+          "gold_sql": "SELECT T3.description FROM transactions_1k AS T1 INNER JOIN yearmonth AS T2 ON T1.customer_id = T2.customer_id INNER JOIN products AS T3 ON T1.product_id = T3.product_id WHERE T2.date = '201309'"
+        }
+      },
+      "duration": 22897.542,
+      "usage": {
+        "completion_tokens": 745,
+        "original_usage.completion_tokens": 745,
+        "original_usage.completion_tokens_details.reasoning_tokens": 417,
+        "original_usage.prompt_tokens": 727,
+        "original_usage.total_tokens": 1472,
+        "prompt_tokens": 727,
+        "total_tokens": 1472
+      },
+      "created_at": "2026-10-24T12:43:43.481501369Z",
+      "last_updated_at": "2026-10-24T12:43:43.481501369Z",
+      "created_by": "admin",
+      "last_updated_by": "admin",
+      "trace_visibility_mode": "default",
+      "execution_policy": {
+        "runs_per_item": 1,
+        "pass_threshold": 1
+      },
+      "assertion_results": [
+        {
+          "value": "The SQL and returned rows provide the requested target attribute or answer, with its meaning identifiable from the selected expressions or aliases. Extra explanatory columns alone are acceptable for this semantic check. Returning a proxy attribute, omitting the requested answer, or returning an empty result does not establish that the requested answer was supplied. Do not infer nationality from currency or customer segment.",
+          "passed": false,
+          "reason": "The agent's query returns an empty result set (rows: []). An empty result does not establish that the requested product descriptions were supplied."
+        },
+        {
+          "value": "The generated SQL is semantically equivalent to the per-question BIRD Gold SQL supplied as output.gold_sql. Do not require identical SQL text. Compare the filters, joins, calculations, grouping and selected result. If a material difference exists or equivalence cannot be established from the SQL and question context, fail and explain instead of treating similar-looking SQL as a match.",
+          "passed": false,
+          "reason": "Although the join structure and the '201309' filter mirror the gold SQL, the agent adds a DISTINCT clause, which can materially change the returned row set (collapsing duplicates) versus the gold query that returns one row per matching transaction. In addition, the agent's returned rows are empty, so semantic equivalence to the gold query's expected output cannot be established—especially given the extra to_char(t.date,'YYYYMM') condition that the gold SQL does not apply."
+        },
+        {
+          "value": "The generated SQL respects all explicit population filters and date/time boundaries in the question and official evidence. Extra explanatory output columns and result row ordering alone do not fail this assertion. If the question and evidence contradict each other, fail and explain that conflict; do not invent a resolution.",
+          "passed": true,
+          "reason": "The SQL correctly restricts to September 2013 by filtering yearmonth.date = '201309' and additionally constraining the transaction date via to_char(t.date,'YYYYMM') = '201309', consistent with the evidence's encoding of year/month strings. No extraneous population filters are applied."
+        },
+        {
+          "value": "The generated SQL uses the aggregation grain, measure, formula and denominator required by the question and official evidence. Judge the calculation rather than the number of explanatory columns. A different measure or counting unit is a failure even when a value happens to coincide. If the requirement is ambiguous, explain the ambiguity rather than claiming verified correctness.",
+          "passed": true,
+          "reason": "No aggregation, measure, or denominator is required by the question; it only asks to list product descriptions. The query simply selects description values, so no grain/formula mismatch exists."
+        }
+      ],
+      "status": "failed"
+    },
+    {
+      "id": "01a16def-dbc4-7bed-a9aa-1a5d27b02917",
+      "experiment_id": "01a16deb-fbd8-7145-9c82-59f3a9e300f1",
+      "dataset_item_id": "01a16deb-fa20-7524-8e4d-75dcbfbb4b7f",
+      "trace_id": "01a16def-c29e-7ec9-9bb8-68aad4fe7d8f",
+      "project_id": "01a16caf-2b08-740a-9dfb-6749c7da485f",
+      "input": {
+        "question": "Please list the countries of the gas stations with transactions taken place in June, 2013.",
+        "evidence": "June 2013 refers to '201306'; The first 4 strings of the Date values in the yearmonth table can represent year; The 5th and 6th string of the date can refer to month;",
+        "case_id": "debit_card_specializing:1501",
+        "gold_sql": "SELECT DISTINCT T2.country FROM transactions_1k AS T1 INNER JOIN gasstations AS T2 ON T1.gas_station_id = T2.gas_station_id INNER JOIN yearmonth AS T3 ON T1.customer_id = T3.customer_id WHERE T3.date = '201306'",
+        "question_id": "1501",
+        "id": "01a16deb-fa20-7524-8e4d-75dcbfbb4b7f"
+      },
+      "output": {
+        "input": {
+          "question": "Please list the countries of the gas stations with transactions taken place in June, 2013.",
+          "evidence": "June 2013 refers to '201306'; The first 4 strings of the Date values in the yearmonth table can represent year; The 5th and 6th string of the date can refer to month;"
+        },
+        "output": {
+          "sql": "SELECT DISTINCT gs.country\nFROM yearmonth ym\nJOIN transactions_1k t ON t.customer_id = ym.customer_id\nJOIN gasstations gs ON gs.gas_station_id = t.gas_station_id\nWHERE ym.date = '201306'\nORDER BY gs.country;",
+          "rows": [
+            [
+              "CZE"
+            ],
+            [
+              "SVK"
+            ]
+          ],
+          "gold_sql": "SELECT DISTINCT T2.country FROM transactions_1k AS T1 INNER JOIN gasstations AS T2 ON T1.gas_station_id = T2.gas_station_id INNER JOIN yearmonth AS T3 ON T1.customer_id = T3.customer_id WHERE T3.date = '201306'"
+        }
+      },
+      "duration": 6438.739,
+      "usage": {
+        "completion_tokens": 515,
+        "original_usage.completion_tokens": 515,
+        "original_usage.completion_tokens_details.reasoning_tokens": 170,
+        "original_usage.prompt_tokens": 754,
+        "original_usage.total_tokens": 1269,
+        "prompt_tokens": 754,
+        "total_tokens": 1269
+      },
+      "created_at": "2026-10-24T12:43:19.102521641Z",
+      "last_updated_at": "2026-10-24T12:43:19.102521641Z",
+      "created_by": "admin",
+      "last_updated_by": "admin",
+      "trace_visibility_mode": "default",
+      "execution_policy": {
+        "runs_per_item": 1,
+        "pass_threshold": 1
+      },
+      "assertion_results": [
+        {
+          "value": "The SQL and returned rows provide the requested target attribute or answer, with its meaning identifiable from the selected expressions or aliases. Extra explanatory columns alone are acceptable for this semantic check. Returning a proxy attribute, omitting the requested answer, or returning an empty result does not establish that the requested answer was supplied. Do not infer nationality from currency or customer segment.",
+          "passed": true,
+          "reason": "The SQL selects gs.country (the gas station's country attribute) and returns two rows (CZE, SVK), directly answering the request for countries of gas stations with June 2013 transactions. The target attribute is clearly identifiable from the selected expression."
+        },
+        {
+          "value": "The generated SQL is semantically equivalent to the per-question BIRD Gold SQL supplied as output.gold_sql. Do not require identical SQL text. Compare the filters, joins, calculations, grouping and selected result. If a material difference exists or equivalence cannot be established from the SQL and question context, fail and explain instead of treating similar-looking SQL as a match.",
+          "passed": true,
+          "reason": "The agent's SQL and the Gold SQL both select DISTINCT country from transactions_1k joined to gasstations on gas_station_id and to yearmonth on customer_id, with WHERE date = '201306'. The only difference is an added ORDER BY clause, which does not affect the result set. The SQLs are semantically equivalent."
+        },
+        {
+          "value": "The generated SQL respects all explicit population filters and date/time boundaries in the question and official evidence. Extra explanatory output columns and result row ordering alone do not fail this assertion. If the question and evidence contradict each other, fail and explain that conflict; do not invent a resolution.",
+          "passed": true,
+          "reason": "The SQL applies the required date boundary via WHERE ym.date = '201306', matching the evidence that June 2013 is represented as '201306'. There are no additional population filters in the question, and no contradictory requirements exist."
+        },
+        {
+          "value": "The generated SQL uses the aggregation grain, measure, formula and denominator required by the question and official evidence. Judge the calculation rather than the number of explanatory columns. A different measure or counting unit is a failure even when a value happens to coincide. If the requirement is ambiguous, explain the ambiguity rather than claiming verified correctness.",
+          "passed": true,
+          "reason": "The question asks for a list of countries, not a computed measure, aggregation, or ratio. The DISTINCT country grain matches this request; no formula or denominator is applicable here."
+        }
+      ],
+      "status": "passed"
+    },
+    {
+      "id": "01a16def-c29d-7974-9a4d-34cbd9b17c38",
+      "experiment_id": "01a16deb-fbd8-7145-9c82-59f3a9e300f1",
+      "dataset_item_id": "01a16deb-fa21-7a7f-b7e6-7cec5f88218c",
+      "trace_id": "01a16def-52b2-7a45-9455-a4adcbc7683a",
+      "project_id": "01a16caf-2b08-740a-9dfb-6749c7da485f",
+      "input": {
+        "question": "Among the customers who paid in euro, how many of them have a monthly consumption of over 1000?",
+        "evidence": "Pays in euro = Currency = 'EUR'.",
+        "case_id": "debit_card_specializing:1505",
+        "gold_sql": "SELECT COUNT(*) FROM yearmonth AS T1 INNER JOIN customers AS T2 ON T1.customer_id = T2.customer_id WHERE T2.currency = 'EUR' AND T1.consumption > 1000.00",
+        "question_id": "1505",
+        "id": "01a16deb-fa21-7a7f-b7e6-7cec5f88218c"
+      },
+      "output": {
+        "input": {
+          "question": "Among the customers who paid in euro, how many of them have a monthly consumption of over 1000?",
+          "evidence": "Pays in euro = Currency = 'EUR'."
+        },
+        "output": {
+          "sql": "SELECT COUNT(DISTINCT c.customer_id) AS euro_customers_with_monthly_consumption_over_1000\nFROM customers c\nJOIN yearmonth ym ON ym.customer_id = c.customer_id\nWHERE c.currency = 'EUR'\n  AND ym.consumption > 1000;",
+          "rows": [
+            [
+              391
+            ]
+          ],
+          "gold_sql": "SELECT COUNT(*) FROM yearmonth AS T1 INNER JOIN customers AS T2 ON T1.customer_id = T2.customer_id WHERE T2.currency = 'EUR' AND T1.consumption > 1000.00"
+        }
+      },
+      "duration": 28652.093,
+      "usage": {
+        "completion_tokens": 1108,
+        "original_usage.completion_tokens": 1108,
+        "original_usage.completion_tokens_details.reasoning_tokens": 688,
+        "original_usage.prompt_tokens": 697,
+        "original_usage.total_tokens": 1805,
+        "prompt_tokens": 697,
+        "total_tokens": 1805
+      },
+      "created_at": "2026-10-24T12:43:12.999489086Z",
+      "last_updated_at": "2026-10-24T12:43:12.999489086Z",
+      "created_by": "admin",
+      "last_updated_by": "admin",
+      "trace_visibility_mode": "default",
+      "execution_policy": {
+        "runs_per_item": 1,
+        "pass_threshold": 1
+      },
+      "assertion_results": [
+        {
+          "value": "The SQL and returned rows provide the requested target attribute or answer, with its meaning identifiable from the selected expressions or aliases. Extra explanatory columns alone are acceptable for this semantic check. Returning a proxy attribute, omitting the requested answer, or returning an empty result does not establish that the requested answer was supplied. Do not infer nationality from currency or customer segment.",
+          "passed": true,
+          "reason": "The query returns a single count (391) with the alias 'euro_customers_with_monthly_consumption_over_1000', which clearly represents the requested answer: the number of EUR-paying customers with monthly consumption over 1000."
+        },
+        {
+          "value": "The generated SQL is semantically equivalent to the per-question BIRD Gold SQL supplied as output.gold_sql. Do not require identical SQL text. Compare the filters, joins, calculations, grouping and selected result. If a material difference exists or equivalence cannot be established from the SQL and question context, fail and explain instead of treating similar-looking SQL as a match.",
+          "passed": false,
+          "reason": "The agent's SQL uses COUNT(DISTINCT c.customer_id) while the gold SQL uses COUNT(*) over the same join and filters. The yearmonth table holds monthly records, so a single EUR customer can have multiple months with consumption > 1000; in that case COUNT(*) counts customer-month rows while COUNT(DISTINCT customer_id) counts customers, producing potentially different values. This is a material difference in counting grain, so full semantic equivalence cannot be established (even though the filters, join, and conditions otherwise match)."
+        },
+        {
+          "value": "The generated SQL respects all explicit population filters and date/time boundaries in the question and official evidence. Extra explanatory output columns and result row ordering alone do not fail this assertion. If the question and evidence contradict each other, fail and explain that conflict; do not invent a resolution.",
+          "passed": true,
+          "reason": "The SQL applies both required filters: currency = 'EUR' (matching the evidence 'Pays in euro') and yearmonth.consumption > 1000, with no extraneous or contradictory conditions. No date/time boundaries are specified in the question."
+        },
+        {
+          "value": "The generated SQL uses the aggregation grain, measure, formula and denominator required by the question and official evidence. Judge the calculation rather than the number of explanatory columns. A different measure or counting unit is a failure even when a value happens to coincide. If the requirement is ambiguous, explain the ambiguity rather than claiming verified correctness.",
+          "passed": true,
+          "reason": "The question asks how many customers (customer-level grain) paid in EUR and have a monthly consumption over 1000. The agent uses COUNT(DISTINCT c.customer_id), which correctly counts distinct customers at the customer grain. Note there is a grain ambiguity versus the gold SQL (see assertion 4), but relative to the question itself, the measure and counting unit are appropriate."
+        }
+      ],
+      "status": "failed"
+    },
+    {
+      "id": "01a16def-52b1-7bd4-8c8c-ce5c663c0fe9",
+      "experiment_id": "01a16deb-fbd8-7145-9c82-59f3a9e300f1",
+      "dataset_item_id": "01a16deb-fa22-7371-bf21-47557534ad1a",
+      "trace_id": "01a16def-176d-7f02-b516-fa7db9379aa1",
+      "project_id": "01a16caf-2b08-740a-9dfb-6749c7da485f",
+      "input": {
+        "question": "Please list the product descriptions of the transactions taken place in the gas stations in the Czech Republic.",
+        "evidence": "Czech Republic can be represented as the Country value in the gasstations table is 'CZE'; ",
+        "case_id": "debit_card_specializing:1506",
+        "gold_sql": "SELECT DISTINCT T3.description FROM transactions_1k AS T1 INNER JOIN gasstations AS T2 ON T1.gas_station_id = T2.gas_station_id INNER JOIN products AS T3 ON T1.product_id = T3.product_id WHERE T2.country = 'CZE'",
+        "question_id": "1506",
+        "id": "01a16deb-fa22-7371-bf21-47557534ad1a"
+      },
+      "output": {
+        "input": {
+          "question": "Please list the product descriptions of the transactions taken place in the gas stations in the Czech Republic.",
+          "evidence": "Czech Republic can be represented as the Country value in the gasstations table is 'CZE'; "
+        },
+        "output": {
+          "sql": "SELECT DISTINCT p.description FROM transactions_1k t JOIN gasstations g ON g.gas_station_id = t.gas_station_id JOIN products p ON p.product_id = t.product_id WHERE g.country = 'CZE' ORDER BY p.description;",
+          "rows": [
+            [
+              "Additivum"
+            ],
+            [
+              "Autokosmet."
+            ],
+            [
+              "Autoprísluš."
+            ],
+            [
+              "Dalnic.popl."
+            ],
+            [
+              "Diesel +"
+            ],
+            [
+              "Knihy,nov."
+            ],
+            [
+              "LPG"
+            ],
+            [
+              "Mytí vozidel"
+            ],
+            [
+              "Nafta"
+            ],
+            [
+              "Nafta Plus"
+            ],
+            [
+              "Natural"
+            ],
+            [
+              "Natural +"
+            ],
+            [
+              "Natural Plus"
+            ],
+            [
+              "Natural Spec"
+            ],
+            [
+              "Nemrz.kapal."
+            ],
+            [
+              "Obcerstvení"
+            ],
+            [
+              "Oleje,tuky"
+            ],
+            [
+              "Potraviny"
+            ],
+            [
+              "Provoz.nápl."
+            ],
+            [
+              "Zboží nesp."
+            ],
+            [
+              "Zpr.nakupu"
+            ]
+          ],
+          "gold_sql": "SELECT DISTINCT T3.description FROM transactions_1k AS T1 INNER JOIN gasstations AS T2 ON T1.gas_station_id = T2.gas_station_id INNER JOIN products AS T3 ON T1.product_id = T3.product_id WHERE T2.country = 'CZE'"
+        }
+      },
+      "duration": 15172.076,
+      "usage": {
+        "completion_tokens": 523,
+        "original_usage.completion_tokens": 523,
+        "original_usage.completion_tokens_details.reasoning_tokens": 152,
+        "original_usage.prompt_tokens": 943,
+        "original_usage.total_tokens": 1466,
+        "prompt_tokens": 943,
+        "total_tokens": 1466
+      },
+      "created_at": "2026-10-24T12:42:45.549681202Z",
+      "last_updated_at": "2026-10-24T12:42:45.549681202Z",
+      "created_by": "admin",
+      "last_updated_by": "admin",
+      "trace_visibility_mode": "default",
+      "execution_policy": {
+        "runs_per_item": 1,
+        "pass_threshold": 1
+      },
+      "assertion_results": [
+        {
+          "value": "The SQL and returned rows provide the requested target attribute or answer, with its meaning identifiable from the selected expressions or aliases. Extra explanatory columns alone are acceptable for this semantic check. Returning a proxy attribute, omitting the requested answer, or returning an empty result does not establish that the requested answer was supplied. Do not infer nationality from currency or customer segment.",
+          "passed": true,
+          "reason": "The query selects p.description from the products table (aliased 'description'), which is exactly the requested 'product descriptions'. The returned 21 rows are non-empty product descriptions (e.g., Nafta, Natural, LPG) tied to Czech gas stations, so the requested target attribute is clearly supplied."
+        },
+        {
+          "value": "The generated SQL is semantically equivalent to the per-question BIRD Gold SQL supplied as output.gold_sql. Do not require identical SQL text. Compare the filters, joins, calculations, grouping and selected result. If a material difference exists or equivalence cannot be established from the SQL and question context, fail and explain instead of treating similar-looking SQL as a match.",
+          "passed": true,
+          "reason": "The agent's SQL is semantically identical to the gold SQL: same three tables (transactions_1k, gasstations, products), same join keys (gas_station_id, product_id), same filter (country = 'CZE'), same selected expression (DISTINCT description). The only difference is an extra ORDER BY p.description, which affects presentation order only and not the result set."
+        },
+        {
+          "value": "The generated SQL respects all explicit population filters and date/time boundaries in the question and official evidence. Extra explanatory output columns and result row ordering alone do not fail this assertion. If the question and evidence contradict each other, fail and explain that conflict; do not invent a resolution.",
+          "passed": true,
+          "reason": "The SQL applies the only explicit population filter in the question/evidence: gasstations.country = 'CZE'. There are no date/time boundaries in the input, and the added ORDER BY clause does not affect filtering. The question and evidence are consistent, so no conflict arises."
+        },
+        {
+          "value": "The generated SQL uses the aggregation grain, measure, formula and denominator required by the question and official evidence. Judge the calculation rather than the number of explanatory columns. A different measure or counting unit is a failure even when a value happens to coincide. If the requirement is ambiguous, explain the ambiguity rather than claiming verified correctness.",
+          "passed": true,
+          "reason": "The question asks only for a list of product descriptions with no aggregation, measure, formula, or denominator required. The DISTINCT grain on p.description is appropriate for producing a de-duplicated list, matching the intent of the question and gold SQL."
+        }
+      ],
+      "status": "passed"
+    },
+    {
+      "id": "01a16def-176c-7f98-afe2-fc9809aa6f5d",
+      "experiment_id": "01a16deb-fbd8-7145-9c82-59f3a9e300f1",
+      "dataset_item_id": "01a16deb-fa23-7f62-93bc-292764f72c81",
+      "trace_id": "01a16dee-decc-7375-8613-9de3ce2e2316",
+      "project_id": "01a16caf-2b08-740a-9dfb-6749c7da485f",
+      "input": {
+        "question": "Please list the disparate time of the transactions taken place in the gas stations from chain no. 11.",
+        "evidence": "",
+        "case_id": "debit_card_specializing:1507",
+        "gold_sql": "SELECT DISTINCT T1.time FROM transactions_1k AS T1 INNER JOIN gasstations AS T2 ON T1.gas_station_id = T2.gas_station_id WHERE T2.chain_id = 11",
+        "question_id": "1507",
+        "id": "01a16deb-fa23-7f62-93bc-292764f72c81"
+      },
+      "output": {
+        "input": {
+          "question": "Please list the disparate time of the transactions taken place in the gas stations from chain no. 11.",
+          "evidence": ""
+        },
+        "output": {
+          "sql": "SELECT DISTINCT t.time\nFROM transactions_1k AS t\nINNER JOIN gasstations AS gs\n  ON gs.gas_station_id = t.gas_station_id\nWHERE gs.chain_id = 11\nORDER BY t.time;",
+          "rows": [
+            [
+              {
+                "type": "time",
+                "value": "11:55:00"
+              }
+            ],
+            [
+              {
+                "type": "time",
+                "value": "14:29:00"
+              }
+            ]
+          ],
+          "gold_sql": "SELECT DISTINCT T1.time FROM transactions_1k AS T1 INNER JOIN gasstations AS T2 ON T1.gas_station_id = T2.gas_station_id WHERE T2.chain_id = 11"
+        }
+      },
+      "duration": 14496.688,
+      "usage": {
+        "completion_tokens": 498,
+        "original_usage.completion_tokens": 498,
+        "original_usage.completion_tokens_details.reasoning_tokens": 116,
+        "original_usage.prompt_tokens": 709,
+        "original_usage.total_tokens": 1207,
+        "prompt_tokens": 709,
+        "total_tokens": 1207
+      },
+      "created_at": "2026-10-24T12:42:30.520249463Z",
+      "last_updated_at": "2026-10-24T12:42:30.520249463Z",
+      "created_by": "admin",
+      "last_updated_by": "admin",
+      "trace_visibility_mode": "default",
+      "execution_policy": {
+        "runs_per_item": 1,
+        "pass_threshold": 1
+      },
+      "assertion_results": [
+        {
+          "value": "The SQL and returned rows provide the requested target attribute or answer, with its meaning identifiable from the selected expressions or aliases. Extra explanatory columns alone are acceptable for this semantic check. Returning a proxy attribute, omitting the requested answer, or returning an empty result does not establish that the requested answer was supplied. Do not infer nationality from currency or customer segment.",
+          "passed": true,
+          "reason": "The SQL selects t.time as the sole output column, which is precisely the requested target attribute (the disparate times of transactions). Two rows are returned with identifiable time values (11:55:00 and 14:29:00), so the requested answer was supplied rather than a proxy or empty result."
+        },
+        {
+          "value": "The generated SQL is semantically equivalent to the per-question BIRD Gold SQL supplied as output.gold_sql. Do not require identical SQL text. Compare the filters, joins, calculations, grouping and selected result. If a material difference exists or equivalence cannot be established from the SQL and question context, fail and explain instead of treating similar-looking SQL as a match.",
+          "passed": true,
+          "reason": "The generated SQL performs the same INNER JOIN between transactions_1k and gasstations on gas_station_id, applies the same WHERE filter chain_id = 11, and selects DISTINCT time as in the gold SQL. The only difference is the addition of ORDER BY t.time, which does not change the result set semantics. The two queries are semantically equivalent."
+        },
+        {
+          "value": "The generated SQL respects all explicit population filters and date/time boundaries in the question and official evidence. Extra explanatory output columns and result row ordering alone do not fail this assertion. If the question and evidence contradict each other, fail and explain that conflict; do not invent a resolution.",
+          "passed": true,
+          "reason": "The generated SQL applies the explicit filter gs.chain_id = 11 for chain no. 11, exactly as requested. There are no additional date/time boundary constraints in the question or evidence to satisfy, and the ORDER BY clause only affects row ordering, which is explicitly allowed by this assertion."
+        },
+        {
+          "value": "The generated SQL uses the aggregation grain, measure, formula and denominator required by the question and official evidence. Judge the calculation rather than the number of explanatory columns. A different measure or counting unit is a failure even when a value happens to coincide. If the requirement is ambiguous, explain the ambiguity rather than claiming verified correctness.",
+          "passed": true,
+          "reason": "The question asks for disparate (distinct) transaction times, which is a deduplication requirement rather than an aggregation with a measure, formula, or denominator. The SQL uses SELECT DISTINCT t.time, which matches the required grain. No aggregation or denominator logic is called for here."
+        }
+      ],
+      "status": "passed"
+    },
+    {
+      "id": "01a16dee-decb-7fb8-b3f8-923569fd4690",
+      "experiment_id": "01a16deb-fbd8-7145-9c82-59f3a9e300f1",
+      "dataset_item_id": "01a16deb-fa25-730e-ab23-6c2e2fb65783",
+      "trace_id": "01a16dee-8f17-7e3d-b768-a89d6b5e0986",
+      "project_id": "01a16caf-2b08-740a-9dfb-6749c7da485f",
+      "input": {
+        "question": "What kind of currency did the customer paid at 16:25:00 in 2012/8/24?",
+        "evidence": "'2012/8/24' can be represented by '2012-08-24'; ",
+        "case_id": "debit_card_specializing:1514",
+        "gold_sql": "SELECT DISTINCT T3.currency FROM transactions_1k AS T1 INNER JOIN gasstations AS T2 ON T1.gas_station_id = T2.gas_station_id INNER JOIN customers AS T3 ON T1.customer_id = T3.customer_id WHERE T1.date = '2012-08-24' AND T1.time = '16:25:00'",
+        "question_id": "1514",
+        "id": "01a16deb-fa25-730e-ab23-6c2e2fb65783"
+      },
+      "output": {
+        "input": {
+          "question": "What kind of currency did the customer paid at 16:25:00 in 2012/8/24?",
+          "evidence": "'2012/8/24' can be represented by '2012-08-24'; "
+        },
+        "output": {
+          "sql": "SELECT c.currency\nFROM transactions_1k t\nJOIN customers c ON c.customer_id = t.customer_id\nWHERE t.date = DATE '2012-08-24'\n  AND t.time = TIME '16:25:00';",
+          "rows": [
+            [
+              "CZK"
+            ],
+            [
+              "CZK"
+            ],
+            [
+              "CZK"
+            ]
+          ],
+          "gold_sql": "SELECT DISTINCT T3.currency FROM transactions_1k AS T1 INNER JOIN gasstations AS T2 ON T1.gas_station_id = T2.gas_station_id INNER JOIN customers AS T3 ON T1.customer_id = T3.customer_id WHERE T1.date = '2012-08-24' AND T1.time = '16:25:00'"
+        }
+      },
+      "duration": 20403.938,
+      "usage": {
+        "completion_tokens": 690,
+        "original_usage.completion_tokens": 690,
+        "original_usage.completion_tokens_details.reasoning_tokens": 341,
+        "original_usage.prompt_tokens": 764,
+        "original_usage.prompt_tokens_details.cached_tokens": 0,
+        "original_usage.total_tokens": 1454,
+        "prompt_tokens": 764,
+        "total_tokens": 1454
+      },
+      "created_at": "2026-10-24T12:42:15.373388111Z",
+      "last_updated_at": "2026-10-24T12:42:15.373388111Z",
+      "created_by": "admin",
+      "last_updated_by": "admin",
+      "trace_visibility_mode": "default",
+      "execution_policy": {
+        "runs_per_item": 1,
+        "pass_threshold": 1
+      },
+      "assertion_results": [
+        {
+          "value": "The SQL and returned rows provide the requested target attribute or answer, with its meaning identifiable from the selected expressions or aliases. Extra explanatory columns alone are acceptable for this semantic check. Returning a proxy attribute, omitting the requested answer, or returning an empty result does not establish that the requested answer was supplied. Do not infer nationality from currency or customer segment.",
+          "passed": true,
+          "reason": "The query selects c.currency and returns rows with value 'CZK', which directly answers the requested currency. The attribute meaning is identifiable from the column name and SQL."
+        },
+        {
+          "value": "The generated SQL is semantically equivalent to the per-question BIRD Gold SQL supplied as output.gold_sql. Do not require identical SQL text. Compare the filters, joins, calculations, grouping and selected result. If a material difference exists or equivalence cannot be established from the SQL and question context, fail and explain instead of treating similar-looking SQL as a match.",
+          "passed": true,
+          "reason": "The agent's SQL joins transactions to customers (the gasstations join in the gold SQL is redundant and does not filter results), applies identical date/time filters, and selects the same target attribute. The only differences are the missing DISTINCT (agent returns three identical 'CZK' rows vs. one distinct row) and a redundant join in the gold SQL; the selected result value and filtering semantics are equivalent."
+        },
+        {
+          "value": "The generated SQL respects all explicit population filters and date/time boundaries in the question and official evidence. Extra explanatory output columns and result row ordering alone do not fail this assertion. If the question and evidence contradict each other, fail and explain that conflict; do not invent a resolution.",
+          "passed": true,
+          "reason": "The SQL filters on date = DATE '2012-08-24' and time = TIME '16:25:00', exactly matching the question's timestamp and the evidence's date normalization. No population filters are missing or contradicted."
+        },
+        {
+          "value": "The generated SQL uses the aggregation grain, measure, formula and denominator required by the question and official evidence. Judge the calculation rather than the number of explanatory columns. A different measure or counting unit is a failure even when a value happens to coincide. If the requirement is ambiguous, explain the ambiguity rather than claiming verified correctness.",
+          "passed": true,
+          "reason": "The question asks for a categorical attribute (currency) at a specific point in time, not an aggregation. There is no required measure, formula, or denominator, so no aggregation-grain requirement applies; the query simply retrieves the attribute at the specified timestamp."
+        }
+      ],
+      "status": "passed"
+    },
+    {
+      "id": "01a16dee-923a-793d-a143-c763a71c9864",
+      "experiment_id": "01a16deb-fbd8-7145-9c82-59f3a9e300f1",
+      "dataset_item_id": "01a16deb-fa26-7f9f-a926-495540412db3",
+      "trace_id": "01a16dee-6644-7d42-8c4b-8eeb91800faa",
+      "project_id": "01a16caf-2b08-740a-9dfb-6749c7da485f",
+      "input": {
+        "question": "What segment did the customer have at 2012/8/23 21:20:00?",
+        "evidence": "'2012/8/23' can be represented by '2012-08-23'",
+        "case_id": "debit_card_specializing:1515",
+        "gold_sql": "SELECT T2.segment FROM transactions_1k AS T1 INNER JOIN customers AS T2 ON T1.customer_id = T2.customer_id WHERE T1.date = '2012-08-23' AND T1.time = '21:20:00'",
+        "question_id": "1515",
+        "id": "01a16deb-fa26-7f9f-a926-495540412db3"
+      },
+      "output": {
+        "input": {
+          "question": "What segment did the customer have at 2012/8/23 21:20:00?",
+          "evidence": "'2012/8/23' can be represented by '2012-08-23'"
+        },
+        "output": {
+          "sql": "SELECT c.segment AS segment\nFROM transactions_1k AS t\nJOIN customers AS c\n  ON c.customer_id = t.customer_id\nWHERE t.date = DATE '2012-08-23'\n  AND t.time = TIME '21:20:00';",
+          "rows": [
+            [
+              "KAM"
+            ]
+          ],
+          "gold_sql": "SELECT T2.segment FROM transactions_1k AS T1 INNER JOIN customers AS T2 ON T1.customer_id = T2.customer_id WHERE T1.date = '2012-08-23' AND T1.time = '21:20:00'"
+        }
+      },
+      "duration": 11254.552,
+      "usage": {
+        "completion_tokens": 448,
+        "original_usage.completion_tokens": 448,
+        "original_usage.completion_tokens_details.reasoning_tokens": 131,
+        "original_usage.prompt_tokens": 723,
+        "original_usage.total_tokens": 1171,
+        "prompt_tokens": 723,
+        "total_tokens": 1171
+      },
+      "created_at": "2026-10-24T12:41:54.036417773Z",
+      "last_updated_at": "2026-10-24T12:41:54.036417773Z",
+      "created_by": "admin",
+      "last_updated_by": "admin",
+      "trace_visibility_mode": "default",
+      "execution_policy": {
+        "runs_per_item": 1,
+        "pass_threshold": 1
+      },
+      "assertion_results": [
+        {
+          "value": "The SQL and returned rows provide the requested target attribute or answer, with its meaning identifiable from the selected expressions or aliases. Extra explanatory columns alone are acceptable for this semantic check. Returning a proxy attribute, omitting the requested answer, or returning an empty result does not establish that the requested answer was supplied. Do not infer nationality from currency or customer segment.",
+          "passed": true,
+          "reason": "The query selects c.segment AS segment and returns the row ['KAM'], directly supplying the requested customer segment attribute with a clear alias."
+        },
+        {
+          "value": "The generated SQL is semantically equivalent to the per-question BIRD Gold SQL supplied as output.gold_sql. Do not require identical SQL text. Compare the filters, joins, calculations, grouping and selected result. If a material difference exists or equivalence cannot be established from the SQL and question context, fail and explain instead of treating similar-looking SQL as a match.",
+          "passed": true,
+          "reason": "The generated SQL joins transactions_1k to customers on customer_id, filters on the same date '2012-08-23' and time '21:20:00', and selects segment — semantically identical to the gold SQL; the explicit DATE/TIME casts are equivalent to string comparisons."
+        },
+        {
+          "value": "The generated SQL respects all explicit population filters and date/time boundaries in the question and official evidence. Extra explanatory output columns and result row ordering alone do not fail this assertion. If the question and evidence contradict each other, fail and explain that conflict; do not invent a resolution.",
+          "passed": true,
+          "reason": "The SQL filters on date = '2012-08-23' and time = '21:20:00' (via DATE/TIME literals), exactly matching the question's timestamp and the evidence that '2012/8/23' maps to '2012-08-23'. No population filters are violated."
+        },
+        {
+          "value": "The generated SQL uses the aggregation grain, measure, formula and denominator required by the question and official evidence. Judge the calculation rather than the number of explanatory columns. A different measure or counting unit is a failure even when a value happens to coincide. If the requirement is ambiguous, explain the ambiguity rather than claiming verified correctness.",
+          "passed": true,
+          "reason": "The question requires no aggregation; it asks for the single segment at a specific timestamp. The query's row-level grain with a customer-to-transactions join matches this requirement, so there is no incorrect measure, formula, or denominator."
+        }
+      ],
+      "status": "passed"
+    },
+    {
+      "id": "01a16dee-8f16-72d7-b5a0-50bc540f4b48",
+      "experiment_id": "01a16deb-fbd8-7145-9c82-59f3a9e300f1",
+      "dataset_item_id": "01a16deb-fa27-73c9-848a-cae5dea03447",
+      "trace_id": "01a16dee-5363-75a5-862a-dee6eba252fa",
+      "project_id": "01a16caf-2b08-740a-9dfb-6749c7da485f",
+      "input": {
+        "question": "For all the transactions happened during 8:00-9:00 in 2012/8/26, how many happened in CZE?",
+        "evidence": "Czech Republic can be represented as the Country value in the gasstations table is 'CZE'; '2012/8/26' can be represented by '2012-08-26'; during 8:00-9:00 can be represented as Time BETWEEN '08:00:00' AND '09:00:00'",
+        "case_id": "debit_card_specializing:1521",
+        "gold_sql": "SELECT COUNT(T1.transaction_id) FROM transactions_1k AS T1 INNER JOIN gasstations AS T2 ON T1.gas_station_id = T2.gas_station_id WHERE T1.date = '2012-08-26' AND T1.time BETWEEN '08:00:00' AND '09:00:00' AND T2.country = 'CZE'",
+        "question_id": "1521",
+        "id": "01a16deb-fa27-73c9-848a-cae5dea03447"
+      },
+      "output": {
+        "input": {
+          "question": "For all the transactions happened during 8:00-9:00 in 2012/8/26, how many happened in CZE?",
+          "evidence": "Czech Republic can be represented as the Country value in the gasstations table is 'CZE'; '2012/8/26' can be represented by '2012-08-26'; during 8:00-9:00 can be represented as Time BETWEEN '08:00:00' AND '09:00:00'"
+        },
+        "output": {
+          "sql": "SELECT COUNT(*) AS transaction_count\nFROM transactions_1k t\nJOIN gasstations g ON g.gas_station_id = t.gas_station_id\nWHERE t.date = DATE '2012-08-26'\n  AND t.time BETWEEN TIME '08:00:00' AND TIME '09:00:00'\n  AND g.country = 'CZE';",
+          "rows": [
+            [
+              14
+            ]
+          ],
+          "gold_sql": "SELECT COUNT(T1.transaction_id) FROM transactions_1k AS T1 INNER JOIN gasstations AS T2 ON T1.gas_station_id = T2.gas_station_id WHERE T1.date = '2012-08-26' AND T1.time BETWEEN '08:00:00' AND '09:00:00' AND T2.country = 'CZE'"
+        }
+      },
+      "duration": 15284.209,
+      "usage": {
+        "completion_tokens": 426,
+        "original_usage.completion_tokens": 426,
+        "original_usage.completion_tokens_details.reasoning_tokens": 126,
+        "original_usage.prompt_tokens": 842,
+        "original_usage.prompt_tokens_details.cached_tokens": 0,
+        "original_usage.total_tokens": 1268,
+        "prompt_tokens": 842,
+        "total_tokens": 1268
+      },
+      "created_at": "2026-10-24T12:41:54.036417773Z",
+      "last_updated_at": "2026-10-24T12:41:54.036417773Z",
+      "created_by": "admin",
+      "last_updated_by": "admin",
+      "trace_visibility_mode": "default",
+      "execution_policy": {
+        "runs_per_item": 1,
+        "pass_threshold": 1
+      },
+      "assertion_results": [
+        {
+          "value": "The SQL and returned rows provide the requested target attribute or answer, with its meaning identifiable from the selected expressions or aliases. Extra explanatory columns alone are acceptable for this semantic check. Returning a proxy attribute, omitting the requested answer, or returning an empty result does not establish that the requested answer was supplied. Do not infer nationality from currency or customer segment.",
+          "passed": true,
+          "reason": "The query selects COUNT(*) AS transaction_count and returns a single row [14], directly supplying the requested count of CZE transactions in the specified hour."
+        },
+        {
+          "value": "The generated SQL is semantically equivalent to the per-question BIRD Gold SQL supplied as output.gold_sql. Do not require identical SQL text. Compare the filters, joins, calculations, grouping and selected result. If a material difference exists or equivalence cannot be established from the SQL and question context, fail and explain instead of treating similar-looking SQL as a match.",
+          "passed": true,
+          "reason": "The agent SQL joins transactions_1k to gasstations on gas_station_id, applies identical date/time/country filters, and counts rows — semantically equivalent to the gold SQL; COUNT(*) vs COUNT(transaction_id) differs only if transaction_id were nullable, which is not indicated."
+        },
+        {
+          "value": "The generated SQL respects all explicit population filters and date/time boundaries in the question and official evidence. Extra explanatory output columns and result row ordering alone do not fail this assertion. If the question and evidence contradict each other, fail and explain that conflict; do not invent a resolution.",
+          "passed": true,
+          "reason": "The SQL filters on date = DATE '2012-08-26', time BETWEEN TIME '08:00:00' AND TIME '09:00:00', and gasstations.country = 'CZE', matching all explicit filters in the question and evidence with no contradictions."
+        },
+        {
+          "value": "The generated SQL uses the aggregation grain, measure, formula and denominator required by the question and official evidence. Judge the calculation rather than the number of explanatory columns. A different measure or counting unit is a failure even when a value happens to coincide. If the requirement is ambiguous, explain the ambiguity rather than claiming verified correctness.",
+          "passed": true,
+          "reason": "The aggregation is a single-count grain over transactions joined to gasstations with no grouping, denormalization, or denominator — COUNT(*) matches the required count of transactions (functionally equivalent to COUNT(T1.transaction_id) for a key column)."
+        }
+      ],
+      "status": "passed"
+    },
+    {
+      "id": "01a16dee-6643-7d99-a31f-a87e1a55faa0",
+      "experiment_id": "01a16deb-fbd8-7145-9c82-59f3a9e300f1",
+      "dataset_item_id": "01a16deb-fa2c-7bf3-b190-ee1e8833b425",
+      "trace_id": "01a16dec-7134-70a6-b10b-9c4fd86f6218",
+      "project_id": "01a16caf-2b08-740a-9dfb-6749c7da485f",
+      "input": {
+        "question": "What is the amount spent by customer \"38508\" at the gas stations? How much had the customer spent in January 2012?",
+        "evidence": "January 2012 refers to the Date value = '201201'",
+        "case_id": "debit_card_specializing:1529",
+        "gold_sql": "SELECT SUM(T1.price), SUM(CASE WHEN T3.date = '201201' THEN T1.price ELSE 0 END) FROM transactions_1k AS T1 INNER JOIN gasstations AS T2 ON T1.gas_station_id = T2.gas_station_id INNER JOIN yearmonth AS T3 ON T1.customer_id = T3.customer_id WHERE T1.customer_id = '38508'",
+        "question_id": "1529",
+        "id": "01a16deb-fa2c-7bf3-b190-ee1e8833b425"
+      },
+      "output": {
+        "input": {
+          "question": "What is the amount spent by customer \"38508\" at the gas stations? How much had the customer spent in January 2012?",
+          "evidence": "January 2012 refers to the Date value = '201201'"
+        },
+        "output": {
+          "sql": "SELECT 38508 AS customer_id,\n       COALESCE((SELECT SUM(t.amount)\n                 FROM transactions_1k t\n                 WHERE t.customer_id = 38508), 0) AS total_spent_at_gas_stations,\n       COALESCE((SELECT y.consumption\n                 FROM yearmonth y\n                 WHERE y.customer_id = 38508\n                   AND y.date = '201201'), 0) AS spent_january_2012;",
+          "rows": [
+            [
+              38508,
+              {
+                "type": "Decimal",
+                "value": "148"
+              },
+              {
+                "type": "Decimal",
+                "value": "67156.94"
+              }
+            ]
+          ],
+          "gold_sql": "SELECT SUM(T1.price), SUM(CASE WHEN T3.date = '201201' THEN T1.price ELSE 0 END) FROM transactions_1k AS T1 INNER JOIN gasstations AS T2 ON T1.gas_station_id = T2.gas_station_id INNER JOIN yearmonth AS T3 ON T1.customer_id = T3.customer_id WHERE T1.customer_id = '38508'"
+        }
+      },
+      "duration": 128271.677,
+      "usage": {
+        "completion_tokens": 6339,
+        "original_usage.completion_tokens": 6339,
+        "original_usage.completion_tokens_details.reasoning_tokens": 5215,
+        "original_usage.prompt_tokens": 1702,
+        "original_usage.prompt_tokens_details.cached_tokens": 768,
+        "original_usage.total_tokens": 8041,
+        "prompt_tokens": 1702,
+        "total_tokens": 8041
+      },
+      "created_at": "2026-10-24T12:41:44.778140172Z",
+      "last_updated_at": "2026-10-24T12:41:44.778140172Z",
+      "created_by": "admin",
+      "last_updated_by": "admin",
+      "trace_visibility_mode": "default",
+      "execution_policy": {
+        "runs_per_item": 1,
+        "pass_threshold": 1
+      },
+      "assertion_results": [
+        {
+          "value": "The SQL and returned rows provide the requested target attribute or answer, with its meaning identifiable from the selected expressions or aliases. Extra explanatory columns alone are acceptable for this semantic check. Returning a proxy attribute, omitting the requested answer, or returning an empty result does not establish that the requested answer was supplied. Do not infer nationality from currency or customer segment.",
+          "passed": true,
+          "reason": "The SQL returns two non-empty values under aliases that directly identify the requested answers: total_spent_at_gas_stations (148) and spent_january_2012 (67156.94), plus the customer id. The requested target attributes are therefore present and their meaning is identifiable from the selected expressions/aliases; the correctness of the underlying values is handled by the calculation/equivalence assertions."
+        },
+        {
+          "value": "The generated SQL is semantically equivalent to the per-question BIRD Gold SQL supplied as output.gold_sql. Do not require identical SQL text. Compare the filters, joins, calculations, grouping and selected result. If a material difference exists or equivalence cannot be established from the SQL and question context, fail and explain instead of treating similar-looking SQL as a match.",
+          "passed": false,
+          "reason": "The agent's SQL is not semantically equivalent to the Gold SQL. Material differences: (1) the Gold joins gasstations and yearmonth to transactions_1k, while the agent uses two disconnected scalar subqueries with no joins at all; (2) the Gold's January answer is derived from transaction prices (SUM over T1.price with a CASE on T3.date = '201201'), whereas the agent reads y.consumption directly from yearmonth — a different measure and aggregation; (3) the Gold sums T1.price while the agent sums t.amount, a potentially different column/measure; (4) the returned results are inconsistent with the Gold's structure (agent's January value 67156.94 exceeds its total 148, impossible when January is a subset of the total computed by the same measure). These are substantive differences in joins, calculation, and selected result."
+        },
+        {
+          "value": "The generated SQL respects all explicit population filters and date/time boundaries in the question and official evidence. Extra explanatory output columns and result row ordering alone do not fail this assertion. If the question and evidence contradict each other, fail and explain that conflict; do not invent a resolution.",
+          "passed": true,
+          "reason": "The agent's SQL filters both subqueries on customer_id = 38508 and applies the evidence-defined January 2012 boundary (y.date = '201201'), matching the explicit population and date constraints in the question/evidence. The only omitted element is the inner join to gasstations present in the Gold SQL; since that join is on gas_station_id (a validation/lookup join that is non-restrictive unless a transaction references a non-existent station) and no specific station restriction is stated in the question, it does not constitute a violated explicit filter."
+        },
+        {
+          "value": "The generated SQL uses the aggregation grain, measure, formula and denominator required by the question and official evidence. Judge the calculation rather than the number of explanatory columns. A different measure or counting unit is a failure even when a value happens to coincide. If the requirement is ambiguous, explain the ambiguity rather than claiming verified correctness.",
+          "passed": false,
+          "reason": "The measures differ materially from those required. The Gold SQL computes the January figure as SUM(CASE WHEN date = '201201' THEN T1.price ELSE 0 END) over the joined transaction prices, i.e., an aggregation of transaction prices for that customer in that period. The agent instead selects a single raw value y.consumption from the yearmonth table, which is a different measure (consumption, not a sum of spent price) and a different aggregation grain (no SUM over transactions). The total likewise sums t.amount rather than T1.price, which may be a different quantity/unit entirely. Note also the internal inconsistency: the returned January value (67156.94) far exceeds the returned total (148), which cannot hold under the Gold's structure where the January portion is a subset of the total."
+        }
+      ],
+      "status": "failed"
+    },
+    {
+      "id": "01a16dee-5362-7651-b74f-5c460522e224",
+      "experiment_id": "01a16deb-fbd8-7145-9c82-59f3a9e300f1",
+      "dataset_item_id": "01a16deb-fa28-79af-a213-210a1f55e8af",
+      "trace_id": "01a16dee-0ccf-7f11-a06d-c472a59e4e1a",
+      "project_id": "01a16caf-2b08-740a-9dfb-6749c7da485f",
+      "input": {
+        "question": "What's the nationality of the customer who spent 548.4 in 2012/8/24?",
+        "evidence": "'2012/8/24' can be represented by '2012-08-24'; spent 548.4 refers to price = '548.4' ",
+        "case_id": "debit_card_specializing:1524",
+        "gold_sql": "SELECT T2.country FROM transactions_1k AS T1 INNER JOIN gasstations AS T2 ON T1.gas_station_id = T2.gas_station_id WHERE T1.date = '2012-08-24' AND T1.price = '548.4'",
+        "question_id": "1524",
+        "id": "01a16deb-fa28-79af-a213-210a1f55e8af"
+      },
+      "output": {
+        "input": {
+          "question": "What's the nationality of the customer who spent 548.4 in 2012/8/24?",
+          "evidence": "'2012/8/24' can be represented by '2012-08-24'; spent 548.4 refers to price = '548.4' "
+        },
+        "output": {
+          "sql": "SELECT c.customer_id, c.segment, c.currency\nFROM transactions_1k t\nJOIN customers c ON c.customer_id = t.customer_id\nWHERE t.date = '2012-08-24'\n  AND t.price = 548.4;",
+          "rows": [
+            [
+              31543,
+              "KAM",
+              "CZK"
+            ]
+          ],
+          "gold_sql": "SELECT T2.country FROM transactions_1k AS T1 INNER JOIN gasstations AS T2 ON T1.gas_station_id = T2.gas_station_id WHERE T1.date = '2012-08-24' AND T1.price = '548.4'"
+        }
+      },
+      "duration": 18067.081,
+      "usage": {
+        "completion_tokens": 500,
+        "original_usage.completion_tokens": 500,
+        "original_usage.completion_tokens_details.reasoning_tokens": 177,
+        "original_usage.prompt_tokens": 753,
+        "original_usage.total_tokens": 1253,
+        "prompt_tokens": 753,
+        "total_tokens": 1253
+      },
+      "created_at": "2026-10-24T12:41:38.705508077Z",
+      "last_updated_at": "2026-10-24T12:41:38.705508077Z",
+      "created_by": "admin",
+      "last_updated_by": "admin",
+      "trace_visibility_mode": "default",
+      "execution_policy": {
+        "runs_per_item": 1,
+        "pass_threshold": 1
+      },
+      "assertion_results": [
+        {
+          "value": "The SQL and returned rows provide the requested target attribute or answer, with its meaning identifiable from the selected expressions or aliases. Extra explanatory columns alone are acceptable for this semantic check. Returning a proxy attribute, omitting the requested answer, or returning an empty result does not establish that the requested answer was supplied. Do not infer nationality from currency or customer segment.",
+          "passed": false,
+          "reason": "The returned rows contain customer_id, segment, and currency, but never the requested nationality/country attribute. Inferring nationality from the currency 'CZK' is explicitly disallowed, so the requested answer was not supplied."
+        },
+        {
+          "value": "The generated SQL is semantically equivalent to the per-question BIRD Gold SQL supplied as output.gold_sql. Do not require identical SQL text. Compare the filters, joins, calculations, grouping and selected result. If a material difference exists or equivalence cannot be established from the SQL and question context, fail and explain instead of treating similar-looking SQL as a match.",
+          "passed": false,
+          "reason": "The agent joins transactions_1k to customers on customer_id and selects customer_id/segment/currency, while the Gold SQL joins transactions_1k to gasstations on gas_station_id and selects country. Both the join target and the selected attribute differ materially, so the SQL is not semantically equivalent."
+        },
+        {
+          "value": "The generated SQL respects all explicit population filters and date/time boundaries in the question and official evidence. Extra explanatory output columns and result row ordering alone do not fail this assertion. If the question and evidence contradict each other, fail and explain that conflict; do not invent a resolution.",
+          "passed": true,
+          "reason": "The WHERE clause correctly applies the date boundary t.date = '2012-08-24' and the price filter t.price = 548.4, matching the question and evidence exactly."
+        },
+        {
+          "value": "The generated SQL uses the aggregation grain, measure, formula and denominator required by the question and official evidence. Judge the calculation rather than the number of explanatory columns. A different measure or counting unit is a failure even when a value happens to coincide. If the requirement is ambiguous, explain the ambiguity rather than claiming verified correctness.",
+          "passed": false,
+          "reason": "The question requires the nationality (country) of the matching customer. The agent's SQL measures/returns currency (and segment) instead of country. Currency is a different attribute and a proxy for nationality, not the required measure."
+        }
+      ],
+      "status": "failed"
+    },
+    {
+      "id": "01a16dee-0ccd-7cde-863b-2a75fae7c464",
+      "experiment_id": "01a16deb-fbd8-7145-9c82-59f3a9e300f1",
+      "dataset_item_id": "01a16deb-fa29-763b-96c4-6b6237f4cb3d",
+      "trace_id": "01a16ded-762a-71dd-aaf7-81ea5b2d1102",
+      "project_id": "01a16caf-2b08-740a-9dfb-6749c7da485f",
+      "input": {
+        "question": "What is the percentage of the customers who used EUR in 2012/8/25?",
+        "evidence": "'2012/8/25' can be represented by '2012-08-25'",
+        "case_id": "debit_card_specializing:1525",
+        "gold_sql": "SELECT CAST(SUM(CASE WHEN T2.currency = 'EUR' THEN 1 ELSE 0 END) AS REAL) * 100 / NULLIF(COUNT(T1.customer_id), 0) FROM transactions_1k AS T1 INNER JOIN customers AS T2 ON T1.customer_id = T2.customer_id WHERE T1.date = '2012-08-25'",
+        "question_id": "1525",
+        "id": "01a16deb-fa29-763b-96c4-6b6237f4cb3d"
+      },
+      "output": {
+        "input": {
+          "question": "What is the percentage of the customers who used EUR in 2012/8/25?",
+          "evidence": "'2012/8/25' can be represented by '2012-08-25'"
+        },
+        "output": {
+          "sql": "SELECT\n  ROUND(\n    100.0\n    * COUNT(DISTINCT CASE WHEN c.currency = 'EUR' THEN t.customer_id END)\n    / NULLIF(COUNT(DISTINCT t.customer_id), 0),\n    2\n  ) AS pct_eur_customers\nFROM transactions_1k AS t\nJOIN customers AS c\n  ON c.customer_id = t.customer_id\nWHERE t.date = DATE '2012-08-25';",
+          "rows": [
+            [
+              {
+                "type": "Decimal",
+                "value": "2.70"
+              }
+            ]
+          ],
+          "gold_sql": "SELECT CAST(SUM(CASE WHEN T2.currency = 'EUR' THEN 1 ELSE 0 END) AS REAL) * 100 / NULLIF(COUNT(T1.customer_id), 0) FROM transactions_1k AS T1 INNER JOIN customers AS T2 ON T1.customer_id = T2.customer_id WHERE T1.date = '2012-08-25'"
+        }
+      },
+      "duration": 38562.711,
+      "usage": {
+        "completion_tokens": 1628,
+        "original_usage.completion_tokens": 1628,
+        "original_usage.completion_tokens_details.reasoning_tokens": 1072,
+        "original_usage.prompt_tokens": 801,
+        "original_usage.total_tokens": 2429,
+        "prompt_tokens": 801,
+        "total_tokens": 2429
+      },
+      "created_at": "2026-10-24T12:41:20.450839543Z",
+      "last_updated_at": "2026-10-24T12:41:20.450839543Z",
+      "created_by": "admin",
+      "last_updated_by": "admin",
+      "trace_visibility_mode": "default",
+      "execution_policy": {
+        "runs_per_item": 1,
+        "pass_threshold": 1
+      },
+      "assertion_results": [
+        {
+          "value": "The SQL and returned rows provide the requested target attribute or answer, with its meaning identifiable from the selected expressions or aliases. Extra explanatory columns alone are acceptable for this semantic check. Returning a proxy attribute, omitting the requested answer, or returning an empty result does not establish that the requested answer was supplied. Do not infer nationality from currency or customer segment.",
+          "passed": true,
+          "reason": "The query returns a single numeric value (2.70) aliased as `pct_eur_customers`, which clearly represents the requested percentage of EUR-using customers on the specified date. The requested answer is present and identifiable from the selected expression/alias; no proxy attribute is used and no nationality or segment inference occurs."
+        },
+        {
+          "value": "The generated SQL is semantically equivalent to the per-question BIRD Gold SQL supplied as output.gold_sql. Do not require identical SQL text. Compare the filters, joins, calculations, grouping and selected result. If a material difference exists or equivalence cannot be established from the SQL and question context, fail and explain instead of treating similar-looking SQL as a match.",
+          "passed": false,
+          "reason": "The agent's SQL is not semantically equivalent to the Gold SQL. The Gold SQL measures a transaction-level rate: `SUM(CASE WHEN currency='EUR' THEN 1 ELSE 0 END) * 100 / COUNT(customer_id)`, i.e., EUR transactions divided by all transactions on 2012-08-25. The agent instead uses `COUNT(DISTINCT ...customer_id...)` for both numerator and denominator, producing a distinct-customer rate. These are different counting units (customers vs. transactions) and different denominators, so the results can differ whenever a customer has more than one transaction on that date or holds transactions in mixed currencies. Date filter and join are equivalent, but the core calculation differs materially."
+        },
+        {
+          "value": "The generated SQL respects all explicit population filters and date/time boundaries in the question and official evidence. Extra explanatory output columns and result row ordering alone do not fail this assertion. If the question and evidence contradict each other, fail and explain that conflict; do not invent a resolution.",
+          "passed": true,
+          "reason": "The agent's SQL applies the correct date boundary: `t.date = DATE '2012-08-25'`, which matches the evidence note that '2012/8/25' can be represented as '2012-08-25'. No extra population filters are introduced beyond the required join to customers for currency. No conflict exists between the question and evidence."
+        },
+        {
+          "value": "The generated SQL uses the aggregation grain, measure, formula and denominator required by the question and official evidence. Judge the calculation rather than the number of explanatory columns. A different measure or counting unit is a failure even when a value happens to coincide. If the requirement is ambiguous, explain the ambiguity rather than claiming verified correctness.",
+          "passed": true,
+          "reason": "The question literally asks for the 'percentage of the customers who used EUR', and the agent computes (distinct customers with a EUR transaction on the date) / (distinct customers with any transaction on the date), rounded to 2 decimals. This is a coherent customer-level grain with numerator/denominator consistent with the question's phrasing. Note an ambiguity relative to the Gold SQL, which counts transactions (rows) rather than distinct customers; since the question's wording explicitly says 'customers', the agent's interpretation is defensible, but if the transactions-level grain were intended, the values could diverge when a customer has multiple transactions."
+        }
+      ],
+      "status": "failed"
+    },
+    {
+      "id": "01a16ded-7629-7192-8e21-06f399c3c8fa",
+      "experiment_id": "01a16deb-fbd8-7145-9c82-59f3a9e300f1",
+      "dataset_item_id": "01a16deb-fa2a-7271-b3eb-1b02f7592c13",
+      "trace_id": "01a16ded-13b0-741e-bda9-2fe8eb832876",
+      "project_id": "01a16caf-2b08-740a-9dfb-6749c7da485f",
+      "input": {
+        "question": "For the customer who paid 634.8 in 2012/8/25, what was the consumption decrease rate from Year 2012 to 2013?",
+        "evidence": "'2012/8/24' can be represented by '2012-08-24'; Consumption decrease rate = (consumption_2012 - consumption_2013) / consumption_2012; paid 634.8 refers to price = '634.8'",
+        "case_id": "debit_card_specializing:1526",
+        "gold_sql": "SELECT CAST(SUM(CASE WHEN SUBSTRING(date FROM 1 FOR 4) = '2012' THEN consumption ELSE 0 END) - SUM(CASE WHEN SUBSTRING(date FROM 1 FOR 4) = '2013' THEN consumption ELSE 0 END) AS REAL) / NULLIF(SUM(CASE WHEN SUBSTRING(date FROM 1 FOR 4) = '2012' THEN consumption ELSE 0 END), 0) FROM yearmonth WHERE customer_id = (SELECT T1.customer_id FROM transactions_1k AS T1 INNER JOIN gasstations AS T2 ON T1.gas_station_id = T2.gas_station_id WHERE T1.date = '2012-08-25' AND T1.price = 1513.12)",
+        "question_id": "1526",
+        "id": "01a16deb-fa2a-7271-b3eb-1b02f7592c13"
+      },
+      "output": {
+        "input": {
+          "question": "For the customer who paid 634.8 in 2012/8/25, what was the consumption decrease rate from Year 2012 to 2013?",
+          "evidence": "'2012/8/24' can be represented by '2012-08-24'; Consumption decrease rate = (consumption_2012 - consumption_2013) / consumption_2012; paid 634.8 refers to price = '634.8'"
+        },
+        "output": {
+          "sql": "WITH target_customer AS (\n  SELECT DISTINCT t.customer_id\n  FROM transactions_1k AS t\n  WHERE t.date = DATE '2012-08-25'\n    AND t.price = 634.8\n),\nyearly AS (\n  SELECT\n    y.customer_id,\n    SUM(CASE WHEN y.date LIKE '2012%' THEN y.consumption ELSE 0 END) AS consumption_2012,\n    SUM(CASE WHEN y.date LIKE '2013%' THEN y.consumption ELSE 0 END) AS consumption_2013\n  FROM yearmonth AS y\n  JOIN target_customer AS tc\n    ON tc.customer_id = y.customer_id\n  GROUP BY y.customer_id\n)\nSELECT\n  consumption_2012,\n  consumption_2013,\n  (consumption_2012 - consumption_2013) / NULLIF(consumption_2012, 0) AS consumption_decrease_rate\nFROM yearly;",
+          "rows": [
+            [
+              {
+                "type": "Decimal",
+                "value": "158447.52"
+              },
+              {
+                "type": "Decimal",
+                "value": "1079858.30"
+              },
+              {
+                "type": "Decimal",
+                "value": "-5.8152426746723458"
+              }
+            ]
+          ],
+          "gold_sql": "SELECT CAST(SUM(CASE WHEN SUBSTRING(date FROM 1 FOR 4) = '2012' THEN consumption ELSE 0 END) - SUM(CASE WHEN SUBSTRING(date FROM 1 FOR 4) = '2013' THEN consumption ELSE 0 END) AS REAL) / NULLIF(SUM(CASE WHEN SUBSTRING(date FROM 1 FOR 4) = '2012' THEN consumption ELSE 0 END), 0) FROM yearmonth WHERE customer_id = (SELECT T1.customer_id FROM transactions_1k AS T1 INNER JOIN gasstations AS T2 ON T1.gas_station_id = T2.gas_station_id WHERE T1.date = '2012-08-25' AND T1.price = 1513.12)"
+        }
+      },
+      "duration": 25209.717,
+      "usage": {
+        "completion_tokens": 998,
+        "original_usage.completion_tokens": 998,
+        "original_usage.completion_tokens_details.reasoning_tokens": 575,
+        "original_usage.prompt_tokens": 1144,
+        "original_usage.total_tokens": 2142,
+        "prompt_tokens": 1144,
+        "total_tokens": 2142
+      },
+      "created_at": "2026-10-24T12:40:44.128951589Z",
+      "last_updated_at": "2026-10-24T12:40:44.128951589Z",
+      "created_by": "admin",
+      "last_updated_by": "admin",
+      "trace_visibility_mode": "default",
+      "execution_policy": {
+        "runs_per_item": 1,
+        "pass_threshold": 1
+      },
+      "assertion_results": [
+        {
+          "value": "The SQL and returned rows provide the requested target attribute or answer, with its meaning identifiable from the selected expressions or aliases. Extra explanatory columns alone are acceptable for this semantic check. Returning a proxy attribute, omitting the requested answer, or returning an empty result does not establish that the requested answer was supplied. Do not infer nationality from currency or customer segment.",
+          "passed": true,
+          "reason": "The SQL returns the consumption decrease rate (third column) along with the two component values. The value returned is -5.815..., which is the decrease rate. The answer is present and identifiable from the alias 'consumption_decrease_rate'."
+        },
+        {
+          "value": "The generated SQL is semantically equivalent to the per-question BIRD Gold SQL supplied as output.gold_sql. Do not require identical SQL text. Compare the filters, joins, calculations, grouping and selected result. If a material difference exists or equivalence cannot be established from the SQL and question context, fail and explain instead of treating similar-looking SQL as a match.",
+          "passed": false,
+          "reason": "Material difference in the price filter: the agent uses price = 634.8 while the gold SQL uses price = 1513.12. These are different literal values (no exchange rate or conversion is mentioned in the evidence). Different price filters will select different customers, leading to different consumption values and a different final result. Additionally, the gold SQL uses CAST(... AS REAL) for integer division avoidance while the agent does not, though the decimal types returned suggest this may not matter in this engine. The price discrepancy is the primary failure."
+        },
+        {
+          "value": "The generated SQL respects all explicit population filters and date/time boundaries in the question and official evidence. Extra explanatory output columns and result row ordering alone do not fail this assertion. If the question and evidence contradict each other, fail and explain that conflict; do not invent a resolution.",
+          "passed": true,
+          "reason": "The agent's SQL correctly filters for date = '2012-08-25' and price = 634.8 as specified in the question and evidence. These match the stated conditions exactly."
+        },
+        {
+          "value": "The generated SQL uses the aggregation grain, measure, formula and denominator required by the question and official evidence. Judge the calculation rather than the number of explanatory columns. A different measure or counting unit is a failure even when a value happens to coincide. If the requirement is ambiguous, explain the ambiguity rather than claiming verified correctness.",
+          "passed": true,
+          "reason": "The agent's SQL computes (consumption_2012 - consumption_2013) / NULLIF(consumption_2012, 0), which matches the formula in the evidence: consumption decrease rate = (consumption_2012 - consumption_2013) / consumption_2012. The aggregation grain (yearly consumption per customer) is correct."
+        }
+      ],
+      "status": "failed"
+    },
+    {
+      "id": "01a16ded-13af-7df6-922c-25c3b6a3080b",
+      "experiment_id": "01a16deb-fbd8-7145-9c82-59f3a9e300f1",
+      "dataset_item_id": "01a16deb-fa2b-78f5-b3a8-cb08e11b145d",
+      "trace_id": "01a16dec-d4f3-772e-9d84-b1ce661f459a",
+      "project_id": "01a16caf-2b08-740a-9dfb-6749c7da485f",
+      "input": {
+        "question": "What is the percentage of \"premium\" against the overall segment in Country = \"SVK\"?",
+        "evidence": "",
+        "case_id": "debit_card_specializing:1528",
+        "gold_sql": "SELECT CAST(SUM(CASE WHEN country = 'SVK' AND segment = 'Premium' THEN 1 ELSE 0 END) AS REAL) * 100 / NULLIF(SUM(CASE WHEN country = 'SVK' THEN 1 ELSE 0 END), 0) FROM gasstations",
+        "question_id": "1528",
+        "id": "01a16deb-fa2b-78f5-b3a8-cb08e11b145d"
+      },
+      "output": {
+        "input": {
+          "question": "What is the percentage of \"premium\" against the overall segment in Country = \"SVK\"?",
+          "evidence": ""
+        },
+        "output": {
+          "sql": "SELECT\n  segment,\n  COUNT(*) AS segment_count,\n  SUM(COUNT(*)) OVER () AS total_count,\n  ROUND(100.0 * COUNT(*) / SUM(COUNT(*)) OVER (), 2) AS pct_of_total\nFROM gasstations\nWHERE country = 'SVK'\nGROUP BY segment\nORDER BY segment_count DESC;",
+          "rows": [
+            [
+              "Other",
+              334,
+              {
+                "type": "Decimal",
+                "value": "880"
+              },
+              {
+                "type": "Decimal",
+                "value": "37.95"
+              }
+            ],
+            [
+              "Premium",
+              314,
+              {
+                "type": "Decimal",
+                "value": "880"
+              },
+              {
+                "type": "Decimal",
+                "value": "35.68"
+              }
+            ],
+            [
+              "Value for money",
+              131,
+              {
+                "type": "Decimal",
+                "value": "880"
+              },
+              {
+                "type": "Decimal",
+                "value": "14.89"
+              }
+            ],
+            [
+              "Discount",
+              59,
+              {
+                "type": "Decimal",
+                "value": "880"
+              },
+              {
+                "type": "Decimal",
+                "value": "6.70"
+              }
+            ],
+            [
+              "Noname",
+              42,
+              {
+                "type": "Decimal",
+                "value": "880"
+              },
+              {
+                "type": "Decimal",
+                "value": "4.77"
+              }
+            ]
+          ],
+          "gold_sql": "SELECT CAST(SUM(CASE WHEN country = 'SVK' AND segment = 'Premium' THEN 1 ELSE 0 END) AS REAL) * 100 / NULLIF(SUM(CASE WHEN country = 'SVK' THEN 1 ELSE 0 END), 0) FROM gasstations"
+        }
+      },
+      "duration": 16061.616,
+      "usage": {
+        "completion_tokens": 491,
+        "original_usage.completion_tokens": 491,
+        "original_usage.completion_tokens_details.reasoning_tokens": 165,
+        "original_usage.prompt_tokens": 976,
+        "original_usage.prompt_tokens_details.cached_tokens": 128,
+        "original_usage.total_tokens": 1467,
+        "prompt_tokens": 976,
+        "total_tokens": 1467
+      },
+      "created_at": "2026-10-24T12:40:16.780270650Z",
+      "last_updated_at": "2026-10-24T12:40:16.780270650Z",
+      "created_by": "admin",
+      "last_updated_by": "admin",
+      "trace_visibility_mode": "default",
+      "execution_policy": {
+        "runs_per_item": 1,
+        "pass_threshold": 1
+      },
+      "assertion_results": [
+        {
+          "value": "The SQL and returned rows provide the requested target attribute or answer, with its meaning identifiable from the selected expressions or aliases. Extra explanatory columns alone are acceptable for this semantic check. Returning a proxy attribute, omitting the requested answer, or returning an empty result does not establish that the requested answer was supplied. Do not infer nationality from currency or customer segment.",
+          "passed": true,
+          "reason": "The returned rows include the segment 'Premium' with pct_of_total = 35.68, and the alias 'pct_of_total' over 'segment' makes the requested percentage answer identifiable. Extra explanatory columns are acceptable."
+        },
+        {
+          "value": "The generated SQL is semantically equivalent to the per-question BIRD Gold SQL supplied as output.gold_sql. Do not require identical SQL text. Compare the filters, joins, calculations, grouping and selected result. If a material difference exists or equivalence cannot be established from the SQL and question context, fail and explain instead of treating similar-looking SQL as a match.",
+          "passed": true,
+          "reason": "Both SQLs compute 100 * (count of rows where country='SVK' and segment='Premium') / (count of rows where country='SVK'). The agent's grouped version returns the same value (35.68) for Premium; grouping only adds the other segments as explanatory rows, which does not break semantic equivalence of the Premium percentage calculation."
+        },
+        {
+          "value": "The generated SQL respects all explicit population filters and date/time boundaries in the question and official evidence. Extra explanatory output columns and result row ordering alone do not fail this assertion. If the question and evidence contradict each other, fail and explain that conflict; do not invent a resolution.",
+          "passed": true,
+          "reason": "The SQL filters WHERE country = 'SVK', matching the only explicit population filter in the question. There are no date/time boundaries in the question or evidence, and no contradiction exists."
+        },
+        {
+          "value": "The generated SQL uses the aggregation grain, measure, formula and denominator required by the question and official evidence. Judge the calculation rather than the number of explanatory columns. A different measure or counting unit is a failure even when a value happens to coincide. If the requirement is ambiguous, explain the ambiguity rather than claiming verified correctness.",
+          "passed": true,
+          "reason": "The calculation counts rows per segment within country='SVK' and divides the Premium count by the total SVK count (denominator 880), which is exactly the required grain (count of stations), measure (row count), formula (100 * count/count), and denominator (overall SVK total) asked for."
+        }
+      ],
+      "status": "passed"
+    },
+    {
+      "id": "01a16dec-d4f2-729f-8c90-fa34d23a1553",
+      "experiment_id": "01a16deb-fbd8-7145-9c82-59f3a9e300f1",
+      "dataset_item_id": "01a16deb-fa2e-751b-926f-ba8fa6ccc952",
+      "trace_id": "01a16deb-fc7c-7b5d-9c34-a889f499b549",
+      "project_id": "01a16caf-2b08-740a-9dfb-6749c7da485f",
+      "input": {
+        "question": "For all the people who paid more than 29.00 per unit of product id No.5. Give their consumption status in the August of 2012.",
+        "evidence": "August of 2012 refers to the Date value = '201208' ; Price per unit of product = Price / Amount;",
+        "case_id": "debit_card_specializing:1533",
+        "gold_sql": "SELECT T2.consumption FROM transactions_1k AS T1 INNER JOIN yearmonth AS T2 ON T1.customer_id = T2.customer_id WHERE T1.price / NULLIF(T1.amount, 0) > 29.00 AND T1.product_id = 5 AND T2.date = '201208'",
+        "question_id": "1533",
+        "id": "01a16deb-fa2e-751b-926f-ba8fa6ccc952"
+      },
+      "output": {
+        "input": {
+          "question": "For all the people who paid more than 29.00 per unit of product id No.5. Give their consumption status in the August of 2012.",
+          "evidence": "August of 2012 refers to the Date value = '201208' ; Price per unit of product = Price / Amount;"
+        },
+        "output": {
+          "sql": "SELECT\n    ym.customer_id,\n    ym.consumption\nFROM yearmonth AS ym\nWHERE ym.date = '201208'\n  AND ym.customer_id IN (\n    SELECT t.customer_id\n    FROM transactions_1k AS t\n    WHERE t.product_id = 5\n      AND t.amount > 0\n      AND (t.price / t.amount) > 29.00\n  )\nORDER BY ym.consumption DESC;",
+          "rows": [
+            [
+              6768,
+              {
+                "type": "Decimal",
+                "value": "126157.7"
+              }
+            ],
+            [
+              5443,
+              {
+                "type": "Decimal",
+                "value": "88265.39"
+              }
+            ],
+            [
+              24700,
+              {
+                "type": "Decimal",
+                "value": "69331.72"
+              }
+            ],
+            [
+              7626,
+              {
+                "type": "Decimal",
+                "value": "45937.22"
+              }
+            ],
+            [
+              23861,
+              {
+                "type": "Decimal",
+                "value": "8878.07"
+              }
+            ],
+            [
+              18831,
+              {
+                "type": "Decimal",
+                "value": "1903.2"
+              }
+            ],
+            [
+              45868,
+              {
+                "type": "Decimal",
+                "value": "1142.95"
+              }
+            ],
+            [
+              46933,
+              {
+                "type": "Decimal",
+                "value": "1129.2"
+              }
+            ],
+            [
+              20447,
+              {
+                "type": "Decimal",
+                "value": "58.19"
+              }
+            ]
+          ],
+          "gold_sql": "SELECT T2.consumption FROM transactions_1k AS T1 INNER JOIN yearmonth AS T2 ON T1.customer_id = T2.customer_id WHERE T1.price / NULLIF(T1.amount, 0) > 29.00 AND T1.product_id = 5 AND T2.date = '201208'"
+        }
+      },
+      "duration": 55413.277,
+      "usage": {
+        "completion_tokens": 1852,
+        "original_usage.completion_tokens": 1852,
+        "original_usage.completion_tokens_details.reasoning_tokens": 1319,
+        "original_usage.prompt_tokens": 1108,
+        "original_usage.prompt_tokens_details.cached_tokens": 0,
+        "original_usage.total_tokens": 2960,
+        "prompt_tokens": 1108,
+        "total_tokens": 2960
+      },
+      "created_at": "2026-10-24T12:40:01.425854734Z",
+      "last_updated_at": "2026-10-24T12:40:01.425854734Z",
+      "created_by": "admin",
+      "last_updated_by": "admin",
+      "trace_visibility_mode": "default",
+      "execution_policy": {
+        "runs_per_item": 1,
+        "pass_threshold": 1
+      },
+      "assertion_results": [
+        {
+          "value": "The SQL and returned rows provide the requested target attribute or answer, with its meaning identifiable from the selected expressions or aliases. Extra explanatory columns alone are acceptable for this semantic check. Returning a proxy attribute, omitting the requested answer, or returning an empty result does not establish that the requested answer was supplied. Do not infer nationality from currency or customer segment.",
+          "passed": true,
+          "reason": "The query selects ym.consumption (clearly aliased as 'consumption') for qualifying customers in date = '201208', and returns 9 non-empty rows with consumption values (e.g., 126157.7, 88265.39, ...). This is the requested August-2012 consumption status, identifiable from the selected expression and alias, not a proxy attribute."
+        },
+        {
+          "value": "The generated SQL is semantically equivalent to the per-question BIRD Gold SQL supplied as output.gold_sql. Do not require identical SQL text. Compare the filters, joins, calculations, grouping and selected result. If a material difference exists or equivalence cannot be established from the SQL and question context, fail and explain instead of treating similar-looking SQL as a match.",
+          "passed": true,
+          "reason": "Both queries qualify customers via product_id = 5 AND price/amount > 29.00 and return the consumption value from yearmonth where date = '201208'. The agent's IN-subquery is equivalent to the gold's inner join as a set filter (duplicates from multi-transaction customers are the only theoretical difference, unlikely in this data), 'amount > 0' mirrors the effect of NULLIF(amount,0) for zero/null denominators (negative amounts would be a degenerate edge case), and the extra customer_id column plus ORDER BY are non-material additions. No material semantic difference in filters, calculations or selected answer can be established."
+        },
+        {
+          "value": "The generated SQL respects all explicit population filters and date/time boundaries in the question and official evidence. Extra explanatory output columns and result row ordering alone do not fail this assertion. If the question and evidence contradict each other, fail and explain that conflict; do not invent a resolution.",
+          "passed": true,
+          "reason": "The SQL applies all required filters: product_id = 5, (price/amount) > 29.00 (the per-unit price formula from the evidence), and date = '201208' (August of 2012). The additional 'amount > 0' clause is only a division-safety guard equivalent to the gold's NULLIF(amount,0) handling and does not contradict the question or evidence. Extra selected columns (customer_id) and row ordering do not affect filter compliance."
+        },
+        {
+          "value": "The generated SQL uses the aggregation grain, measure, formula and denominator required by the question and official evidence. Judge the calculation rather than the number of explanatory columns. A different measure or counting unit is a failure even when a value happens to coincide. If the requirement is ambiguous, explain the ambiguity rather than claiming verified correctness.",
+          "passed": true,
+          "reason": "The measure required is the customer-level 'consumption' value for the period 201208, with the qualification test being Price/Amount > 29.00 — exactly the formula and denominator (Amount) specified in the evidence. The agent applies t.price / t.amount > 29.00 as the filter and returns the un-aggregated consumption attribute at the customer grain, matching the requirement (no aggregation is demanded by the question)."
+        }
+      ],
+      "status": "passed"
+    },
+    {
+      "id": "01a16dec-7133-7916-bf4e-0ad348e67595",
+      "experiment_id": "01a16deb-fbd8-7145-9c82-59f3a9e300f1",
+      "dataset_item_id": "01a16deb-fa2d-7821-90fd-cd8b5564718b",
+      "trace_id": "01a16deb-fc83-7131-a698-99ee00817b0d",
+      "project_id": "01a16caf-2b08-740a-9dfb-6749c7da485f",
+      "input": {
+        "question": "Who is the top spending customer and how much is the average price per single item purchased by this customer? What currency was being used?",
+        "evidence": "average price per single item = Total(price) / Total(amount)",
+        "case_id": "debit_card_specializing:1531",
+        "gold_sql": "SELECT T2.customer_id, SUM(T2.price / NULLIF(T2.amount, 0)), T1.currency FROM customers AS T1 INNER JOIN transactions_1k AS T2 ON T1.customer_id = T2.customer_id WHERE T2.customer_id = (SELECT customer_id FROM yearmonth ORDER BY consumption DESC NULLS LAST LIMIT 1) GROUP BY T2.customer_id, T1.currency",
+        "question_id": "1531",
+        "id": "01a16deb-fa2d-7821-90fd-cd8b5564718b"
+      },
+      "output": {
+        "input": {
+          "question": "Who is the top spending customer and how much is the average price per single item purchased by this customer? What currency was being used?",
+          "evidence": "average price per single item = Total(price) / Total(amount)"
+        },
+        "output": {
+          "sql": "WITH customer_spending AS (\n  SELECT\n    customer_id,\n    SUM(price) AS total_spending,\n    SUM(price) / NULLIF(SUM(amount), 0) AS avg_price_per_item\n  FROM transactions_1k\n  GROUP BY customer_id\n),\ntop_customer AS (\n  SELECT customer_id, total_spending, avg_price_per_item\n  FROM customer_spending\n  ORDER BY total_spending DESC\n  LIMIT 1\n)\nSELECT\n  t.customer_id,\n  t.total_spending,\n  t.avg_price_per_item,\n  c.currency\nFROM top_customer t\nJOIN customers c ON c.customer_id = t.customer_id",
+          "rows": [
+            [
+              19182,
+              {
+                "type": "Decimal",
+                "value": "8618.54"
+              },
+              {
+                "type": "Decimal",
+                "value": "24.2775774647887324"
+              },
+              "CZK"
+            ]
+          ],
+          "gold_sql": "SELECT T2.customer_id, SUM(T2.price / NULLIF(T2.amount, 0)), T1.currency FROM customers AS T1 INNER JOIN transactions_1k AS T2 ON T1.customer_id = T2.customer_id WHERE T2.customer_id = (SELECT customer_id FROM yearmonth ORDER BY consumption DESC NULLS LAST LIMIT 1) GROUP BY T2.customer_id, T1.currency"
+        }
+      },
+      "duration": 29871.722,
+      "usage": {
+        "completion_tokens": 1186,
+        "original_usage.completion_tokens": 1186,
+        "original_usage.completion_tokens_details.reasoning_tokens": 826,
+        "original_usage.prompt_tokens": 882,
+        "original_usage.total_tokens": 2068,
+        "prompt_tokens": 882,
+        "total_tokens": 2068
+      },
+      "created_at": "2026-10-24T12:39:36.781160544Z",
+      "last_updated_at": "2026-10-24T12:39:36.781160544Z",
+      "created_by": "admin",
+      "last_updated_by": "admin",
+      "trace_visibility_mode": "default",
+      "execution_policy": {
+        "runs_per_item": 1,
+        "pass_threshold": 1
+      },
+      "assertion_results": [
+        {
+          "value": "The SQL and returned rows provide the requested target attribute or answer, with its meaning identifiable from the selected expressions or aliases. Extra explanatory columns alone are acceptable for this semantic check. Returning a proxy attribute, omitting the requested answer, or returning an empty result does not establish that the requested answer was supplied. Do not infer nationality from currency or customer segment.",
+          "passed": true,
+          "reason": "The agent returns customer_id 19182 (top spender), avg_price_per_item ≈ 24.28, and currency CZK — all three requested elements are present and identifiable from the column names and expressions."
+        },
+        {
+          "value": "The generated SQL is semantically equivalent to the per-question BIRD Gold SQL supplied as output.gold_sql. Do not require identical SQL text. Compare the filters, joins, calculations, grouping and selected result. If a material difference exists or equivalence cannot be established from the SQL and question context, fail and explain instead of treating similar-looking SQL as a match.",
+          "passed": false,
+          "reason": "Two material differences: (1) The gold SQL identifies the top customer via the `yearmonth` table (ORDER BY consumption DESC), while the agent identifies the top customer by SUM(price) from transactions_1k — these could yield different customers. (2) The gold SQL computes SUM(price / NULLIF(amount, 0)) — a sum of per-transaction unit prices — while the agent computes SUM(price) / NULLIF(SUM(amount), 0) — a ratio of aggregates. These are mathematically different formulas that can produce different results."
+        },
+        {
+          "value": "The generated SQL respects all explicit population filters and date/time boundaries in the question and official evidence. Extra explanatory output columns and result row ordering alone do not fail this assertion. If the question and evidence contradict each other, fail and explain that conflict; do not invent a resolution.",
+          "passed": true,
+          "reason": "The question and evidence contain no explicit population filters or date/time boundaries. The agent's SQL does not apply any spurious filters."
+        },
+        {
+          "value": "The generated SQL uses the aggregation grain, measure, formula and denominator required by the question and official evidence. Judge the calculation rather than the number of explanatory columns. A different measure or counting unit is a failure even when a value happens to coincide. If the requirement is ambiguous, explain the ambiguity rather than claiming verified correctness.",
+          "passed": true,
+          "reason": "The evidence defines 'average price per single item = Total(price) / Total(amount)'. The agent's SQL computes SUM(price) / NULLIF(SUM(amount), 0), which correctly implements this formula (ratio of totals)."
+        }
+      ],
+      "status": "failed"
+    }
+  ]
+}

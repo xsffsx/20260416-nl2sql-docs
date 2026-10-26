@@ -1,0 +1,302 @@
+test_id,prompt_content,response,created_at
+cf5f40e7-4a4d-46f5-af53-4ea0b51772bb,For all the people who paid more than 29.00 per unit of product id No.5. Give their consumption status in the August of 2012.,"WITH aug_product_units AS (
+  SELECT
+    t.customer_id AS customer_id,
+    COUNT(*) AS units
+  FROM transactions_1k AS t
+  WHERE t.product_id = 5
+    AND t.date >= DATE '2012-08-01'
+    AND t.date < DATE '2012-09-01'
+  GROUP BY t.customer_id
+),
+aug_consumption AS (
+  SELECT
+    y.customer_id AS customer_id,
+    y.consumption AS consumption
+  FROM yearmonth AS y
+  WHERE y.date = '201208'
+)
+SELECT
+  u.customer_id AS customer_id,
+  u.units AS units,
+  c.consumption AS consumption,
+  (c.consumption / u.units) AS consumption_per_unit
+FROM aug_product_units AS u
+JOIN aug_consumption AS c
+  ON c.customer_id = u.customer_id
+WHERE u.units > 0
+  AND (c.consumption / u.units) > 29.00
+ORDER BY consumption_per_unit DESC",2026-10-25T07:21:11.083464+00:00
+bbb92715-7224-4194-bd7e-b64de1dea512,"For the customer who paid 634.8 in 2012/8/25, what was the consumption decrease rate from Year 2012 to 2013?","SELECT
+    y.customer_id,
+    SUM(CASE WHEN y.date LIKE '2012%' THEN y.consumption ELSE 0 END) AS consumption_2012,
+    SUM(CASE WHEN y.date LIKE '2013%' THEN y.consumption ELSE 0 END) AS consumption_2013,
+    (SUM(CASE WHEN y.date LIKE '2012%' THEN y.consumption ELSE 0 END)
+     - SUM(CASE WHEN y.date LIKE '2013%' THEN y.consumption ELSE 0 END))
+    / NULLIF(SUM(CASE WHEN y.date LIKE '2012%' THEN y.consumption ELSE 0 END), 0) AS decrease_rate
+FROM yearmonth y
+WHERE y.customer_id IN (
+    SELECT t.customer_id
+    FROM transactions_1k t
+    WHERE t.date = DATE '2012-08-25'
+    GROUP BY t.customer_id
+    HAVING SUM(t.price) = 634.8
+)
+  AND (y.date LIKE '2012%' OR y.date LIKE '2013%')
+GROUP BY y.customer_id",2026-10-25T07:21:03.907989+00:00
+f3e5a5df-39c8-4d95-adec-ae6b6fe7ac89,"In 2012, who had the least consumption in LAM?","SELECT ym.customer_id, SUM(ym.consumption) AS total_consumption
+FROM yearmonth ym
+JOIN customers c ON c.customer_id = ym.customer_id
+WHERE c.segment = 'LAM'
+  AND ym.date LIKE '2012%'
+GROUP BY ym.customer_id
+ORDER BY total_consumption ASC
+LIMIT 1;",2026-10-25T07:20:54.688650+00:00
+af4a54e5-0356-48d8-89fa-67e31603d9b8,"What is the difference in the annual average consumption of the customers with the least amount of consumption paid in CZK for 2013 between SME and LAM, LAM and KAM, and KAM and SME?","WITH customer_2013 AS (
+  SELECT
+    ym.customer_id,
+    c.segment,
+    SUM(ym.consumption) AS total_consumption,
+    AVG(ym.consumption) AS annual_avg_consumption
+  FROM yearmonth ym
+  JOIN customers c
+    ON c.customer_id = ym.customer_id
+  WHERE c.currency = 'CZK'
+    AND ym.date >= '201301'
+    AND ym.date <= '201312'
+  GROUP BY ym.customer_id, c.segment
+),
+least_consumers AS (
+  SELECT
+    segment,
+    customer_id,
+    total_consumption,
+    annual_avg_consumption,
+    ROW_NUMBER() OVER (
+      PARTITION BY segment
+      ORDER BY total_consumption ASC, customer_id ASC
+    ) AS rn
+  FROM customer_2013
+),
+segment_averages AS (
+  SELECT
+    MAX(CASE WHEN segment = 'SME' THEN annual_avg_consumption END) AS sme_avg,
+    MAX(CASE WHEN segment = 'LAM' THEN annual_avg_consumption END) AS lam_avg,
+    MAX(CASE WHEN segment = 'KAM' THEN annual_avg_consumption END) AS kam_avg
+  FROM least_consumers
+  WHERE rn = 1
+)
+SELECT
+  sme_avg,
+  lam_avg,
+  kam_avg,
+  sme_avg - lam_avg AS sme_minus_lam,
+  lam_avg - kam_avg AS lam_minus_kam,
+  kam_avg - sme_avg AS kam_minus_sme
+FROM segment_averages;",2026-10-25T07:20:37.260922+00:00
+f57dda82-06c6-490e-a253-ce194072cf07,What was the difference in gas consumption between CZK-paying customers and EUR-paying customers in 2012?,"SELECT
+  c.currency,
+  SUM(y.consumption) AS total_consumption_2012
+FROM yearmonth AS y
+JOIN customers AS c
+  ON c.customer_id = y.customer_id
+WHERE y.date LIKE '2012%'
+  AND c.currency IN ('CZK', 'EUR')
+GROUP BY c.currency
+ORDER BY c.currency ASC",2026-10-25T07:20:14.873061+00:00
+0c4c1512-78a0-4e4e-88ac-d894b437a0f7,"Among the transactions made in the gas stations in the Czech Republic, how many of them are taken place after 2012/1/1?","SELECT COUNT(*) AS transaction_count
+FROM transactions_1k
+WHERE date > DATE '2012-01-01';",2026-10-25T07:20:03.881813+00:00
+fc4bd62c-e738-4bc8-9dea-5886b52d2975,Please list the disparate time of the transactions taken place in the gas stations from chain no. 11.,"SELECT DISTINCT t.time
+FROM transactions_1k t
+JOIN gasstations g ON g.gas_station_id = t.gas_station_id
+WHERE g.chain_id = 11
+ORDER BY t.time;",2026-10-25T07:20:03.748917+00:00
+876d8549-fb3f-4346-96d9-e99f97db2950,What was the average monthly consumption of customers in SME for the year 2013?,"SELECT AVG(y.consumption) AS avg_monthly_consumption
+FROM yearmonth y
+JOIN customers c ON y.customer_id = c.customer_id
+WHERE c.segment = 'SME'
+  AND y.date LIKE '2013%'",2026-10-25T07:19:59.373290+00:00
+7e2942de-5dd8-4b6b-8d25-775a5000c10d,What is the ratio of customers who pay in EUR against customers who pay in CZK?,"SELECT
+  COUNT(*) FILTER (WHERE currency = 'EUR') AS eur_customers,
+  COUNT(*) FILTER (WHERE currency = 'CZK') AS czk_customers,
+  ROUND(
+    COUNT(*) FILTER (WHERE currency = 'EUR')::numeric
+    / NULLIF(COUNT(*) FILTER (WHERE currency = 'CZK'), 0), 4
+  ) AS eur_to_czk_ratio
+FROM customers
+WHERE currency IN ('EUR', 'CZK');",2026-10-25T07:19:48.418615+00:00
+227769e8-8e50-4496-af99-b1909f0ba85e,"Please list the product description of the products consumed in September, 2013.","SELECT DISTINCT p.description
+FROM transactions_1k t
+JOIN yearmonth ym
+  ON ym.customer_id = t.customer_id
+JOIN products p
+  ON p.product_id = t.product_id
+WHERE ym.date = '201309';",2026-10-25T07:19:46.193319+00:00
+d8ea5ca8-baad-4a33-8a2b-fc7c37bdf82c,"What is the amount spent by customer ""38508"" at the gas stations? How much had the customer spent in January 2012?","SELECT
+  customer_id,
+  SUM(amount) AS total_units,
+  ROUND(SUM(price), 2) AS total_spent,
+  SUM(CASE WHEN date >= DATE '2012-01-01' AND date < DATE '2012-02-01' THEN amount ELSE 0 END) AS jan2012_units,
+  ROUND(SUM(CASE WHEN date >= DATE '2012-01-01' AND date < DATE '2012-02-01' THEN price ELSE 0 END), 2) AS jan2012_spent
+FROM transactions_1k
+WHERE customer_id = 38508
+GROUP BY customer_id;",2026-10-25T07:19:44.944414+00:00
+0b7a7338-80ed-4939-aee1-b528baf585f2,"Among the customers who paid in euro, how many of them have a monthly consumption of over 1000?","SELECT COUNT(DISTINCT ym.customer_id) AS euro_customers_with_monthly_consumption_over_1000
+FROM yearmonth ym
+JOIN customers c
+  ON c.customer_id = ym.customer_id
+WHERE c.currency = 'EUR'
+  AND ym.consumption > 1000;",2026-10-25T07:19:44.719264+00:00
+85d28c9e-a627-4ad5-8d35-df5e718ebffe,What is the percentage of the customers who used EUR in 2012/8/25?,"SELECT
+  ROUND(
+    COUNT(DISTINCT t.customer_id) FILTER (WHERE c.currency = 'EUR')::numeric
+    / NULLIF(COUNT(DISTINCT t.customer_id), 0) * 100,
+    2
+  ) AS eur_customer_pct
+FROM transactions_1k t
+JOIN customers c ON c.customer_id = t.customer_id
+WHERE t.date = DATE '2012-08-25';",2026-10-25T07:19:40.920755+00:00
+b6c85ead-1f45-4c17-9025-7fb62557c9ee,"In February 2012, what percentage of customers consumed more than 528.3?","WITH feb_customers AS (
+  SELECT customer_id, consumption
+  FROM yearmonth
+  WHERE date = '201202'
+)
+SELECT
+  ROUND(
+    100.0 * SUM(CASE WHEN consumption > 528.3 THEN 1 ELSE 0 END) / NULLIF(COUNT(*), 0),
+    2
+  ) AS pct_customers_above_threshold
+FROM feb_customers;",2026-10-25T07:19:40.322886+00:00
+f140711f-4d31-47ba-a91a-c49a7391f051,"For all the transactions happened during 8:00-9:00 in 2012/8/26, how many happened in CZE?","SELECT COUNT(*) AS transaction_count
+FROM transactions_1k
+WHERE date = DATE '2012-08-26'
+  AND time >= TIME '08:00:00'
+  AND time <  TIME '09:00:00';",2026-10-25T07:19:38.383007+00:00
+9d865dc2-1ed4-4825-8fb8-d8a95117ec97,What kind of currency did the customer paid at 16:25:00 in 2012/8/24?,"SELECT DISTINCT c.currency
+FROM transactions_1k t
+JOIN customers c ON c.customer_id = t.customer_id
+WHERE t.date = DATE '2012-08-24'
+  AND t.time = TIME '16:25:00';",2026-10-25T07:19:21.643503+00:00
+a1b9a232-1457-4221-8cd0-7ec09ca65032,What was the gas consumption peak month for SME customers in 2013?,"SELECT ym.date AS year_month, SUM(ym.consumption) AS total_consumption FROM yearmonth ym JOIN customers c ON c.customer_id = ym.customer_id WHERE c.segment = 'SME' AND ym.date LIKE '2013%' GROUP BY ym.date ORDER BY total_consumption DESC LIMIT 1;",2026-10-25T07:19:20.805569+00:00
+2f837b97-b660-40b5-a77e-4cdda5f18105,How many percent of LAM customer consumed more than 46.73?,"WITH lam_consumption AS (
+  SELECT
+    c.customer_id,
+    SUM(y.consumption) AS total_consumption
+  FROM customers c
+  JOIN yearmonth y
+    ON y.customer_id = c.customer_id
+  WHERE c.segment = 'LAM'
+  GROUP BY c.customer_id
+)
+SELECT
+  ROUND(
+    100.0 * COUNT(*) FILTER (WHERE total_consumption > 46.73)
+    / NULLIF(COUNT(*), 0),
+    2
+  ) AS pct_lam_above_46_73
+FROM lam_consumption;",2026-10-25T07:19:19.771475+00:00
+7a7cb36b-ddb4-4e99-a3bb-a28212c14ce7,Which year recorded the most consumption of gas paid in CZK?,"SELECT SUBSTRING(date, 1, 4) AS year, SUM(consumption) AS total_consumption FROM yearmonth GROUP BY SUBSTRING(date, 1, 4) ORDER BY total_consumption DESC LIMIT 1;",2026-10-25T07:19:17.155675+00:00
+957fa27e-4fd2-4668-b297-d6faa55c887c,How much did customer 6 consume in total between August and November 2013?,"SELECT SUM(ym.consumption) AS total_consumption
+FROM yearmonth ym
+WHERE ym.customer_id = 6
+  AND ym.date BETWEEN '201308' AND '201311';",2026-10-25T07:19:16.532079+00:00
+60b33df9-f590-41bf-a2fb-f36035749e35,Please list the product descriptions of the transactions taken place in the gas stations in the Czech Republic.,"SELECT DISTINCT p.description
+FROM transactions_1k t
+JOIN products p ON p.product_id = t.product_id
+JOIN gasstations g ON g.gas_station_id = t.gas_station_id
+ORDER BY p.description;",2026-10-25T07:19:12.932236+00:00
+c09744be-a146-40f3-8dce-3d126268298c,"How many more ""discount"" gas stations does the Czech Republic have compared to Slovakia?","SELECT
+  SUM(CASE WHEN gs.country = 'CZE' THEN 1 ELSE 0 END)
+  - SUM(CASE WHEN gs.country = 'SVK' THEN 1 ELSE 0 END) AS discount_diff_cze_minus_svk
+FROM gasstations gs
+WHERE LOWER(gs.segment) = 'discount';",2026-10-25T07:19:12.737854+00:00
+bb96d8ef-d6bd-4183-9826-06c3c6f04afb,"Which of the three segments—SME, LAM and KAM—has the biggest and lowest percentage increases in consumption paid in EUR between 2012 and 2013?","WITH seg_consumption AS (
+  SELECT c.segment,
+         SUM(CASE WHEN ym.date LIKE '2012%' THEN ym.consumption ELSE 0 END) AS consumption_2012,
+         SUM(CASE WHEN ym.date LIKE '2013%' THEN ym.consumption ELSE 0 END) AS consumption_2013
+  FROM yearmonth ym
+  JOIN customers c ON c.customer_id = ym.customer_id
+  WHERE c.currency = 'EUR'
+    AND c.segment IN ('SME', 'LAM', 'KAM')
+    AND (ym.date LIKE '2012%' OR ym.date LIKE '2013%')
+  GROUP BY c.segment
+)
+SELECT segment,
+       consumption_2012,
+       consumption_2013,
+       ROUND((consumption_2013 - consumption_2012) / NULLIF(ABS(consumption_2012), 0) * 100, 2) AS pct_change
+FROM seg_consumption
+ORDER BY pct_change DESC",2026-10-25T07:19:08.835290+00:00
+8a8980d6-91ee-40bb-9ca1-2ec5ae937c8e,Who is the top spending customer and how much is the average price per single item purchased by this customer? What currency was being used?,"WITH customer_spend AS (
+  SELECT
+    t.customer_id,
+    c.currency,
+    SUM(t.amount * t.price) AS total_spend,
+    SUM(t.amount)           AS total_items,
+    SUM(t.amount * t.price) / NULLIF(SUM(t.amount), 0) AS avg_price_per_item
+  FROM transactions_1k t
+  JOIN customers c
+    ON c.customer_id = t.customer_id
+  GROUP BY t.customer_id, c.currency
+),
+ranked AS (
+  SELECT
+    cs.*,
+    RANK() OVER (ORDER BY cs.total_spend DESC) AS spend_rank
+  FROM customer_spend cs
+)
+SELECT
+  customer_id,
+  currency,
+  total_spend,
+  total_items,
+  avg_price_per_item
+FROM ranked
+WHERE spend_rank = 1
+ORDER BY total_spend DESC;",2026-10-25T07:18:59.436279+00:00
+ec1d40a4-85eb-45c8-8883-e4237c72ab4a,What's the nationality of the customer who spent 548.4 in 2012/8/24?,"SELECT c.customer_id,
+       c.segment,
+       c.currency
+FROM transactions_1k AS t
+JOIN customers AS c
+  ON c.customer_id = t.customer_id
+WHERE t.date = DATE '2012-08-24'
+GROUP BY c.customer_id, c.segment, c.currency
+HAVING ROUND(SUM(t.price), 2) = 548.40",2026-10-25T07:18:53.461801+00:00
+11bba629-29c3-449f-be7b-7e07832c8247,"What is the percentage of ""premium"" against the overall segment in Country = ""SVK""?","SELECT gs.country,
+       gs.segment,
+       COUNT(*) AS station_count,
+       SUM(COUNT(*)) OVER () AS total_station_count,
+       ROUND(100.0 * COUNT(*) / SUM(COUNT(*)) OVER (), 2) AS percentage_of_total
+FROM gasstations gs
+WHERE gs.country = 'SVK'
+GROUP BY gs.country, gs.segment
+ORDER BY percentage_of_total DESC;",2026-10-25T07:18:52.840448+00:00
+4fc05ac2-ad68-43a4-9c29-c42ae285298c,"Please list the countries of the gas stations with transactions taken place in June, 2013.","SELECT DISTINCT gs.country
+FROM transactions_1k t
+JOIN gasstations gs ON gs.gas_station_id = t.gas_station_id
+WHERE t.date >= DATE '2013-06-01'
+  AND t.date < DATE '2013-07-01'
+ORDER BY gs.country;",2026-10-25T07:18:51.439691+00:00
+f09a3d05-8b2b-4a37-aadf-ed1bd33dcfd7,What is the highest monthly consumption in the year 2012?,"SELECT MAX(ym.consumption) AS highest_monthly_consumption_2012
+FROM yearmonth ym
+WHERE ym.date LIKE '2012%';",2026-10-25T07:18:49.754173+00:00
+4d9e20ec-33e8-4da2-8d76-90f2a8b2a1d0,"Is it true that more SMEs pay in Czech koruna than in euros? If so, how many more?","WITH sme AS (
+  SELECT currency,
+         COUNT(*) AS customer_count
+  FROM customers
+  WHERE segment = 'SME'
+  GROUP BY currency
+)
+SELECT
+  SUM(customer_count) FILTER (WHERE currency = 'CZK') AS czk_customer_count,
+  SUM(customer_count) FILTER (WHERE currency = 'EUR') AS eur_customer_count,
+  SUM(customer_count) FILTER (WHERE currency = 'CZK')
+    - SUM(customer_count) FILTER (WHERE currency = 'EUR') AS czk_minus_eur
+FROM sme;",2026-10-25T07:18:49.133212+00:00
+4693a466-1235-4dc8-88c6-bf5090746e01,What segment did the customer have at 2012/8/23 21:20:00?,"SELECT c.segment
+FROM transactions_1k t
+JOIN customers c ON c.customer_id = t.customer_id
+WHERE t.date = DATE '2012-08-23'
+  AND t.time = TIME '21:20:00';",2026-10-25T07:18:47.805726+00:00

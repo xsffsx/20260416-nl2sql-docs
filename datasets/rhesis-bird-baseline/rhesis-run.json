@@ -1,0 +1,368 @@
+{
+  "id": "f8ed743c-efdb-410c-a706-15610dbeb2e4",
+  "nano_id": "5FEivDOs9x4g",
+  "permitted_actions": [
+    "test_run:delete",
+    "test_run:execute",
+    "test_run:update"
+  ],
+  "project_id": "8aa58678-d952-469f-af75-afefce0176a6",
+  "name": "pristine-jaeger",
+  "user_id": "264f6dfc-d8f3-4d5e-bae2-fac6c4158bfb",
+  "organization_id": "b43335a4-5d29-4c92-aefb-cf77e293d475",
+  "status_id": "772e11a6-007b-474b-97a9-786aeb58b7c4",
+  "attributes": {
+    "status": "Completed",
+    "task_id": "1480a842-4cbe-4d27-b819-65e6366811cd",
+    "batch_mode": true,
+    "started_at": "2026-10-25T07:18:33.022830+00:00",
+    "task_state": "Completed",
+    "updated_at": "2026-10-25T07:21:21.066913+00:00",
+    "metric_plan": {
+      "source": "test_set",
+      "cell_keys": {
+        "0b7a7338-80ed-4939-aee1-b528baf585f2": {
+          "bf03f75d-ecfe-4778-9ae9-7d9ceacd0f6e": "BIRD Official Execution Accuracy"
+        },
+        "0c4c1512-78a0-4e4e-88ac-d894b437a0f7": {
+          "bf03f75d-ecfe-4778-9ae9-7d9ceacd0f6e": "BIRD Official Execution Accuracy"
+        },
+        "11bba629-29c3-449f-be7b-7e07832c8247": {
+          "bf03f75d-ecfe-4778-9ae9-7d9ceacd0f6e": "BIRD Official Execution Accuracy"
+        },
+        "227769e8-8e50-4496-af99-b1909f0ba85e": {
+          "bf03f75d-ecfe-4778-9ae9-7d9ceacd0f6e": "BIRD Official Execution Accuracy"
+        },
+        "2f837b97-b660-40b5-a77e-4cdda5f18105": {
+          "bf03f75d-ecfe-4778-9ae9-7d9ceacd0f6e": "BIRD Official Execution Accuracy"
+        },
+        "4693a466-1235-4dc8-88c6-bf5090746e01": {
+          "bf03f75d-ecfe-4778-9ae9-7d9ceacd0f6e": "BIRD Official Execution Accuracy"
+        },
+        "4d9e20ec-33e8-4da2-8d76-90f2a8b2a1d0": {
+          "bf03f75d-ecfe-4778-9ae9-7d9ceacd0f6e": "BIRD Official Execution Accuracy"
+        },
+        "4fc05ac2-ad68-43a4-9c29-c42ae285298c": {
+          "bf03f75d-ecfe-4778-9ae9-7d9ceacd0f6e": "BIRD Official Execution Accuracy"
+        },
+        "60b33df9-f590-41bf-a2fb-f36035749e35": {
+          "bf03f75d-ecfe-4778-9ae9-7d9ceacd0f6e": "BIRD Official Execution Accuracy"
+        },
+        "7a7cb36b-ddb4-4e99-a3bb-a28212c14ce7": {
+          "bf03f75d-ecfe-4778-9ae9-7d9ceacd0f6e": "BIRD Official Execution Accuracy"
+        },
+        "7e2942de-5dd8-4b6b-8d25-775a5000c10d": {
+          "bf03f75d-ecfe-4778-9ae9-7d9ceacd0f6e": "BIRD Official Execution Accuracy"
+        },
+        "85d28c9e-a627-4ad5-8d35-df5e718ebffe": {
+          "bf03f75d-ecfe-4778-9ae9-7d9ceacd0f6e": "BIRD Official Execution Accuracy"
+        },
+        "876d8549-fb3f-4346-96d9-e99f97db2950": {
+          "bf03f75d-ecfe-4778-9ae9-7d9ceacd0f6e": "BIRD Official Execution Accuracy"
+        },
+        "8a8980d6-91ee-40bb-9ca1-2ec5ae937c8e": {
+          "bf03f75d-ecfe-4778-9ae9-7d9ceacd0f6e": "BIRD Official Execution Accuracy"
+        },
+        "957fa27e-4fd2-4668-b297-d6faa55c887c": {
+          "bf03f75d-ecfe-4778-9ae9-7d9ceacd0f6e": "BIRD Official Execution Accuracy"
+        },
+        "9d865dc2-1ed4-4825-8fb8-d8a95117ec97": {
+          "bf03f75d-ecfe-4778-9ae9-7d9ceacd0f6e": "BIRD Official Execution Accuracy"
+        },
+        "a1b9a232-1457-4221-8cd0-7ec09ca65032": {
+          "bf03f75d-ecfe-4778-9ae9-7d9ceacd0f6e": "BIRD Official Execution Accuracy"
+        },
+        "af4a54e5-0356-48d8-89fa-67e31603d9b8": {
+          "bf03f75d-ecfe-4778-9ae9-7d9ceacd0f6e": "BIRD Official Execution Accuracy"
+        },
+        "b6c85ead-1f45-4c17-9025-7fb62557c9ee": {
+          "bf03f75d-ecfe-4778-9ae9-7d9ceacd0f6e": "BIRD Official Execution Accuracy"
+        },
+        "bb96d8ef-d6bd-4183-9826-06c3c6f04afb": {
+          "bf03f75d-ecfe-4778-9ae9-7d9ceacd0f6e": "BIRD Official Execution Accuracy"
+        },
+        "bbb92715-7224-4194-bd7e-b64de1dea512": {
+          "bf03f75d-ecfe-4778-9ae9-7d9ceacd0f6e": "BIRD Official Execution Accuracy"
+        },
+        "c09744be-a146-40f3-8dce-3d126268298c": {
+          "bf03f75d-ecfe-4778-9ae9-7d9ceacd0f6e": "BIRD Official Execution Accuracy"
+        },
+        "cf5f40e7-4a4d-46f5-af53-4ea0b51772bb": {
+          "bf03f75d-ecfe-4778-9ae9-7d9ceacd0f6e": "BIRD Official Execution Accuracy"
+        },
+        "d8ea5ca8-baad-4a33-8a2b-fc7c37bdf82c": {
+          "bf03f75d-ecfe-4778-9ae9-7d9ceacd0f6e": "BIRD Official Execution Accuracy"
+        },
+        "ec1d40a4-85eb-45c8-8883-e4237c72ab4a": {
+          "bf03f75d-ecfe-4778-9ae9-7d9ceacd0f6e": "BIRD Official Execution Accuracy"
+        },
+        "f09a3d05-8b2b-4a37-aadf-ed1bd33dcfd7": {
+          "bf03f75d-ecfe-4778-9ae9-7d9ceacd0f6e": "BIRD Official Execution Accuracy"
+        },
+        "f140711f-4d31-47ba-a91a-c49a7391f051": {
+          "bf03f75d-ecfe-4778-9ae9-7d9ceacd0f6e": "BIRD Official Execution Accuracy"
+        },
+        "f3e5a5df-39c8-4d95-adec-ae6b6fe7ac89": {
+          "bf03f75d-ecfe-4778-9ae9-7d9ceacd0f6e": "BIRD Official Execution Accuracy"
+        },
+        "f57dda82-06c6-490e-a253-ce194072cf07": {
+          "bf03f75d-ecfe-4778-9ae9-7d9ceacd0f6e": "BIRD Official Execution Accuracy"
+        },
+        "fc4bd62c-e738-4bc8-9dea-5886b52d2975": {
+          "bf03f75d-ecfe-4778-9ae9-7d9ceacd0f6e": "BIRD Official Execution Accuracy"
+        }
+      },
+      "test_order": [
+        "0b7a7338-80ed-4939-aee1-b528baf585f2",
+        "0c4c1512-78a0-4e4e-88ac-d894b437a0f7",
+        "11bba629-29c3-449f-be7b-7e07832c8247",
+        "227769e8-8e50-4496-af99-b1909f0ba85e",
+        "2f837b97-b660-40b5-a77e-4cdda5f18105",
+        "4693a466-1235-4dc8-88c6-bf5090746e01",
+        "4d9e20ec-33e8-4da2-8d76-90f2a8b2a1d0",
+        "4fc05ac2-ad68-43a4-9c29-c42ae285298c",
+        "60b33df9-f590-41bf-a2fb-f36035749e35",
+        "7a7cb36b-ddb4-4e99-a3bb-a28212c14ce7",
+        "7e2942de-5dd8-4b6b-8d25-775a5000c10d",
+        "85d28c9e-a627-4ad5-8d35-df5e718ebffe",
+        "876d8549-fb3f-4346-96d9-e99f97db2950",
+        "8a8980d6-91ee-40bb-9ca1-2ec5ae937c8e",
+        "957fa27e-4fd2-4668-b297-d6faa55c887c",
+        "9d865dc2-1ed4-4825-8fb8-d8a95117ec97",
+        "a1b9a232-1457-4221-8cd0-7ec09ca65032",
+        "af4a54e5-0356-48d8-89fa-67e31603d9b8",
+        "b6c85ead-1f45-4c17-9025-7fb62557c9ee",
+        "bb96d8ef-d6bd-4183-9826-06c3c6f04afb",
+        "bbb92715-7224-4194-bd7e-b64de1dea512",
+        "c09744be-a146-40f3-8dce-3d126268298c",
+        "cf5f40e7-4a4d-46f5-af53-4ea0b51772bb",
+        "d8ea5ca8-baad-4a33-8a2b-fc7c37bdf82c",
+        "ec1d40a4-85eb-45c8-8883-e4237c72ab4a",
+        "f09a3d05-8b2b-4a37-aadf-ed1bd33dcfd7",
+        "f140711f-4d31-47ba-a91a-c49a7391f051",
+        "f3e5a5df-39c8-4d95-adec-ae6b6fe7ac89",
+        "f57dda82-06c6-490e-a253-ce194072cf07",
+        "fc4bd62c-e738-4bc8-9dea-5886b52d2975"
+      ],
+      "requirements": [
+        {
+          "id": null,
+          "name": "Unassigned",
+          "metrics": [
+            {
+              "id": "bf03f75d-ecfe-4778-9ae9-7d9ceacd0f6e",
+              "key": "BIRD Official Execution Accuracy",
+              "name": "BIRD Official Execution Accuracy",
+              "ambiguous": false
+            }
+          ],
+          "test_ids": [
+            "bbb92715-7224-4194-bd7e-b64de1dea512",
+            "af4a54e5-0356-48d8-89fa-67e31603d9b8",
+            "ec1d40a4-85eb-45c8-8883-e4237c72ab4a",
+            "cf5f40e7-4a4d-46f5-af53-4ea0b51772bb",
+            "60b33df9-f590-41bf-a2fb-f36035749e35",
+            "7e2942de-5dd8-4b6b-8d25-775a5000c10d",
+            "f3e5a5df-39c8-4d95-adec-ae6b6fe7ac89",
+            "a1b9a232-1457-4221-8cd0-7ec09ca65032",
+            "11bba629-29c3-449f-be7b-7e07832c8247",
+            "85d28c9e-a627-4ad5-8d35-df5e718ebffe",
+            "f09a3d05-8b2b-4a37-aadf-ed1bd33dcfd7",
+            "0c4c1512-78a0-4e4e-88ac-d894b437a0f7",
+            "227769e8-8e50-4496-af99-b1909f0ba85e",
+            "7a7cb36b-ddb4-4e99-a3bb-a28212c14ce7",
+            "f140711f-4d31-47ba-a91a-c49a7391f051",
+            "2f837b97-b660-40b5-a77e-4cdda5f18105",
+            "876d8549-fb3f-4346-96d9-e99f97db2950",
+            "bb96d8ef-d6bd-4183-9826-06c3c6f04afb",
+            "4693a466-1235-4dc8-88c6-bf5090746e01",
+            "957fa27e-4fd2-4668-b297-d6faa55c887c",
+            "c09744be-a146-40f3-8dce-3d126268298c",
+            "4fc05ac2-ad68-43a4-9c29-c42ae285298c",
+            "b6c85ead-1f45-4c17-9025-7fb62557c9ee",
+            "0b7a7338-80ed-4939-aee1-b528baf585f2",
+            "8a8980d6-91ee-40bb-9ca1-2ec5ae937c8e",
+            "fc4bd62c-e738-4bc8-9dea-5886b52d2975",
+            "f57dda82-06c6-490e-a253-ce194072cf07",
+            "9d865dc2-1ed4-4825-8fb8-d8a95117ec97",
+            "d8ea5ca8-baad-4a33-8a2b-fc7c37bdf82c",
+            "4d9e20ec-33e8-4da2-8d76-90f2a8b2a1d0"
+          ]
+        }
+      ]
+    },
+    "total_tests": 30,
+    "completed_at": "2026-10-25T07:21:21.066913+00:00",
+    "final_status": "Completed",
+    "execution_mode": "Parallel",
+    "configuration_id": "0ef1c60e-cc82-4b41-a70b-9b3e87c73b85",
+    "total_execution_time_ms": 168044,
+    "collect_results_completed": true
+  },
+  "test_configuration_id": "0ef1c60e-cc82-4b41-a70b-9b3e87c73b85",
+  "experiment_id": null,
+  "owner_id": null,
+  "assignee_id": null,
+  "counts": {
+    "comments": 0,
+    "tasks": 0
+  },
+  "tags": [],
+  "status": {
+    "id": "772e11a6-007b-474b-97a9-786aeb58b7c4",
+    "nano_id": "TWAmP9ApgGD6",
+    "project_id": null,
+    "name": "Completed",
+    "description": "Describes a completed test run",
+    "user_id": "264f6dfc-d8f3-4d5e-bae2-fac6c4158bfb",
+    "organization_id": "b43335a4-5d29-4c92-aefb-cf77e293d475"
+  },
+  "user": {
+    "id": "264f6dfc-d8f3-4d5e-bae2-fac6c4158bfb",
+    "nano_id": "eWXgTdYQq1Ry",
+    "project_id": null,
+    "name": "Local Admin",
+    "given_name": "Local",
+    "family_name": "Admin",
+    "email": "admin@local.dev",
+    "picture": null,
+    "organization_id": "b43335a4-5d29-4c92-aefb-cf77e293d475"
+  },
+  "test_configuration": {
+    "id": "0ef1c60e-cc82-4b41-a70b-9b3e87c73b85",
+    "nano_id": "i4C4IkD9YsXF",
+    "project_id": "8aa58678-d952-469f-af75-afefce0176a6",
+    "attributes": {
+      "execution_mode": "Parallel",
+      "metrics_source": "test_set"
+    },
+    "endpoint": {
+      "id": "35fae721-5122-42f9-ad32-f5e67c3847b3",
+      "nano_id": "QUqfKK02FiuU",
+      "project_id": "8aa58678-d952-469f-af75-afefce0176a6",
+      "name": "NL2SQL API — BIRD question only",
+      "description": "Direct REST endpoint for the 30-record BIRD baseline. Sends only input question in query; Gold SQL remains scoring data.",
+      "user_id": "264f6dfc-d8f3-4d5e-bae2-fac6c4158bfb",
+      "organization_id": "b43335a4-5d29-4c92-aefb-cf77e293d475",
+      "status_id": "8622e170-1f23-451d-be37-40eacf6de7eb",
+      "tags": [],
+      "project": {
+        "id": "8aa58678-d952-469f-af75-afefce0176a6",
+        "nano_id": "rHr451Ae3j0c",
+        "project_id": null,
+        "name": "nl2sql_fund",
+        "description": "Dedicated workspace for GEN-AI NL2SQL (fund domain) testing via MCP ask interface",
+        "user_id": "264f6dfc-d8f3-4d5e-bae2-fac6c4158bfb",
+        "organization_id": "b43335a4-5d29-4c92-aefb-cf77e293d475",
+        "status_id": null,
+        "attributes": null,
+        "tags": [],
+        "icon": null
+      }
+    },
+    "test_set": {
+      "id": "b3f21bbc-f082-4267-a8d1-41559894bae7",
+      "nano_id": "CCPiXtUkToXC",
+      "project_id": "8aa58678-d952-469f-af75-afefce0176a6",
+      "name": "BIRD Mini-Dev V2 — 30 question-only baseline",
+      "user_id": "264f6dfc-d8f3-4d5e-bae2-fac6c4158bfb",
+      "organization_id": "b43335a4-5d29-4c92-aefb-cf77e293d475",
+      "status_id": "b3ce25ff-1aa7-4723-827f-a6fa0804e64c",
+      "attributes": {
+        "topics": [
+          "0c608c9d-e697-4fb1-8d1c-b774e10aab8b"
+        ],
+        "metadata": {
+          "sample": "What segment did the customer have at 2012/8/23 21:20:00?",
+          "topics": [
+            "debit_card_specializing"
+          ],
+          "categories": [
+            "BIRD Mini-Dev V2"
+          ],
+          "total_tests": 30,
+          "license_type": "Copyright",
+          "requirements": [
+            "Question ID 1471: answer the question with read-only SQL for the database.",
+            "Question ID 1481: answer the question with read-only SQL for the database.",
+            "Question ID 1507: answer the question with read-only SQL for the database.",
+            "Question ID 1479: answer the question with read-only SQL for the database.",
+            "Question ID 1476: answer the question with read-only SQL for the database.",
+            "Question ID 1533: answer the question with read-only SQL for the database.",
+            "Question ID 1506: answer the question with read-only SQL for the database.",
+            "Question ID 1500: answer the question with read-only SQL for the database.",
+            "Question ID 1514: answer the question with read-only SQL for the database.",
+            "Question ID 1529: answer the question with read-only SQL for the database.",
+            "Question ID 1480: answer the question with read-only SQL for the database.",
+            "Question ID 1531: answer the question with read-only SQL for the database.",
+            "Question ID 1528: answer the question with read-only SQL for the database.",
+            "Question ID 1501: answer the question with read-only SQL for the database.",
+            "Question ID 1509: answer the question with read-only SQL for the database.",
+            "Question ID 1526: answer the question with read-only SQL for the database.",
+            "Question ID 1498: answer the question with read-only SQL for the database.",
+            "Question ID 1490: answer the question with read-only SQL for the database.",
+            "Question ID 1505: answer the question with read-only SQL for the database.",
+            "Question ID 1486: answer the question with read-only SQL for the database.",
+            "Question ID 1484: answer the question with read-only SQL for the database.",
+            "Question ID 1472: answer the question with read-only SQL for the database.",
+            "Question ID 1515: answer the question with read-only SQL for the database.",
+            "Question ID 1525: answer the question with read-only SQL for the database.",
+            "Question ID 1521: answer the question with read-only SQL for the database.",
+            "Question ID 1473: answer the question with read-only SQL for the database.",
+            "Question ID 1493: answer the question with read-only SQL for the database.",
+            "Question ID 1524: answer the question with read-only SQL for the database.",
+            "Question ID 1482: answer the question with read-only SQL for the database.",
+            "Question ID 1483: answer the question with read-only SQL for the database."
+          ],
+          "total_prompts": 30
+        },
+        "categories": [
+          "7af98770-4adc-4686-b69f-65f9f8ee7520"
+        ],
+        "requirements": [
+          "1a27dfaa-1f0d-4ed4-8924-e3102e610afc",
+          "aa5f2ed1-416c-407a-9d6f-4dc81d17a918",
+          "1d3ee562-9145-4895-89b4-5587cf55ae57",
+          "08eec56c-536f-422c-9231-771a90fcdb50",
+          "0d6eef46-c65b-43f2-920e-237b575df665",
+          "e08ccd27-b11d-4a16-9d72-4ee9f19b010c",
+          "2b0256a9-5bb3-4884-8c69-3d929f3686f8",
+          "8dbbc31d-bb89-44db-9fba-e5a00bdad78a",
+          "3c9fe0ed-b351-4b30-8a78-243206004218",
+          "3661ee83-8864-452f-840e-e418f08e3443",
+          "4e12e5c7-e61d-4682-8ee4-a0cefbceef37",
+          "19d7a25c-d054-44c8-a78d-1ab29f440e77",
+          "d8ea0fe5-66a4-43f3-aef0-281a27bcd3af",
+          "6d8d051c-a8ec-452f-b53b-b7468bf9f221",
+          "68e12f7a-895f-46b7-9124-a9f1d9a8c827",
+          "1f042750-0bae-46f9-85de-aa577d0edf1f",
+          "ef6ad6a3-ec63-4296-82c4-66ecdb39b0d6",
+          "9d488ea5-94aa-4db1-8e5e-1c74b728d9f0",
+          "74b7f69a-72ef-4178-b61f-51713299aebe",
+          "78594f57-ab60-4eb2-bbcf-ed63cc153786",
+          "d301320e-ad93-4058-88eb-b46a58cda5d4",
+          "b132275e-e038-46e1-bca0-909e5edd71fb",
+          "8222b1f1-8b33-4001-affb-f9579ee99dba",
+          "e99f2801-88c2-4efb-a266-8f2bd5c6ef0b",
+          "ce32adff-cfd5-44ad-89d3-937988cce8c7",
+          "c59007ab-42cd-4b9e-8163-34d2c3c2c987",
+          "3f8872c8-7ae1-4685-b3a3-7b294565e357",
+          "4d8ad004-7203-411a-a93a-70a6e7d9ecaa",
+          "20139123-9f44-466d-aa0c-8a063051422e",
+          "5d16a9cc-929f-49cf-a3b4-25791e9551a0"
+        ]
+      },
+      "test_set_type": {
+        "id": "cb8da4d3-b46d-4107-9f68-815ed91a183e",
+        "nano_id": "U8MNpgxeoVFh",
+        "project_id": null,
+        "description": "Test set containing only single-turn tests",
+        "type_name": "TestSetType",
+        "type_value": "Single-Turn",
+        "user_id": "264f6dfc-d8f3-4d5e-bae2-fac6c4158bfb",
+        "organization_id": "b43335a4-5d29-4c92-aefb-cf77e293d475"
+      },
+      "deleted_at": null
+    }
+  }
+}

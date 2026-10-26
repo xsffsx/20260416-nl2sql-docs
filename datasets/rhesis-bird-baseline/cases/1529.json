@@ -1,0 +1,46 @@
+{
+  "question": "What is the amount spent by customer \"38508\" at the gas stations? How much had the customer spent in January 2012?",
+  "score": 0.0,
+  "details": {
+    "reason": "Complete results differ from Gold SQL; BIRD Soft F1 = 0.28571428571428575",
+    "BIRD_Soft_F1": 0.28571428571428575,
+    "actual_sql": "SELECT\n  customer_id,\n  SUM(amount) AS total_units,\n  ROUND(SUM(price), 2) AS total_spent,\n  SUM(CASE WHEN date >= DATE '2012-01-01' AND date < DATE '2012-02-01' THEN amount ELSE 0 END) AS jan2012_units,\n  ROUND(SUM(CASE WHEN date >= DATE '2012-01-01' AND date < DATE '2012-02-01' THEN price ELSE 0 END), 2) AS jan2012_spent\nFROM transactions_1k\nWHERE customer_id = 38508\nGROUP BY customer_id;",
+    "gold_sql": "SELECT SUM(T1.price), SUM(CASE WHEN T3.date = '201201' THEN T1.price ELSE 0 END) FROM transactions_1k AS T1 INNER JOIN gasstations AS T2 ON T1.gas_station_id = T2.gas_station_id INNER JOIN yearmonth AS T3 ON T1.customer_id = T3.customer_id WHERE T1.customer_id = '38508'",
+    "actual_result": [
+      [
+        38508,
+        {
+          "type": "Decimal",
+          "value": "148"
+        },
+        {
+          "type": "Decimal",
+          "value": "3437.01"
+        },
+        {
+          "type": "Decimal",
+          "value": "0"
+        },
+        {
+          "type": "Decimal",
+          "value": "0.00"
+        }
+      ]
+    ],
+    "gold_result": [
+      [
+        {
+          "type": "Decimal",
+          "value": "68740.20"
+        },
+        {
+          "type": "Decimal",
+          "value": "3437.01"
+        }
+      ]
+    ],
+    "sql_error": null,
+    "scorer_ms": 11.61445799516514,
+    "max_parallel_workers_per_gather": 0
+  }
+}

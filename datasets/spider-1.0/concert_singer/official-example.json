@@ -1,0 +1,27 @@
+{
+  "source": "Spider 1.0 official dev.json",
+  "split_index": 37,
+  "db_id": "concert_singer",
+  "question": "List all singer names in concerts in year 2014.",
+  "gold_sql": "SELECT T2.name FROM singer_in_concert AS T1 JOIN singer AS T2 ON T1.singer_id  =  T2.singer_id JOIN concert AS T3 ON T1.concert_id  =  T3.concert_id WHERE T3.year  =  2014",
+  "sqlite_result": [
+    [
+      "Timbaland"
+    ],
+    [
+      "Justin Brown"
+    ],
+    [
+      "John Nizinik"
+    ],
+    [
+      "Justin Brown"
+    ],
+    [
+      "Tribal King"
+    ],
+    [
+      "Rose White"
+    ]
+  ]
+}

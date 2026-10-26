@@ -1,0 +1,378 @@
+"""Test executor for remote function execution."""
+
+import asyncio
+import contextvars
+import inspect
+import logging
+import time
+from collections.abc import Callable
+from functools import partial
+from typing import Any
+
+from rhesis.sdk.connector.schemas import TestStatus
+from rhesis.sdk.connector.serializer import TypeSerializer
+from rhesis.sdk.telemetry.tracer import pop_result_trace_id
+from rhesis.telemetry.constants import ConversationContext as ConvContextConstants
+from rhesis.telemetry.constants import TestExecutionContext as TestContextConstants
+from rhesis.telemetry.context import (
+    get_root_trace_id,
+    set_conversation_id,
+    set_conversation_mapped_input,
+    set_conversation_trace_id,
+    set_root_trace_id,
+    set_test_execution_context,
+    set_tracing_disabled,
+)
+
+logger = logging.getLogger(__name__)
+
+
+class TestExecutor:
+    """Handles execution of remote test requests with automatic type serialization."""
+
+    def __init__(self, serializers: dict | None = None):
+        """
+        Initialize the executor.
+
+        Args:
+            serializers: Optional global custom serializers for all functions.
+                Format: {Type: {"dump": callable, "load": callable}}
+        """
+        self._global_serializers = serializers
+
+    def _get_serializer(self, function_serializers: dict | None = None) -> TypeSerializer:
+        """
+        Get a TypeSerializer instance with merged custom serializers.
+
+        Args:
+            function_serializers: Function-specific serializers (take precedence)
+
+        Returns:
+            TypeSerializer instance
+        """
+        # Merge global and function-specific serializers
+        merged = {}
+        if self._global_serializers:
+            merged.update(self._global_serializers)
+        if function_serializers:
+            merged.update(function_serializers)
+
+        return TypeSerializer(custom=merged if merged else None)
+
+    def _prepare_inputs(
+        self,
+        func: Callable,
+        inputs: dict[str, Any],
+        serializer: TypeSerializer,
+        endpoint_context: Any | None = None,
+    ) -> dict[str, Any]:
+        """
+        Prepare inputs by converting dicts to typed objects based on type hints.
+
+        All values flow through the serializer, which decides whether to
+        construct typed objects based on the parameter's type annotation.
+
+        Parameters whose type annotation is
+        :class:`~rhesis.sdk.context.EndpointContext` are injected from
+        ``endpoint_context`` rather than from the wire inputs.  This
+        keeps tenant identity out of the business-input namespace.
+
+        Args:
+            func: Function to prepare inputs for
+            inputs: Raw input dictionary
+            serializer: TypeSerializer instance to use
+            endpoint_context: Optional EndpointContext to inject
+
+        Returns:
+            Dictionary with prepared inputs (typed objects where applicable)
+        """
+        from rhesis.sdk.context import EndpointContext
+
+        sig = inspect.signature(func)
+        prepared = {}
+        has_var_keyword = False
+        named_params = set()
+
+        # First pass: identify named parameters and check for **kwargs
+        for name, param in sig.parameters.items():
+            if param.kind == inspect.Parameter.VAR_KEYWORD:
+                has_var_keyword = True
+            else:
+                named_params.add(name)
+
+        # Second pass: process named parameters
+        for name, param in sig.parameters.items():
+            if param.kind == inspect.Parameter.VAR_KEYWORD:
+                continue  # Handle **kwargs separately below
+
+            # EndpointContext parameters are ALWAYS injected by the platform, never
+            # from wire inputs.  This is enforced unconditionally so that an attacker
+            # who controls the inputs dict cannot fabricate a context with arbitrary
+            # tenant identity -- even when endpoint_context has not been set yet.
+            if param.annotation is EndpointContext:
+                if endpoint_context is not None:
+                    prepared[name] = endpoint_context
+                # Never fall through to wire-input handling for this type.
+                continue
+
+            if name not in inputs:
+                continue
+
+            value = inputs[name]
+            if value is None and param.default is not inspect.Parameter.empty:
+                continue
+            # Let the serializer handle everything uniformly
+            prepared[name] = serializer.load(value, param.annotation)
+
+        # If function accepts **kwargs, pass through all extra inputs
+        if has_var_keyword:
+            for name, value in inputs.items():
+                if name not in named_params and name not in prepared:
+                    # Pass through extra parameters (serializer with no type hint)
+                    prepared[name] = serializer.load(value, inspect.Parameter.empty)
+
+        return prepared
+
+    def _serialize_result(self, result: Any, serializer: TypeSerializer) -> Any:
+        """
+        Serialize result using the TypeSerializer.
+
+        Handles Pydantic models, dataclasses, and other complex types automatically.
+
+        Args:
+            result: Function output (any type)
+            serializer: TypeSerializer instance to use
+
+        Returns:
+            Serialized result (JSON-compatible)
+        """
+        return serializer.dump(result)
+
+    async def execute(
+        self,
+        func: Callable,
+        function_name: str,
+        inputs: dict[str, Any],
+        serializers: dict | None = None,
+        endpoint_context: Any | None = None,
+    ) -> dict[str, Any]:
+        """
+        Execute a function with given inputs.
+
+        Args:
+            func: Function to execute
+            function_name: Name of the function (for logging)
+            inputs: Function input parameters
+            serializers: Optional function-specific custom serializers.
+                Format: {Type: {"dump": callable, "load": callable}}
+            endpoint_context: Optional :class:`~rhesis.sdk.context.EndpointContext`
+                to inject into functions that declare a parameter of that type.
+
+        Returns:
+            Dictionary with execution results:
+                - status: "success" or "error"
+                - output: Function output (if successful)
+                - error: Error message (if failed)
+                - duration_ms: Execution duration in milliseconds
+        """
+        start_time = time.time()
+
+        # Get serializer for this execution (merges global and function-specific)
+        serializer = self._get_serializer(serializers)
+
+        try:
+            # Check if tracing should be suppressed for this invocation
+            disable_tracing = inputs.pop("_rhesis_disable_tracing", False)
+            if disable_tracing:
+                set_tracing_disabled(True)
+
+            # Extract test execution context (internal parameter, not for user function)
+            # Store in context variable so tracer can access it
+            test_context = inputs.pop(TestContextConstants.CONTEXT_KEY, None)
+            if test_context and not disable_tracing:
+                logger.debug(
+                    f"Test context for {function_name}: "
+                    f"run={test_context.get(TestContextConstants.Fields.TEST_RUN_ID)}"
+                )
+                set_test_execution_context(test_context)
+
+            # Extract conversation context (internal parameter)
+            conv_context = inputs.pop(ConvContextConstants.CONTEXT_KEY, None)
+            if conv_context and not disable_tracing:
+                conv_id = conv_context.get(ConvContextConstants.Fields.CONVERSATION_ID)
+                conv_trace = conv_context.get(ConvContextConstants.Fields.TRACE_ID)
+                mapped_input = conv_context.get(ConvContextConstants.Fields.MAPPED_INPUT, "")
+                if conv_id:
+                    set_conversation_id(conv_id)
+                if conv_trace:
+                    set_conversation_trace_id(conv_trace)
+                if mapped_input:
+                    set_conversation_mapped_input(mapped_input)
+                logger.debug(
+                    f"Conversation context for {function_name}: id={conv_id}, trace_id={conv_trace}"
+                )
+
+            try:
+                # Prepare inputs: convert dicts to typed objects based on type hints
+                prepared_inputs = self._prepare_inputs(
+                    func,
+                    inputs,
+                    serializer,
+                    endpoint_context=endpoint_context,
+                )
+
+                # Execute function (sync or async)
+                if asyncio.iscoroutinefunction(func):
+                    result = await func(**prepared_inputs)
+                else:
+                    # Run sync functions in thread pool to avoid blocking the event loop
+                    # This is critical for long-running functions (e.g., LLM calls) so the
+                    # WebSocket can continue responding to pings during execution
+                    loop = asyncio.get_running_loop()
+                    # Copy context to the thread so contextvars (like test_execution_context)
+                    # are available in the function and its nested calls (e.g., tracer)
+                    ctx = contextvars.copy_context()
+                    result = await loop.run_in_executor(
+                        None, partial(ctx.run, func, **prepared_inputs)
+                    )
+
+                # Handle generators (consume and collect output)
+                result = await self._consume_generator(result)
+
+                # Get trace_id BEFORE serialization (which creates a new object)
+                # For sync functions in thread pools, context vars don't propagate back,
+                # so check for trace_id stored in thread-safe dict by tracer
+                trace_id = None
+                if not disable_tracing:
+                    trace_id = get_root_trace_id()
+                    if trace_id is None and result is not None:
+                        trace_id = pop_result_trace_id(result)
+
+                # Serialize result to JSON-compatible format
+                result = self._serialize_result(result, serializer)
+
+                duration_ms = (time.time() - start_time) * 1000
+
+                return {
+                    "status": TestStatus.SUCCESS,
+                    "output": result,
+                    "error": None,
+                    "duration_ms": duration_ms,
+                    "trace_id": trace_id,
+                }
+
+            finally:
+                # Clear context after execution
+                set_test_execution_context(None)
+                set_root_trace_id(None)
+                set_conversation_id(None)
+                set_conversation_trace_id(None)
+                set_conversation_mapped_input(None)
+                if disable_tracing:
+                    set_tracing_disabled(False)
+
+        except Exception as e:
+            duration_ms = (time.time() - start_time) * 1000
+            logger.error(f"Error executing function {function_name}: {e}")
+
+            return {
+                "status": TestStatus.ERROR,
+                "output": None,
+                "error": str(e),
+                "duration_ms": duration_ms,
+                "trace_id": None,
+            }
+
+    async def execute_metric(
+        self,
+        metric_func: Callable,
+        metric_name: str,
+        inputs: dict[str, Any],
+        accepted_params: list[str],
+    ) -> dict[str, Any]:
+        """
+        Execute an SDK-side metric with given inputs.
+
+        Args:
+            metric_func: Metric callable
+            metric_name: Name of the metric (for logging)
+            inputs: Metric inputs (input, output, expected_output, context)
+            accepted_params: Parameter names the metric accepts
+
+        Returns:
+            Dictionary with:
+                - status: "success" or "error"
+                - score: Metric score (if successful)
+                - details: Additional details dict (if successful)
+                - error: Error message (if failed)
+                - duration_ms: Execution duration in milliseconds
+        """
+        start_time = time.time()
+
+        try:
+            filtered_inputs = {k: v for k, v in inputs.items() if k in accepted_params}
+
+            if asyncio.iscoroutinefunction(metric_func):
+                result = await metric_func(**filtered_inputs)
+            else:
+                loop = asyncio.get_running_loop()
+                ctx = contextvars.copy_context()
+                result = await loop.run_in_executor(
+                    None, partial(ctx.run, metric_func, **filtered_inputs)
+                )
+
+            # Normalize result to score + details
+            if isinstance(result, dict):
+                score = result.get("score")
+                details = result.get("details", {})
+            elif hasattr(result, "score"):
+                score = result.score
+                details = result.details if hasattr(result, "details") else {}
+            else:
+                score = result
+                details = {}
+
+            duration_ms = (time.time() - start_time) * 1000
+
+            return {
+                "status": TestStatus.SUCCESS,
+                "score": score,
+                "details": details if isinstance(details, dict) else {},
+                "error": None,
+                "duration_ms": duration_ms,
+            }
+
+        except Exception as e:
+            duration_ms = (time.time() - start_time) * 1000
+            logger.error(f"Error executing metric {metric_name}: {e}")
+
+            return {
+                "status": TestStatus.ERROR,
+                "score": None,
+                "details": {},
+                "error": str(e),
+                "duration_ms": duration_ms,
+            }
+
+    async def _consume_generator(self, result: Any) -> Any:
+        """
+        Consume generator if result is a generator.
+
+        Args:
+            result: Function result (potentially a generator)
+
+        Returns:
+            Original result if not a generator, joined string if generator
+        """
+        # Check if result is a generator and consume it
+        if inspect.isgenerator(result) or inspect.isasyncgen(result):
+            chunks = []
+            if inspect.isasyncgen(result):
+                async for chunk in result:
+                    chunks.append(str(chunk))
+            else:
+                for chunk in result:
+                    chunks.append(str(chunk))
+            return "".join(chunks)
+
+        return result

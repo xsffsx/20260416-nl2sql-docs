@@ -1,0 +1,961 @@
+{
+  "request": {
+    "url": "http://host.docker.internal:4000/api/nl2sql?projectId=bird_baseline_20261024",
+    "body": {
+      "query": "What was the difference in gas consumption between CZK-paying customers and EUR-paying customers in 2012?"
+    },
+    "method": "POST",
+    "headers": {
+      "X-User-ID": "264f6dfc-d8f3-4d5e-bae2-fac6c4158bfb",
+      "Content-Type": "application/json",
+      "X-Organization-ID": "b43335a4-5d29-4c92-aefb-cf77e293d475"
+    },
+    "connection_type": "REST"
+  },
+  "raw_response": {
+    "sql": "Generate SQL and a fast-mode answer package from schema context, retrieved SQL evidence, and user instructions.",
+    "meta": {
+      "timing": {
+        "endedAtMs": 1792938842548,
+        "startedAtMs": 1792938716991,
+        "totalDurationMs": 125557
+      },
+      "sql_limit_count": 0,
+      "sql_actual_count": 0
+    },
+    "query": "What was the difference in gas consumption between CZK-paying customers and EUR-paying customers in 2012?",
+    "reason": {
+      "answer": "QA database operation failed during reason_and_generate",
+      "business": "",
+      "technical": ""
+    },
+    "status": "error",
+    "queryId": "5046b62e-695c-47af-a19c-0ebe80c114a2",
+    "results": [],
+    "traceId": "ef0138349a814e19ae9d6cb75f852a84",
+    "threadId": "207b8c62-b7bb-4f2d-9e8d-c5a050b7656a",
+    "confidence": 0.0,
+    "groundReason": "",
+    "suggestedQuestion": []
+  },
+  "trace": {
+    "queryId": "5046b62e-695c-47af-a19c-0ebe80c114a2",
+    "threadId": "207b8c62-b7bb-4f2d-9e8d-c5a050b7656a",
+    "traceId": "ef0138349a814e19ae9d6cb75f852a84",
+    "artifactVersionId": "ea8a1aa0-46a1-4c99-aed0-18c5ac9c3a14",
+    "bundleHash": "50c0cc65c8c8fcd8aaac472f897ab6e1453ca8e8588380cec92bd8126ec7e0f7",
+    "versionName": "BIRD debit baseline · no SQL Pair",
+    "runtimeIdentity": {
+      "bundleHash": "50c0cc65c8c8fcd8aaac472f897ab6e1453ca8e8588380cec92bd8126ec7e0f7",
+      "schemaVersionId": "489dff07-db00-4d4c-b66e-d75efa28fe65"
+    },
+    "dataSourceFingerprint": "runtime",
+    "schemaRag": {
+      "status": "active",
+      "activatedAt": "2026-10-24T07:37:49.382844+00:00",
+      "consistency": "consistent",
+      "sourceBundleHash": "50c0cc65c8c8fcd8aaac472f897ab6e1453ca8e8588380cec92bd8126ec7e0f7",
+      "sourceArtifactVersionId": "ea8a1aa0-46a1-4c99-aed0-18c5ac9c3a14"
+    },
+    "status": "failed",
+    "type": "TEXT_TO_SQL",
+    "answerText": "Ask failed: QA database operation failed during reason_and_generate",
+    "queryResult": {
+      "sql": "Generate SQL and a fast-mode answer package from schema context, retrieved SQL evidence, and user instructions.",
+      "meta": {
+        "timing": {
+          "endedAtMs": 1792938842548,
+          "startedAtMs": 1792938716991,
+          "totalDurationMs": 125557
+        },
+        "sql_limit_count": 0,
+        "sql_actual_count": 0
+      },
+      "query": "What was the difference in gas consumption between CZK-paying customers and EUR-paying customers in 2012?",
+      "reason": {
+        "answer": "QA database operation failed during reason_and_generate",
+        "business": "",
+        "technical": ""
+      },
+      "status": "error",
+      "results": [],
+      "bundleHash": "50c0cc65c8c8fcd8aaac472f897ab6e1453ca8e8588380cec92bd8126ec7e0f7",
+      "confidence": 0.0,
+      "question_id": "5046b62e695c47afa19c0ebe80c114a2",
+      "sqlRedacted": false,
+      "artifactVersionId": "ea8a1aa0-46a1-4c99-aed0-18c5ac9c3a14",
+      "rephrased_question": "What was the difference in gas consumption between CZK-paying customers and EUR-paying customers in 2012?",
+      "rowCount": 0,
+      "rows": [],
+      "columns": []
+    },
+    "rephrased_question": "What was the difference in gas consumption between CZK-paying customers and EUR-paying customers in 2012?",
+    "steps": [
+      {
+        "id": "understanding:1",
+        "phase": "understanding",
+        "title": "Understanding",
+        "index": 1,
+        "status": "success",
+        "startedAtMs": 1792938717007,
+        "endedAtMs": 1792938717104,
+        "durationMs": 97,
+        "input": {
+          "text": "Understand the user's request and determine the execution intent for this ask.",
+          "artifacts": {
+            "query": "What was the difference in gas consumption between CZK-paying customers and EUR-paying customers in 2012?",
+            "histories": []
+          }
+        },
+        "thinking": null,
+        "output": {
+          "text": "Final question: What was the difference in gas consumption between CZK-paying customers and EUR-paying customers in 2012?"
+        },
+        "stream": {
+          "kind": "simulated",
+          "activeLane": "done"
+        },
+        "provenance": "persisted"
+      },
+      {
+        "id": "searching:1",
+        "phase": "searching",
+        "title": "SQL Pair RAG",
+        "index": 2,
+        "status": "success",
+        "startedAtMs": 1792938717186,
+        "endedAtMs": 1792938717224,
+        "durationMs": 38,
+        "input": {
+          "text": "Retrieve relevant SQL examples and related retrieval evidence for the current question.",
+          "artifacts": {
+            "query": "What was the difference in gas consumption between CZK-paying customers and EUR-paying customers in 2012?",
+            "histories": [],
+            "rephrased_question": "What was the difference in gas consumption between CZK-paying customers and EUR-paying customers in 2012?"
+          }
+        },
+        "thinking": null,
+        "output": {
+          "text": "SQL example search: reviewed 0 candidates and selected 0 examples.",
+          "artifacts": {
+            "sqlPairRetrieval": {
+              "rrfK": 60,
+              "topK": 10,
+              "queryText": "What was the difference in gas consumption between CZK-paying customers and EUR-paying customers in 2012?",
+              "threshold": 0.7,
+              "candidates": [],
+              "selectedIds": [],
+              "selectedCount": 0,
+              "selectedPairs": [],
+              "candidateCount": 0,
+              "candidateLimit": 25,
+              "retrievalMethod": "api",
+              "providerEndpointHost": "127.0.0.1:4000"
+            }
+          }
+        },
+        "stream": {
+          "kind": "simulated",
+          "activeLane": "done"
+        },
+        "provenance": "persisted"
+      },
+      {
+        "id": "user_instruction:1",
+        "phase": "user_instruction",
+        "title": "User Instructions",
+        "index": 3,
+        "status": "success",
+        "startedAtMs": 1792938717260,
+        "endedAtMs": 1792938717284,
+        "durationMs": 23,
+        "input": {
+          "text": "Resolve applicable user instructions and defaults for this ask.",
+          "artifacts": {
+            "query": "What was the difference in gas consumption between CZK-paying customers and EUR-paying customers in 2012?",
+            "histories": [],
+            "rephrased_question": "What was the difference in gas consumption between CZK-paying customers and EUR-paying customers in 2012?",
+            "sql_samples_prompt": ""
+          }
+        },
+        "thinking": null,
+        "output": {
+          "text": "Applied 0 instructions.",
+          "artifacts": {
+            "instructionRetrieval": {
+              "topK": 5,
+              "queryText": "What was the difference in gas consumption between CZK-paying customers and EUR-paying customers in 2012?",
+              "threshold": 0.65,
+              "candidates": [],
+              "selectedIds": [],
+              "defaultCount": 0,
+              "matchedCount": 0,
+              "selectedCount": 0,
+              "candidateCount": 0,
+              "candidateLimit": 15,
+              "selectedInstructions": [],
+              "globalInstructionsPrompt": "",
+              "matchedInstructionsPrompt": ""
+            }
+          }
+        },
+        "stream": {
+          "kind": "simulated",
+          "activeLane": "done"
+        },
+        "provenance": "persisted"
+      },
+      {
+        "id": "schema_linking:1",
+        "phase": "schema_linking",
+        "title": "Schema Linking",
+        "index": 4,
+        "status": "success",
+        "startedAtMs": 1792938717325,
+        "endedAtMs": 1792938717352,
+        "durationMs": 27,
+        "input": {
+          "text": "Select the relevant tables and columns to build schema context for SQL generation.",
+          "artifacts": {
+            "query": "What was the difference in gas consumption between CZK-paying customers and EUR-paying customers in 2012?",
+            "histories": [],
+            "rephrased_question": "What was the difference in gas consumption between CZK-paying customers and EUR-paying customers in 2012?",
+            "sql_samples_prompt": "",
+            "instructions_prompt": ""
+          }
+        },
+        "thinking": null,
+        "output": {
+          "text": "Schema context from active_pg_schema: 5 tables selected (customers; gasstations; yearmonth; transactions_1k; products). Column selection: 15 columns persisted.",
+          "artifacts": {
+            "schemaLinking": {
+              "tokenBudget": 5000,
+              "schemaSource": "active_pg_schema",
+              "tokenEstimate": 243,
+              "pruningApplied": false,
+              "selectedTables": [
+                {
+                  "rrfRank": 1,
+                  "rrfScore": 0.032266458495966696,
+                  "tableName": "customers"
+                },
+                {
+                  "rrfRank": 2,
+                  "rrfScore": 0.01639344262295082,
+                  "tableName": "gasstations"
+                },
+                {
+                  "rrfRank": 3,
+                  "rrfScore": 0.016129032258064516,
+                  "tableName": "yearmonth"
+                },
+                {
+                  "rrfRank": 4,
+                  "rrfScore": 0.015625,
+                  "tableName": "transactions_1k"
+                },
+                {
+                  "rrfRank": 5,
+                  "rrfScore": 0.015384615384615385,
+                  "tableName": "products"
+                }
+              ],
+              "schemaVersionId": "489dff07-db00-4d4c-b66e-d75efa28fe65",
+              "selectedColumns": {
+                "products": [
+                  "product_id"
+                ],
+                "customers": [
+                  "currency",
+                  "segment",
+                  "customer_id"
+                ],
+                "yearmonth": [
+                  "consumption",
+                  "date",
+                  "customer_id"
+                ],
+                "gasstations": [
+                  "gas_station_id",
+                  "country",
+                  "segment",
+                  "chain_id"
+                ],
+                "transactions_1k": [
+                  "gas_station_id",
+                  "date",
+                  "customer_id",
+                  "product_id"
+                ]
+              },
+              "failClosedEnforced": true
+            }
+          }
+        },
+        "stream": {
+          "kind": "simulated",
+          "activeLane": "done"
+        },
+        "provenance": "persisted"
+      },
+      {
+        "id": "reason_and_generate:1",
+        "phase": "reason_and_generate",
+        "title": "Reason and Generate",
+        "index": 5,
+        "status": "error",
+        "startedAtMs": 1792938717392,
+        "endedAtMs": 1792938842479,
+        "durationMs": 125087,
+        "input": {
+          "text": "Generate SQL and a fast-mode answer package from schema context, retrieved SQL evidence, and user instructions.",
+          "artifacts": {
+            "query": "What was the difference in gas consumption between CZK-paying customers and EUR-paying customers in 2012?",
+            "histories": [],
+            "rephrased_question": "What was the difference in gas consumption between CZK-paying customers and EUR-paying customers in 2012?",
+            "sql_samples_prompt": "",
+            "instructions_prompt": "",
+            "schema_linking_schema_text": "# column_name\tdata_type\tcomment\tenum_value/sample_value\tdistinct_count\n## customers\ncustomer_id\tBIGINT\t\t3, 5, 6\t32461\nsegment\tTEXT\t\tKAM, LAM, SME\t3\ncurrency\tTEXT\t\tCZK, EUR\t2\n\n## gasstations\ngas_station_id\tBIGINT\t\t44, 45, 46\t5716\nchain_id\tBIGINT\t\t1, 2, 3\t233\ncountry\tTEXT\t\tCZE, SVK\t2\nsegment\tTEXT\t\tDiscount, Noname, Other, Premium, Value for money\t5\n\n## products\nproduct_id\tBIGINT\t\t1, 2, 3\t591\n\n## transactions_1k\ndate\tDATE\t\t2012-08-23, 2012-08-24, 2012-08-25, 2012-08-26\t4\ncustomer_id\tBIGINT\t\t96, 272, 651\t517\ngas_station_id\tBIGINT\t\t48, 64, 65\t437\nproduct_id\tBIGINT\t\t2, 5, 7, 8, 9, 11, 12, 15, 16, 18, 19, 20, 22, 23, 24, 25, 31, 36, 40, 44, 48, 72, 317, 322, 332, 336, 341, 352\t28\n\n## yearmonth\ncustomer_id\tBIGINT\t\t5, 6, 7\t30566\ndate\tTEXT\t\t201112, 201201, 201202, 201203, 201204, 201205, 201206, 201207, 201208, 201209, 201301, 201302, 201303, 201304, 201305, 201306, 201307, 201308, 201309, 201310, 201311\t21\nconsumption\tNUMERIC\t\t-582092.86, -123169.73, -18145.35\t279091\n"
+          }
+        },
+        "thinking": null,
+        "output": {
+          "text": "Generate SQL and a fast-mode answer package from schema context, retrieved SQL evidence, and user instructions."
+        },
+        "stream": {
+          "kind": "provider_stream",
+          "activeLane": "done"
+        },
+        "provenance": "persisted"
+      }
+    ],
+    "timing": {
+      "startedAtMs": 1792938716991,
+      "endedAtMs": 1792938842548,
+      "totalDurationMs": 125557
+    },
+    "resources": {
+      "result": "ask://query/5046b62e-695c-47af-a19c-0ebe80c114a2/result",
+      "trace": "ask://query/5046b62e-695c-47af-a19c-0ebe80c114a2/trace",
+      "traceEvents": "ask://trace/ef0138349a814e19ae9d6cb75f852a84/events",
+      "traceResult": "ask://trace/ef0138349a814e19ae9d6cb75f852a84/result",
+      "threadHistory": "ask://history/thread/207b8c62-b7bb-4f2d-9e8d-c5a050b7656a",
+      "questionHistory": "ask://history/question/5046b62e695c47afa19c0ebe80c114a2"
+    },
+    "error": {
+      "phase": "reason_and_generate",
+      "message": "QA database operation failed during reason_and_generate",
+      "errorCode": "WDVERR_ASK_RUNTIME_DEPENDENCY_FAILED",
+      "error_type": "StreamChunkTimeoutError"
+    },
+    "langfuseTrace": {
+      "available": true,
+      "traceUrl": "http://localhost:3100/project/cmmalglmh0001nf07jxfwglnm/traces?peek=ef0138349a814e19ae9d6cb75f852a84",
+      "traceId": "ef0138349a814e19ae9d6cb75f852a84"
+    },
+    "completed": true,
+    "terminalEventType": "qa.trace.completed",
+    "totalDurationMs": 125557,
+    "cursor": "eyJsYXN0U2VxIjoxNn0",
+    "lastSeq": 16
+  },
+  "canonical_events": {
+    "traceId": "ef0138349a814e19ae9d6cb75f852a84",
+    "events": [
+      {
+        "traceId": "ef0138349a814e19ae9d6cb75f852a84",
+        "queryId": "5046b62e-695c-47af-a19c-0ebe80c114a2",
+        "seq": 1,
+        "tsMs": 1792938717004,
+        "type": "qa.turn.started",
+        "phase": "",
+        "nodeId": null,
+        "provenance": "live",
+        "redacted": null,
+        "truncated": null,
+        "payload": {
+          "status": "understanding",
+          "queryId": "5046b62e-695c-47af-a19c-0ebe80c114a2",
+          "threadId": "207b8c62-b7bb-4f2d-9e8d-c5a050b7656a"
+        }
+      },
+      {
+        "traceId": "ef0138349a814e19ae9d6cb75f852a84",
+        "queryId": "5046b62e-695c-47af-a19c-0ebe80c114a2",
+        "seq": 2,
+        "tsMs": 1792938717007,
+        "type": "qa.step.started",
+        "phase": "understanding",
+        "nodeId": "understanding:1",
+        "provenance": "live",
+        "redacted": null,
+        "truncated": null,
+        "payload": {
+          "input": {
+            "text": "Understand the user's request and determine the execution intent for this ask.",
+            "artifacts": {
+              "query": "What was the difference in gas consumption between CZK-paying customers and EUR-paying customers in 2012?",
+              "histories": []
+            }
+          },
+          "title": "Understanding",
+          "stepId": "understanding:1",
+          "stream": {
+            "kind": "simulated",
+            "activeLane": "input"
+          },
+          "stepIndex": 1,
+          "startedAtMs": 1792938717007
+        }
+      },
+      {
+        "traceId": "ef0138349a814e19ae9d6cb75f852a84",
+        "queryId": "5046b62e-695c-47af-a19c-0ebe80c114a2",
+        "seq": 3,
+        "tsMs": 1792938717104,
+        "type": "qa.step.updated",
+        "phase": "understanding",
+        "nodeId": "understanding:1",
+        "provenance": "live",
+        "redacted": null,
+        "truncated": null,
+        "payload": {
+          "input": {
+            "text": "Understand the user's request and determine the execution intent for this ask.",
+            "artifacts": {
+              "query": "What was the difference in gas consumption between CZK-paying customers and EUR-paying customers in 2012?",
+              "histories": []
+            }
+          },
+          "output": {
+            "text": "Final question: What was the difference in gas consumption between CZK-paying customers and EUR-paying customers in 2012?",
+            "merge": "replace"
+          },
+          "stepId": "understanding:1",
+          "stream": {
+            "kind": "simulated",
+            "activeLane": "output"
+          },
+          "endedAtMs": 1792938717104,
+          "durationMs": 97
+        }
+      },
+      {
+        "traceId": "ef0138349a814e19ae9d6cb75f852a84",
+        "queryId": "5046b62e-695c-47af-a19c-0ebe80c114a2",
+        "seq": 4,
+        "tsMs": 1792938717104,
+        "type": "qa.step.finished",
+        "phase": "understanding",
+        "nodeId": "understanding:1",
+        "provenance": "live",
+        "redacted": null,
+        "truncated": null,
+        "payload": {
+          "title": "Understanding",
+          "status": "success",
+          "stepId": "understanding:1",
+          "stream": {
+            "kind": "simulated",
+            "activeLane": "done"
+          },
+          "endedAtMs": 1792938717104,
+          "stepIndex": 1,
+          "durationMs": 97,
+          "startedAtMs": 1792938717007,
+          "outputSummary": "Final question: What was the difference in gas consumption between CZK-paying customers and EUR-paying customers in 2012?"
+        }
+      },
+      {
+        "traceId": "ef0138349a814e19ae9d6cb75f852a84",
+        "queryId": "5046b62e-695c-47af-a19c-0ebe80c114a2",
+        "seq": 5,
+        "tsMs": 1792938717186,
+        "type": "qa.step.started",
+        "phase": "searching",
+        "nodeId": "searching:1",
+        "provenance": "live",
+        "redacted": null,
+        "truncated": null,
+        "payload": {
+          "input": {
+            "text": "Retrieve relevant SQL examples and related retrieval evidence for the current question.",
+            "artifacts": {
+              "query": "What was the difference in gas consumption between CZK-paying customers and EUR-paying customers in 2012?",
+              "histories": [],
+              "rephrased_question": "What was the difference in gas consumption between CZK-paying customers and EUR-paying customers in 2012?"
+            }
+          },
+          "title": "SQL Pair RAG",
+          "stepId": "searching:1",
+          "stream": {
+            "kind": "simulated",
+            "activeLane": "input"
+          },
+          "stepIndex": 2,
+          "startedAtMs": 1792938717186
+        }
+      },
+      {
+        "traceId": "ef0138349a814e19ae9d6cb75f852a84",
+        "queryId": "5046b62e-695c-47af-a19c-0ebe80c114a2",
+        "seq": 6,
+        "tsMs": 1792938717224,
+        "type": "qa.step.updated",
+        "phase": "searching",
+        "nodeId": "searching:1",
+        "provenance": "live",
+        "redacted": null,
+        "truncated": null,
+        "payload": {
+          "input": {
+            "text": "Retrieve relevant SQL examples and related retrieval evidence for the current question.",
+            "artifacts": {
+              "query": "What was the difference in gas consumption between CZK-paying customers and EUR-paying customers in 2012?",
+              "histories": [],
+              "rephrased_question": "What was the difference in gas consumption between CZK-paying customers and EUR-paying customers in 2012?"
+            }
+          },
+          "output": {
+            "text": "SQL example search: reviewed 0 candidates and selected 0 examples.",
+            "merge": "replace",
+            "artifacts": {
+              "sqlPairRetrieval": {
+                "rrfK": 60,
+                "topK": 10,
+                "queryText": "What was the difference in gas consumption between CZK-paying customers and EUR-paying customers in 2012?",
+                "threshold": 0.7,
+                "candidates": [],
+                "selectedIds": [],
+                "selectedCount": 0,
+                "selectedPairs": [],
+                "candidateCount": 0,
+                "candidateLimit": 25,
+                "retrievalMethod": "api",
+                "providerEndpointHost": "127.0.0.1:4000"
+              }
+            }
+          },
+          "stepId": "searching:1",
+          "stream": {
+            "kind": "simulated",
+            "activeLane": "output"
+          },
+          "endedAtMs": 1792938717224,
+          "durationMs": 38
+        }
+      },
+      {
+        "traceId": "ef0138349a814e19ae9d6cb75f852a84",
+        "queryId": "5046b62e-695c-47af-a19c-0ebe80c114a2",
+        "seq": 7,
+        "tsMs": 1792938717224,
+        "type": "qa.step.finished",
+        "phase": "searching",
+        "nodeId": "searching:1",
+        "provenance": "live",
+        "redacted": null,
+        "truncated": null,
+        "payload": {
+          "title": "SQL Pair RAG",
+          "status": "success",
+          "stepId": "searching:1",
+          "stream": {
+            "kind": "simulated",
+            "activeLane": "done"
+          },
+          "endedAtMs": 1792938717224,
+          "stepIndex": 2,
+          "durationMs": 38,
+          "startedAtMs": 1792938717186,
+          "outputSummary": "SQL example search: reviewed 0 candidates and selected 0 examples."
+        }
+      },
+      {
+        "traceId": "ef0138349a814e19ae9d6cb75f852a84",
+        "queryId": "5046b62e-695c-47af-a19c-0ebe80c114a2",
+        "seq": 8,
+        "tsMs": 1792938717260,
+        "type": "qa.step.started",
+        "phase": "user_instruction",
+        "nodeId": "user_instruction:1",
+        "provenance": "live",
+        "redacted": null,
+        "truncated": null,
+        "payload": {
+          "input": {
+            "text": "Resolve applicable user instructions and defaults for this ask.",
+            "artifacts": {
+              "query": "What was the difference in gas consumption between CZK-paying customers and EUR-paying customers in 2012?",
+              "histories": [],
+              "rephrased_question": "What was the difference in gas consumption between CZK-paying customers and EUR-paying customers in 2012?",
+              "sql_samples_prompt": ""
+            }
+          },
+          "title": "User Instructions",
+          "stepId": "user_instruction:1",
+          "stream": {
+            "kind": "simulated",
+            "activeLane": "input"
+          },
+          "stepIndex": 3,
+          "startedAtMs": 1792938717260
+        }
+      },
+      {
+        "traceId": "ef0138349a814e19ae9d6cb75f852a84",
+        "queryId": "5046b62e-695c-47af-a19c-0ebe80c114a2",
+        "seq": 9,
+        "tsMs": 1792938717284,
+        "type": "qa.step.updated",
+        "phase": "user_instruction",
+        "nodeId": "user_instruction:1",
+        "provenance": "live",
+        "redacted": null,
+        "truncated": null,
+        "payload": {
+          "input": {
+            "text": "Resolve applicable user instructions and defaults for this ask.",
+            "artifacts": {
+              "query": "What was the difference in gas consumption between CZK-paying customers and EUR-paying customers in 2012?",
+              "histories": [],
+              "rephrased_question": "What was the difference in gas consumption between CZK-paying customers and EUR-paying customers in 2012?",
+              "sql_samples_prompt": ""
+            }
+          },
+          "output": {
+            "text": "Applied 0 instructions.",
+            "merge": "replace",
+            "artifacts": {
+              "instructionRetrieval": {
+                "topK": 5,
+                "queryText": "What was the difference in gas consumption between CZK-paying customers and EUR-paying customers in 2012?",
+                "threshold": 0.65,
+                "candidates": [],
+                "selectedIds": [],
+                "defaultCount": 0,
+                "matchedCount": 0,
+                "selectedCount": 0,
+                "candidateCount": 0,
+                "candidateLimit": 15,
+                "selectedInstructions": [],
+                "globalInstructionsPrompt": "",
+                "matchedInstructionsPrompt": ""
+              }
+            }
+          },
+          "stepId": "user_instruction:1",
+          "stream": {
+            "kind": "simulated",
+            "activeLane": "output"
+          },
+          "endedAtMs": 1792938717284,
+          "durationMs": 23
+        }
+      },
+      {
+        "traceId": "ef0138349a814e19ae9d6cb75f852a84",
+        "queryId": "5046b62e-695c-47af-a19c-0ebe80c114a2",
+        "seq": 10,
+        "tsMs": 1792938717284,
+        "type": "qa.step.finished",
+        "phase": "user_instruction",
+        "nodeId": "user_instruction:1",
+        "provenance": "live",
+        "redacted": null,
+        "truncated": null,
+        "payload": {
+          "title": "User Instructions",
+          "status": "success",
+          "stepId": "user_instruction:1",
+          "stream": {
+            "kind": "simulated",
+            "activeLane": "done"
+          },
+          "endedAtMs": 1792938717284,
+          "stepIndex": 3,
+          "durationMs": 23,
+          "startedAtMs": 1792938717260,
+          "outputSummary": "Applied 0 instructions."
+        }
+      },
+      {
+        "traceId": "ef0138349a814e19ae9d6cb75f852a84",
+        "queryId": "5046b62e-695c-47af-a19c-0ebe80c114a2",
+        "seq": 11,
+        "tsMs": 1792938717325,
+        "type": "qa.step.started",
+        "phase": "schema_linking",
+        "nodeId": "schema_linking:1",
+        "provenance": "live",
+        "redacted": null,
+        "truncated": null,
+        "payload": {
+          "input": {
+            "text": "Select the relevant tables and columns to build schema context for SQL generation.",
+            "artifacts": {
+              "query": "What was the difference in gas consumption between CZK-paying customers and EUR-paying customers in 2012?",
+              "histories": [],
+              "rephrased_question": "What was the difference in gas consumption between CZK-paying customers and EUR-paying customers in 2012?",
+              "sql_samples_prompt": "",
+              "instructions_prompt": ""
+            }
+          },
+          "title": "Schema Linking",
+          "stepId": "schema_linking:1",
+          "stream": {
+            "kind": "simulated",
+            "activeLane": "input"
+          },
+          "stepIndex": 4,
+          "startedAtMs": 1792938717325
+        }
+      },
+      {
+        "traceId": "ef0138349a814e19ae9d6cb75f852a84",
+        "queryId": "5046b62e-695c-47af-a19c-0ebe80c114a2",
+        "seq": 12,
+        "tsMs": 1792938717352,
+        "type": "qa.step.updated",
+        "phase": "schema_linking",
+        "nodeId": "schema_linking:1",
+        "provenance": "live",
+        "redacted": null,
+        "truncated": null,
+        "payload": {
+          "input": {
+            "text": "Select the relevant tables and columns to build schema context for SQL generation.",
+            "artifacts": {
+              "query": "What was the difference in gas consumption between CZK-paying customers and EUR-paying customers in 2012?",
+              "histories": [],
+              "rephrased_question": "What was the difference in gas consumption between CZK-paying customers and EUR-paying customers in 2012?",
+              "sql_samples_prompt": "",
+              "instructions_prompt": ""
+            }
+          },
+          "output": {
+            "text": "Schema context from active_pg_schema: 5 tables selected (customers; gasstations; yearmonth; transactions_1k; products). Column selection: 15 columns persisted.",
+            "merge": "replace",
+            "artifacts": {
+              "schemaLinking": {
+                "tokenBudget": 5000,
+                "schemaSource": "active_pg_schema",
+                "tokenEstimate": 243,
+                "pruningApplied": false,
+                "selectedTables": [
+                  {
+                    "rrfRank": 1,
+                    "rrfScore": 0.032266458495966696,
+                    "tableName": "customers"
+                  },
+                  {
+                    "rrfRank": 2,
+                    "rrfScore": 0.01639344262295082,
+                    "tableName": "gasstations"
+                  },
+                  {
+                    "rrfRank": 3,
+                    "rrfScore": 0.016129032258064516,
+                    "tableName": "yearmonth"
+                  },
+                  {
+                    "rrfRank": 4,
+                    "rrfScore": 0.015625,
+                    "tableName": "transactions_1k"
+                  },
+                  {
+                    "rrfRank": 5,
+                    "rrfScore": 0.015384615384615385,
+                    "tableName": "products"
+                  }
+                ],
+                "schemaVersionId": "489dff07-db00-4d4c-b66e-d75efa28fe65",
+                "selectedColumns": {
+                  "products": [
+                    "product_id"
+                  ],
+                  "customers": [
+                    "currency",
+                    "segment",
+                    "customer_id"
+                  ],
+                  "yearmonth": [
+                    "consumption",
+                    "date",
+                    "customer_id"
+                  ],
+                  "gasstations": [
+                    "gas_station_id",
+                    "country",
+                    "segment",
+                    "chain_id"
+                  ],
+                  "transactions_1k": [
+                    "gas_station_id",
+                    "date",
+                    "customer_id",
+                    "product_id"
+                  ]
+                },
+                "failClosedEnforced": true
+              }
+            }
+          },
+          "stepId": "schema_linking:1",
+          "stream": {
+            "kind": "simulated",
+            "activeLane": "output"
+          },
+          "endedAtMs": 1792938717352,
+          "durationMs": 27
+        }
+      },
+      {
+        "traceId": "ef0138349a814e19ae9d6cb75f852a84",
+        "queryId": "5046b62e-695c-47af-a19c-0ebe80c114a2",
+        "seq": 13,
+        "tsMs": 1792938717352,
+        "type": "qa.step.finished",
+        "phase": "schema_linking",
+        "nodeId": "schema_linking:1",
+        "provenance": "live",
+        "redacted": null,
+        "truncated": null,
+        "payload": {
+          "title": "Schema Linking",
+          "status": "success",
+          "stepId": "schema_linking:1",
+          "stream": {
+            "kind": "simulated",
+            "activeLane": "done"
+          },
+          "endedAtMs": 1792938717352,
+          "stepIndex": 4,
+          "durationMs": 27,
+          "startedAtMs": 1792938717325,
+          "outputSummary": "Schema context from active_pg_schema: 5 tables selected (customers; gasstations; yearmonth; transactions_1k; products). Column selection: 15 columns persisted."
+        }
+      },
+      {
+        "traceId": "ef0138349a814e19ae9d6cb75f852a84",
+        "queryId": "5046b62e-695c-47af-a19c-0ebe80c114a2",
+        "seq": 14,
+        "tsMs": 1792938717392,
+        "type": "qa.step.started",
+        "phase": "reason_and_generate",
+        "nodeId": "reason_and_generate:1",
+        "provenance": "live",
+        "redacted": null,
+        "truncated": null,
+        "payload": {
+          "input": {
+            "text": "Generate SQL and a fast-mode answer package from schema context, retrieved SQL evidence, and user instructions.",
+            "artifacts": {
+              "query": "What was the difference in gas consumption between CZK-paying customers and EUR-paying customers in 2012?",
+              "histories": [],
+              "rephrased_question": "What was the difference in gas consumption between CZK-paying customers and EUR-paying customers in 2012?",
+              "sql_samples_prompt": "",
+              "instructions_prompt": "",
+              "schema_linking_schema_text": "# column_name\tdata_type\tcomment\tenum_value/sample_value\tdistinct_count\n## customers\ncustomer_id\tBIGINT\t\t3, 5, 6\t32461\nsegment\tTEXT\t\tKAM, LAM, SME\t3\ncurrency\tTEXT\t\tCZK, EUR\t2\n\n## gasstations\ngas_station_id\tBIGINT\t\t44, 45, 46\t5716\nchain_id\tBIGINT\t\t1, 2, 3\t233\ncountry\tTEXT\t\tCZE, SVK\t2\nsegment\tTEXT\t\tDiscount, Noname, Other, Premium, Value for money\t5\n\n## products\nproduct_id\tBIGINT\t\t1, 2, 3\t591\n\n## transactions_1k\ndate\tDATE\t\t2012-08-23, 2012-08-24, 2012-08-25, 2012-08-26\t4\ncustomer_id\tBIGINT\t\t96, 272, 651\t517\ngas_station_id\tBIGINT\t\t48, 64, 65\t437\nproduct_id\tBIGINT\t\t2, 5, 7, 8, 9, 11, 12, 15, 16, 18, 19, 20, 22, 23, 24, 25, 31, 36, 40, 44, 48, 72, 317, 322, 332, 336, 341, 352\t28\n\n## yearmonth\ncustomer_id\tBIGINT\t\t5, 6, 7\t30566\ndate\tTEXT\t\t201112, 201201, 201202, 201203, 201204, 201205, 201206, 201207, 201208, 201209, 201301, 201302, 201303, 201304, 201305, 201306, 201307, 201308, 201309, 201310, 201311\t21\nconsumption\tNUMERIC\t\t-582092.86, -123169.73, -18145.35\t279091\n"
+            }
+          },
+          "title": "Reason and Generate",
+          "stepId": "reason_and_generate:1",
+          "stream": {
+            "kind": "provider_stream",
+            "activeLane": "input"
+          },
+          "stepIndex": 5,
+          "startedAtMs": 1792938717392
+        }
+      },
+      {
+        "traceId": "ef0138349a814e19ae9d6cb75f852a84",
+        "queryId": "5046b62e-695c-47af-a19c-0ebe80c114a2",
+        "seq": 15,
+        "tsMs": 1792938842479,
+        "type": "qa.step.finished",
+        "phase": "reason_and_generate",
+        "nodeId": "reason_and_generate:1",
+        "provenance": null,
+        "redacted": null,
+        "truncated": null,
+        "payload": {
+          "title": "Reason and Generate",
+          "status": "error",
+          "stepId": "reason_and_generate:1",
+          "stream": {
+            "kind": "provider_stream",
+            "activeLane": "done"
+          },
+          "endedAtMs": 1792938842479,
+          "stepIndex": 5,
+          "durationMs": 125087,
+          "startedAtMs": 1792938717392
+        }
+      },
+      {
+        "traceId": "ef0138349a814e19ae9d6cb75f852a84",
+        "queryId": "5046b62e-695c-47af-a19c-0ebe80c114a2",
+        "seq": 16,
+        "tsMs": 1792938842625,
+        "type": "qa.trace.completed",
+        "phase": "",
+        "nodeId": null,
+        "provenance": null,
+        "redacted": null,
+        "truncated": null,
+        "payload": {
+          "status": "failed",
+          "totalDurationMs": 125634
+        }
+      }
+    ]
+  },
+  "provider_audits": [
+    {
+      "id": 15693,
+      "query_id": "5046b62e-695c-47af-a19c-0ebe80c114a2",
+      "thread_key": "207b8c62-b7bb-4f2d-9e8d-c5a050b7656a",
+      "trace_id": "ef0138349a814e19ae9d6cb75f852a84",
+      "status_code": 200,
+      "response_json": {
+        "rag": {
+          "rrfK": 60,
+          "topK": 10,
+          "queryText": "What was the difference in gas consumption between CZK-paying customers and EUR-paying customers in 2012?",
+          "threshold": 0.7,
+          "candidates": [],
+          "selectedIds": [],
+          "selectedCount": 0,
+          "selectedPairs": [],
+          "candidateCount": 0,
+          "candidateLimit": 25,
+          "retrievalMethod": "hybrid"
+        },
+        "statusCode": 200,
+        "sqlKnowledge": "",
+        "sqlKnowledgeChars": 0
+      }
+    }
+  ],
+  "knowledge_proof": {
+    "provider": "verified_empty",
+    "calls": [
+      {
+        "phase": "reason_and_generate",
+        "node_id": "reason_and_generate:1",
+        "phase_occurrence": 1,
+        "correction_attempt": null,
+        "sql_knowledge_chars": 0,
+        "invocation": "phase_entered"
+      }
+    ],
+    "phases": {
+      "reasoning": "not_executed",
+      "generating": "not_executed",
+      "reason_and_generate": "input_verified",
+      "correcting": "not_executed"
+    }
+  }
+}

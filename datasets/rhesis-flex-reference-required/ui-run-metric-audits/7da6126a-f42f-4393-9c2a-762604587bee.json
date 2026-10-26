@@ -1,0 +1,45 @@
+{
+  "id": "7da6126a-f42f-4393-9c2a-762604587bee",
+  "variant": "combined",
+  "question": "What was the difference in gas consumption between CZK-paying customers and EUR-paying customers in 2012?",
+  "actual_sql": "Generate SQL and a fast-mode answer package from schema context, retrieved SQL evidence, and user instructions.",
+  "actual_sql_sha256": "d0ade372868b0a69a89ba440d087a041eeeb8e1cb4f720f0ea052ae5018e188d",
+  "judge": {
+    "rhesis_model_id": "8c4ac3b8-8e3a-4c56-95e8-fb79339c607c",
+    "name": "GLM 5.3 BIRD Judge",
+    "model": "glm-5.3",
+    "base_url": "https://open.bigmodel.cn/api/coding/paas/v4",
+    "provider": "glm",
+    "temperature": 0,
+    "max_tokens": 8192,
+    "timeout_seconds": 180,
+    "thinking": {
+      "type": "enabled"
+    },
+    "reasoning_effort": "low",
+    "parameter_source": "https://docs.bigmodel.cn/cn/guide/models/text/glm-5.3"
+  },
+  "score": null,
+  "status": "error",
+  "question_id": "1476",
+  "expected_response": "{\"evidence\": \"cast the consumption into float when perform calculation; Year 2012 can be presented as Between 201201 And 201212; The first 4 strings of the Date values in the yearmonth table can represent year; Difference in Consumption = CZK customers consumption in 2012 - EUR customers consumption in 2012\", \"gold_sql\": \"SELECT SUM(CASE WHEN T1.currency = 'CZK' THEN CAST(T2.consumption AS DOUBLE PRECISION) ELSE 0 END) - SUM(CASE WHEN T1.currency = 'EUR' THEN CAST(T2.consumption AS DOUBLE PRECISION) ELSE 0 END) FROM customers AS T1 INNER JOIN yearmonth AS T2 ON T1.customer_id = T2.customer_id WHERE SUBSTRING(T2.date FROM 1 FOR 4) = '2012'\"}",
+  "gold_sql": "SELECT SUM(CASE WHEN T1.currency = 'CZK' THEN CAST(T2.consumption AS DOUBLE PRECISION) ELSE 0 END) - SUM(CASE WHEN T1.currency = 'EUR' THEN CAST(T2.consumption AS DOUBLE PRECISION) ELSE 0 END) FROM customers AS T1 INNER JOIN yearmonth AS T2 ON T1.customer_id = T2.customer_id WHERE SUBSTRING(T2.date FROM 1 FOR 4) = '2012'",
+  "evidence": "cast the consumption into float when perform calculation; Year 2012 can be presented as Between 201201 And 201212; The first 4 strings of the Date values in the yearmonth table can represent year; Difference in Consumption = CZK customers consumption in 2012 - EUR customers consumption in 2012",
+  "execution": {
+    "ex": 0,
+    "error": "unsafe_sql",
+    "diagnostic": "SQL cannot be parsed",
+    "gold_rows": [
+      [
+        402524570.1700022
+      ]
+    ],
+    "predicted_rows": null,
+    "scorer_ms": 65.45179200475104
+  },
+  "error": {
+    "type": "ValueError",
+    "message": "Actual SQL execution failed: unsafe_sql"
+  },
+  "elapsed_ms": 73.38745800370816
+}

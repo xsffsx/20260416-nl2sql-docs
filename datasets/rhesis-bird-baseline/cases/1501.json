@@ -1,0 +1,22 @@
+{
+  "question": "Please list the countries of the gas stations with transactions taken place in June, 2013.",
+  "score": 0.0,
+  "details": {
+    "reason": "Complete results differ from Gold SQL; BIRD Soft F1 = 0.0",
+    "BIRD_Soft_F1": 0.0,
+    "actual_sql": "SELECT DISTINCT gs.country\nFROM transactions_1k t\nJOIN gasstations gs ON gs.gas_station_id = t.gas_station_id\nWHERE t.date >= DATE '2013-06-01'\n  AND t.date < DATE '2013-07-01'\nORDER BY gs.country;",
+    "gold_sql": "SELECT DISTINCT T2.country FROM transactions_1k AS T1 INNER JOIN gasstations AS T2 ON T1.gas_station_id = T2.gas_station_id INNER JOIN yearmonth AS T3 ON T1.customer_id = T3.customer_id WHERE T3.date = '201306'",
+    "actual_result": [],
+    "gold_result": [
+      [
+        "CZE"
+      ],
+      [
+        "SVK"
+      ]
+    ],
+    "sql_error": null,
+    "scorer_ms": 17.30600000155391,
+    "max_parallel_workers_per_gather": 0
+  }
+}

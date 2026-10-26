@@ -1,0 +1,23 @@
+{
+  "question": "How many more \"discount\" gas stations does the Czech Republic have compared to Slovakia?",
+  "score": 1.0,
+  "details": {
+    "reason": "Complete results match Gold SQL; BIRD Soft F1 = 1.0",
+    "BIRD_Soft_F1": 1.0,
+    "actual_sql": "SELECT\n  SUM(CASE WHEN gs.country = 'CZE' THEN 1 ELSE 0 END)\n  - SUM(CASE WHEN gs.country = 'SVK' THEN 1 ELSE 0 END) AS discount_diff_cze_minus_svk\nFROM gasstations gs\nWHERE LOWER(gs.segment) = 'discount';",
+    "gold_sql": "SELECT SUM(CASE WHEN country = 'CZE' THEN 1 ELSE 0 END) - SUM(CASE WHEN country = 'SVK' THEN 1 ELSE 0 END) FROM gasstations WHERE segment = 'Discount'",
+    "actual_result": [
+      [
+        176
+      ]
+    ],
+    "gold_result": [
+      [
+        176
+      ]
+    ],
+    "sql_error": null,
+    "scorer_ms": 3.7811250003869645,
+    "max_parallel_workers_per_gather": 0
+  }
+}

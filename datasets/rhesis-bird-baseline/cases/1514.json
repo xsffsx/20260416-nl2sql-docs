@@ -1,0 +1,23 @@
+{
+  "question": "What kind of currency did the customer paid at 16:25:00 in 2012/8/24?",
+  "score": 1.0,
+  "details": {
+    "reason": "Complete results match Gold SQL; BIRD Soft F1 = 1.0",
+    "BIRD_Soft_F1": 1.0,
+    "actual_sql": "SELECT DISTINCT c.currency\nFROM transactions_1k t\nJOIN customers c ON c.customer_id = t.customer_id\nWHERE t.date = DATE '2012-08-24'\n  AND t.time = TIME '16:25:00';",
+    "gold_sql": "SELECT DISTINCT T3.currency FROM transactions_1k AS T1 INNER JOIN gasstations AS T2 ON T1.gas_station_id = T2.gas_station_id INNER JOIN customers AS T3 ON T1.customer_id = T3.customer_id WHERE T1.date = '2012-08-24' AND T1.time = '16:25:00'",
+    "actual_result": [
+      [
+        "CZK"
+      ]
+    ],
+    "gold_result": [
+      [
+        "CZK"
+      ]
+    ],
+    "sql_error": null,
+    "scorer_ms": 4.996332994778641,
+    "max_parallel_workers_per_gather": 0
+  }
+}

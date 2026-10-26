@@ -1,0 +1,327 @@
+﻿case_id,question_id,question,evidence,gold_sql,generated_sql,gold_rows_json,generated_rows_json,official_result_match,partial_answer_score,filters_and_dates,calculation_and_grouping,requested_answer,gold_sql_comparison,all_four_checks_passed,gold_sql_comparison_reason
+debit_card_specializing:1531,1531,Who is the top spending customer and how much is the average price per single item purchased by this customer? What currency was being used?,average price per single item = Total(price) / Total(amount),"SELECT T2.customer_id, SUM(T2.price / NULLIF(T2.amount, 0)), T1.currency FROM customers AS T1 INNER JOIN transactions_1k AS T2 ON T1.customer_id = T2.customer_id WHERE T2.customer_id = (SELECT customer_id FROM yearmonth ORDER BY consumption DESC NULLS LAST LIMIT 1) GROUP BY T2.customer_id, T1.currency","WITH customer_spending AS (
+  SELECT
+    customer_id,
+    SUM(price) AS total_spending,
+    SUM(price) / NULLIF(SUM(amount), 0) AS avg_price_per_item
+  FROM transactions_1k
+  GROUP BY customer_id
+),
+top_customer AS (
+  SELECT customer_id, total_spending, avg_price_per_item
+  FROM customer_spending
+  ORDER BY total_spending DESC
+  LIMIT 1
+)
+SELECT
+  t.customer_id,
+  t.total_spending,
+  t.avg_price_per_item,
+  c.currency
+FROM top_customer t
+JOIN customers c ON c.customer_id = t.customer_id","[[12459,{""type"":""Decimal"",""value"":""203.8560787354257941""},""CZK""]]","[[19182,{""type"":""Decimal"",""value"":""8618.54""},{""type"":""Decimal"",""value"":""24.2775774647887324""},""CZK""]]",0,0.285714,True,True,True,False,False,"Two material differences: (1) The gold SQL identifies the top customer via the `yearmonth` table (ORDER BY consumption DESC), while the agent identifies the top customer by SUM(price) from transactions_1k — these could yield different customers. (2) The gold SQL computes SUM(price / NULLIF(amount, 0)) — a sum of per-transaction unit prices — while the agent computes SUM(price) / NULLIF(SUM(amount), 0) — a ratio of aggregates. These are mathematically different formulas that can produce different results."
+debit_card_specializing:1533,1533,For all the people who paid more than 29.00 per unit of product id No.5. Give their consumption status in the August of 2012.,August of 2012 refers to the Date value = '201208' ; Price per unit of product = Price / Amount;,"SELECT T2.consumption FROM transactions_1k AS T1 INNER JOIN yearmonth AS T2 ON T1.customer_id = T2.customer_id WHERE T1.price / NULLIF(T1.amount, 0) > 29.00 AND T1.product_id = 5 AND T2.date = '201208'","SELECT
+    ym.customer_id,
+    ym.consumption
+FROM yearmonth AS ym
+WHERE ym.date = '201208'
+  AND ym.customer_id IN (
+    SELECT t.customer_id
+    FROM transactions_1k AS t
+    WHERE t.product_id = 5
+      AND t.amount > 0
+      AND (t.price / t.amount) > 29.00
+  )
+ORDER BY ym.consumption DESC;","[[{""type"":""Decimal"",""value"":""88265.39""}],[{""type"":""Decimal"",""value"":""1903.2""}],[{""type"":""Decimal"",""value"":""126157.7""}],[{""type"":""Decimal"",""value"":""126157.7""}],[{""type"":""Decimal"",""value"":""45937.22""}],[{""type"":""Decimal"",""value"":""1142.95""}],[{""type"":""Decimal"",""value"":""58.19""}],[{""type"":""Decimal"",""value"":""8878.07""}],[{""type"":""Decimal"",""value"":""69331.72""}],[{""type"":""Decimal"",""value"":""1129.2""}]]","[[6768,{""type"":""Decimal"",""value"":""126157.7""}],[5443,{""type"":""Decimal"",""value"":""88265.39""}],[24700,{""type"":""Decimal"",""value"":""69331.72""}],[7626,{""type"":""Decimal"",""value"":""45937.22""}],[23861,{""type"":""Decimal"",""value"":""8878.07""}],[18831,{""type"":""Decimal"",""value"":""1903.2""}],[45868,{""type"":""Decimal"",""value"":""1142.95""}],[46933,{""type"":""Decimal"",""value"":""1129.2""}],[20447,{""type"":""Decimal"",""value"":""58.19""}]]",0,0.074074,True,True,True,True,True,"Both queries qualify customers via product_id = 5 AND price/amount > 29.00 and return the consumption value from yearmonth where date = '201208'. The agent's IN-subquery is equivalent to the gold's inner join as a set filter (duplicates from multi-transaction customers are the only theoretical difference, unlikely in this data), 'amount > 0' mirrors the effect of NULLIF(amount,0) for zero/null denominators (negative amounts would be a degenerate edge case), and the extra customer_id column plus ORDER BY are non-material additions. No material semantic difference in filters, calculations or selected answer can be established."
+debit_card_specializing:1528,1528,"What is the percentage of ""premium"" against the overall segment in Country = ""SVK""?",,"SELECT CAST(SUM(CASE WHEN country = 'SVK' AND segment = 'Premium' THEN 1 ELSE 0 END) AS REAL) * 100 / NULLIF(SUM(CASE WHEN country = 'SVK' THEN 1 ELSE 0 END), 0) FROM gasstations","SELECT
+  segment,
+  COUNT(*) AS segment_count,
+  SUM(COUNT(*)) OVER () AS total_count,
+  ROUND(100.0 * COUNT(*) / SUM(COUNT(*)) OVER (), 2) AS pct_of_total
+FROM gasstations
+WHERE country = 'SVK'
+GROUP BY segment
+ORDER BY segment_count DESC;",[[35.68181818181818]],"[[""Other"",334,{""type"":""Decimal"",""value"":""880""},{""type"":""Decimal"",""value"":""37.95""}],[""Premium"",314,{""type"":""Decimal"",""value"":""880""},{""type"":""Decimal"",""value"":""35.68""}],[""Value for money"",131,{""type"":""Decimal"",""value"":""880""},{""type"":""Decimal"",""value"":""14.89""}],[""Discount"",59,{""type"":""Decimal"",""value"":""880""},{""type"":""Decimal"",""value"":""6.70""}],[""Noname"",42,{""type"":""Decimal"",""value"":""880""},{""type"":""Decimal"",""value"":""4.77""}]]",0,0.000000,True,True,True,True,True,"Both SQLs compute 100 * (count of rows where country='SVK' and segment='Premium') / (count of rows where country='SVK'). The agent's grouped version returns the same value (35.68) for Premium; grouping only adds the other segments as explanatory rows, which does not break semantic equivalence of the Premium percentage calculation."
+debit_card_specializing:1526,1526,"For the customer who paid 634.8 in 2012/8/25, what was the consumption decrease rate from Year 2012 to 2013?",'2012/8/24' can be represented by '2012-08-24'; Consumption decrease rate = (consumption_2012 - consumption_2013) / consumption_2012; paid 634.8 refers to price = '634.8',"SELECT CAST(SUM(CASE WHEN SUBSTRING(date FROM 1 FOR 4) = '2012' THEN consumption ELSE 0 END) - SUM(CASE WHEN SUBSTRING(date FROM 1 FOR 4) = '2013' THEN consumption ELSE 0 END) AS REAL) / NULLIF(SUM(CASE WHEN SUBSTRING(date FROM 1 FOR 4) = '2012' THEN consumption ELSE 0 END), 0) FROM yearmonth WHERE customer_id = (SELECT T1.customer_id FROM transactions_1k AS T1 INNER JOIN gasstations AS T2 ON T1.gas_station_id = T2.gas_station_id WHERE T1.date = '2012-08-25' AND T1.price = 1513.12)","WITH target_customer AS (
+  SELECT DISTINCT t.customer_id
+  FROM transactions_1k AS t
+  WHERE t.date = DATE '2012-08-25'
+    AND t.price = 634.8
+),
+yearly AS (
+  SELECT
+    y.customer_id,
+    SUM(CASE WHEN y.date LIKE '2012%' THEN y.consumption ELSE 0 END) AS consumption_2012,
+    SUM(CASE WHEN y.date LIKE '2013%' THEN y.consumption ELSE 0 END) AS consumption_2013
+  FROM yearmonth AS y
+  JOIN target_customer AS tc
+    ON tc.customer_id = y.customer_id
+  GROUP BY y.customer_id
+)
+SELECT
+  consumption_2012,
+  consumption_2013,
+  (consumption_2012 - consumption_2013) / NULLIF(consumption_2012, 0) AS consumption_decrease_rate
+FROM yearly;",[[null]],"[[{""type"":""Decimal"",""value"":""158447.52""},{""type"":""Decimal"",""value"":""1079858.30""},{""type"":""Decimal"",""value"":""-5.8152426746723458""}]]",0,0.000000,True,True,True,False,False,"Material difference in the price filter: the agent uses price = 634.8 while the gold SQL uses price = 1513.12. These are different literal values (no exchange rate or conversion is mentioned in the evidence). Different price filters will select different customers, leading to different consumption values and a different final result. Additionally, the gold SQL uses CAST(... AS REAL) for integer division avoidance while the agent does not, though the decimal types returned suggest this may not matter in this engine. The price discrepancy is the primary failure."
+debit_card_specializing:1525,1525,What is the percentage of the customers who used EUR in 2012/8/25?,'2012/8/25' can be represented by '2012-08-25',"SELECT CAST(SUM(CASE WHEN T2.currency = 'EUR' THEN 1 ELSE 0 END) AS REAL) * 100 / NULLIF(COUNT(T1.customer_id), 0) FROM transactions_1k AS T1 INNER JOIN customers AS T2 ON T1.customer_id = T2.customer_id WHERE T1.date = '2012-08-25'","SELECT
+  ROUND(
+    100.0
+    * COUNT(DISTINCT CASE WHEN c.currency = 'EUR' THEN t.customer_id END)
+    / NULLIF(COUNT(DISTINCT t.customer_id), 0),
+    2
+  ) AS pct_eur_customers
+FROM transactions_1k AS t
+JOIN customers AS c
+  ON c.customer_id = t.customer_id
+WHERE t.date = DATE '2012-08-25';",[[1.6470588235294117]],"[[{""type"":""Decimal"",""value"":""2.70""}]]",0,0.000000,True,True,True,False,False,"The agent's SQL is not semantically equivalent to the Gold SQL. The Gold SQL measures a transaction-level rate: `SUM(CASE WHEN currency='EUR' THEN 1 ELSE 0 END) * 100 / COUNT(customer_id)`, i.e., EUR transactions divided by all transactions on 2012-08-25. The agent instead uses `COUNT(DISTINCT ...customer_id...)` for both numerator and denominator, producing a distinct-customer rate. These are different counting units (customers vs. transactions) and different denominators, so the results can differ whenever a customer has more than one transaction on that date or holds transactions in mixed currencies. Date filter and join are equivalent, but the core calculation differs materially."
+debit_card_specializing:1524,1524,What's the nationality of the customer who spent 548.4 in 2012/8/24?,'2012/8/24' can be represented by '2012-08-24'; spent 548.4 refers to price = '548.4' ,SELECT T2.country FROM transactions_1k AS T1 INNER JOIN gasstations AS T2 ON T1.gas_station_id = T2.gas_station_id WHERE T1.date = '2012-08-24' AND T1.price = '548.4',"SELECT c.customer_id, c.segment, c.currency
+FROM transactions_1k t
+JOIN customers c ON c.customer_id = t.customer_id
+WHERE t.date = '2012-08-24'
+  AND t.price = 548.4;","[[""CZE""]]","[[31543,""KAM"",""CZK""]]",0,0.000000,True,False,False,False,False,"The agent joins transactions_1k to customers on customer_id and selects customer_id/segment/currency, while the Gold SQL joins transactions_1k to gasstations on gas_station_id and selects country. Both the join target and the selected attribute differ materially, so the SQL is not semantically equivalent."
+debit_card_specializing:1529,1529,"What is the amount spent by customer ""38508"" at the gas stations? How much had the customer spent in January 2012?",January 2012 refers to the Date value = '201201',"SELECT SUM(T1.price), SUM(CASE WHEN T3.date = '201201' THEN T1.price ELSE 0 END) FROM transactions_1k AS T1 INNER JOIN gasstations AS T2 ON T1.gas_station_id = T2.gas_station_id INNER JOIN yearmonth AS T3 ON T1.customer_id = T3.customer_id WHERE T1.customer_id = '38508'","SELECT 38508 AS customer_id,
+       COALESCE((SELECT SUM(t.amount)
+                 FROM transactions_1k t
+                 WHERE t.customer_id = 38508), 0) AS total_spent_at_gas_stations,
+       COALESCE((SELECT y.consumption
+                 FROM yearmonth y
+                 WHERE y.customer_id = 38508
+                   AND y.date = '201201'), 0) AS spent_january_2012;","[[{""type"":""Decimal"",""value"":""68740.20""},{""type"":""Decimal"",""value"":""3437.01""}]]","[[38508,{""type"":""Decimal"",""value"":""148""},{""type"":""Decimal"",""value"":""67156.94""}]]",0,0.000000,True,False,True,False,False,"The agent's SQL is not semantically equivalent to the Gold SQL. Material differences: (1) the Gold joins gasstations and yearmonth to transactions_1k, while the agent uses two disconnected scalar subqueries with no joins at all; (2) the Gold's January answer is derived from transaction prices (SUM over T1.price with a CASE on T3.date = '201201'), whereas the agent reads y.consumption directly from yearmonth — a different measure and aggregation; (3) the Gold sums T1.price while the agent sums t.amount, a potentially different column/measure; (4) the returned results are inconsistent with the Gold's structure (agent's January value 67156.94 exceeds its total 148, impossible when January is a subset of the total computed by the same measure). These are substantive differences in joins, calculation, and selected result."
+debit_card_specializing:1521,1521,"For all the transactions happened during 8:00-9:00 in 2012/8/26, how many happened in CZE?",Czech Republic can be represented as the Country value in the gasstations table is 'CZE'; '2012/8/26' can be represented by '2012-08-26'; during 8:00-9:00 can be represented as Time BETWEEN '08:00:00' AND '09:00:00',SELECT COUNT(T1.transaction_id) FROM transactions_1k AS T1 INNER JOIN gasstations AS T2 ON T1.gas_station_id = T2.gas_station_id WHERE T1.date = '2012-08-26' AND T1.time BETWEEN '08:00:00' AND '09:00:00' AND T2.country = 'CZE',"SELECT COUNT(*) AS transaction_count
+FROM transactions_1k t
+JOIN gasstations g ON g.gas_station_id = t.gas_station_id
+WHERE t.date = DATE '2012-08-26'
+  AND t.time BETWEEN TIME '08:00:00' AND TIME '09:00:00'
+  AND g.country = 'CZE';",[[14]],[[14]],1,1.000000,True,True,True,True,True,"The agent SQL joins transactions_1k to gasstations on gas_station_id, applies identical date/time/country filters, and counts rows — semantically equivalent to the gold SQL; COUNT(*) vs COUNT(transaction_id) differs only if transaction_id were nullable, which is not indicated."
+debit_card_specializing:1515,1515,What segment did the customer have at 2012/8/23 21:20:00?,'2012/8/23' can be represented by '2012-08-23',SELECT T2.segment FROM transactions_1k AS T1 INNER JOIN customers AS T2 ON T1.customer_id = T2.customer_id WHERE T1.date = '2012-08-23' AND T1.time = '21:20:00',"SELECT c.segment AS segment
+FROM transactions_1k AS t
+JOIN customers AS c
+  ON c.customer_id = t.customer_id
+WHERE t.date = DATE '2012-08-23'
+  AND t.time = TIME '21:20:00';","[[""KAM""]]","[[""KAM""]]",1,1.000000,True,True,True,True,True,"The generated SQL joins transactions_1k to customers on customer_id, filters on the same date '2012-08-23' and time '21:20:00', and selects segment — semantically identical to the gold SQL; the explicit DATE/TIME casts are equivalent to string comparisons."
+debit_card_specializing:1514,1514,What kind of currency did the customer paid at 16:25:00 in 2012/8/24?,'2012/8/24' can be represented by '2012-08-24'; ,SELECT DISTINCT T3.currency FROM transactions_1k AS T1 INNER JOIN gasstations AS T2 ON T1.gas_station_id = T2.gas_station_id INNER JOIN customers AS T3 ON T1.customer_id = T3.customer_id WHERE T1.date = '2012-08-24' AND T1.time = '16:25:00',"SELECT c.currency
+FROM transactions_1k t
+JOIN customers c ON c.customer_id = t.customer_id
+WHERE t.date = DATE '2012-08-24'
+  AND t.time = TIME '16:25:00';","[[""CZK""]]","[[""CZK""],[""CZK""],[""CZK""]]",1,1.000000,True,True,True,True,True,"The agent's SQL joins transactions to customers (the gasstations join in the gold SQL is redundant and does not filter results), applies identical date/time filters, and selects the same target attribute. The only differences are the missing DISTINCT (agent returns three identical 'CZK' rows vs. one distinct row) and a redundant join in the gold SQL; the selected result value and filtering semantics are equivalent."
+debit_card_specializing:1507,1507,Please list the disparate time of the transactions taken place in the gas stations from chain no. 11.,,SELECT DISTINCT T1.time FROM transactions_1k AS T1 INNER JOIN gasstations AS T2 ON T1.gas_station_id = T2.gas_station_id WHERE T2.chain_id = 11,"SELECT DISTINCT t.time
+FROM transactions_1k AS t
+INNER JOIN gasstations AS gs
+  ON gs.gas_station_id = t.gas_station_id
+WHERE gs.chain_id = 11
+ORDER BY t.time;","[[{""type"":""time"",""value"":""11:55:00""}],[{""type"":""time"",""value"":""14:29:00""}]]","[[{""type"":""time"",""value"":""11:55:00""}],[{""type"":""time"",""value"":""14:29:00""}]]",1,1.000000,True,True,True,True,True,"The generated SQL performs the same INNER JOIN between transactions_1k and gasstations on gas_station_id, applies the same WHERE filter chain_id = 11, and selects DISTINCT time as in the gold SQL. The only difference is the addition of ORDER BY t.time, which does not change the result set semantics. The two queries are semantically equivalent."
+debit_card_specializing:1506,1506,Please list the product descriptions of the transactions taken place in the gas stations in the Czech Republic.,Czech Republic can be represented as the Country value in the gasstations table is 'CZE'; ,SELECT DISTINCT T3.description FROM transactions_1k AS T1 INNER JOIN gasstations AS T2 ON T1.gas_station_id = T2.gas_station_id INNER JOIN products AS T3 ON T1.product_id = T3.product_id WHERE T2.country = 'CZE',SELECT DISTINCT p.description FROM transactions_1k t JOIN gasstations g ON g.gas_station_id = t.gas_station_id JOIN products p ON p.product_id = t.product_id WHERE g.country = 'CZE' ORDER BY p.description;,"[[""Dalnic.popl.""],[""Zpr.nakupu""],[""Autoprísluš.""],[""Zboží nesp.""],[""Diesel +""],[""Obcerstvení""],[""Nemrz.kapal.""],[""Nafta""],[""Natural Plus""],[""Autokosmet.""],[""Natural""],[""Natural +""],[""Knihy,nov.""],[""Provoz.nápl.""],[""Oleje,tuky""],[""Potraviny""],[""Mytí vozidel""],[""LPG""],[""Additivum""],[""Natural Spec""],[""Nafta Plus""]]","[[""Additivum""],[""Autokosmet.""],[""Autoprísluš.""],[""Dalnic.popl.""],[""Diesel +""],[""Knihy,nov.""],[""LPG""],[""Mytí vozidel""],[""Nafta""],[""Nafta Plus""],[""Natural""],[""Natural +""],[""Natural Plus""],[""Natural Spec""],[""Nemrz.kapal.""],[""Obcerstvení""],[""Oleje,tuky""],[""Potraviny""],[""Provoz.nápl.""],[""Zboží nesp.""],[""Zpr.nakupu""]]",1,0.190476,True,True,True,True,True,"The agent's SQL is semantically identical to the gold SQL: same three tables (transactions_1k, gasstations, products), same join keys (gas_station_id, product_id), same filter (country = 'CZE'), same selected expression (DISTINCT description). The only difference is an extra ORDER BY p.description, which affects presentation order only and not the result set."
+debit_card_specializing:1505,1505,"Among the customers who paid in euro, how many of them have a monthly consumption of over 1000?",Pays in euro = Currency = 'EUR'.,SELECT COUNT(*) FROM yearmonth AS T1 INNER JOIN customers AS T2 ON T1.customer_id = T2.customer_id WHERE T2.currency = 'EUR' AND T1.consumption > 1000.00,"SELECT COUNT(DISTINCT c.customer_id) AS euro_customers_with_monthly_consumption_over_1000
+FROM customers c
+JOIN yearmonth ym ON ym.customer_id = c.customer_id
+WHERE c.currency = 'EUR'
+  AND ym.consumption > 1000;",[[2730]],[[391]],0,0.000000,True,True,True,False,False,"The agent's SQL uses COUNT(DISTINCT c.customer_id) while the gold SQL uses COUNT(*) over the same join and filters. The yearmonth table holds monthly records, so a single EUR customer can have multiple months with consumption > 1000; in that case COUNT(*) counts customer-month rows while COUNT(DISTINCT customer_id) counts customers, producing potentially different values. This is a material difference in counting grain, so full semantic equivalence cannot be established (even though the filters, join, and conditions otherwise match)."
+debit_card_specializing:1501,1501,"Please list the countries of the gas stations with transactions taken place in June, 2013.",June 2013 refers to '201306'; The first 4 strings of the Date values in the yearmonth table can represent year; The 5th and 6th string of the date can refer to month;,SELECT DISTINCT T2.country FROM transactions_1k AS T1 INNER JOIN gasstations AS T2 ON T1.gas_station_id = T2.gas_station_id INNER JOIN yearmonth AS T3 ON T1.customer_id = T3.customer_id WHERE T3.date = '201306',"SELECT DISTINCT gs.country
+FROM yearmonth ym
+JOIN transactions_1k t ON t.customer_id = ym.customer_id
+JOIN gasstations gs ON gs.gas_station_id = t.gas_station_id
+WHERE ym.date = '201306'
+ORDER BY gs.country;","[[""CZE""],[""SVK""]]","[[""CZE""],[""SVK""]]",1,1.000000,True,True,True,True,True,"The agent's SQL and the Gold SQL both select DISTINCT country from transactions_1k joined to gasstations on gas_station_id and to yearmonth on customer_id, with WHERE date = '201306'. The only difference is an added ORDER BY clause, which does not affect the result set. The SQLs are semantically equivalent."
+debit_card_specializing:1500,1500,"Please list the product description of the products consumed in September, 2013.",September 2013 refers to 201309; The first 4 strings of the Date values in the yearmonth table can represent year; The 5th and 6th string of the date can refer to month.,SELECT T3.description FROM transactions_1k AS T1 INNER JOIN yearmonth AS T2 ON T1.customer_id = T2.customer_id INNER JOIN products AS T3 ON T1.product_id = T3.product_id WHERE T2.date = '201309',"SELECT DISTINCT p.description
+FROM products p
+JOIN transactions_1k t ON p.product_id = t.product_id
+JOIN yearmonth y ON t.customer_id = y.customer_id
+  AND to_char(t.date, 'YYYYMM') = y.date
+WHERE y.date = '201309';","[[""Diesel""],[""Diesel""],[""Diesel""],[""Nat.Super""],[""Nat.Super""],[""Nafta""],[""Nafta""],[""Nafta""],[""Autoprísluš.""],[""Provoz.nápl.""],[""Nafta""],[""Mytí vozidel""],[""Nafta""],[""Diesel""],[""Diesel""],[""Diesel aditiv""],[""Nafta""],[""Diesel""],[""Diesel""],[""Diesel""],[""Diesel""],[""Diesel""],[""Nat.Super""],[""Diesel""],[""Nat.Super""],[""Diesel""],[""Diesel""],[""Nat.Super""],[""Autokozmetik""],[""Nat.Super""],[""Nat.Super""],[""Diesel""],[""Diesel""],[""Diesel""],[""Diesel""],[""Diesel""],[""Nat.Super""],[""Diesel""],[""Diesel""],[""Umývanie voz""],[""Nat.Super""],[""Diesel""],[""Diesel""],[""Diesel""],[""Nat.Super""],[""Diesel""],[""Diesel""],[""Diesel""],[""Diesel""],[""Diesel""],[""Prev.náplne""],[""Diesel""],[""Diesel""],[""Umývanie voz""],[""Prev.náplne""],[""Diesel""],[""Diesel""],[""Umývanie voz""],[""Nat.Super""],[""Diesel""],[""Diesel aditiv""],[""Prev.náplne""],[""Diesel""],[""Diesel""],[""Diesel""],[""Diesel""],[""Mytí vozidel""],[""Natural""],[""Nafta""],[""Oleje,tuky""],[""Natural""],[""Natural""],[""Nafta""],[""Nemrz.kapal.""],[""Nafta""],[""Natural""],[""Nafta""],[""Natural""],[""Natural""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Natural""],[""Provoz.nápl.""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Dalnic.popl.""],[""Nafta""],[""Nafta""],[""Zpr.nakupu""],[""Nafta""],[""Natural""],[""Nafta""],[""Natural""],[""Natural""],[""Natural""],[""Natural""],[""Nafta""],[""Mytí vozidel""],[""Natural""],[""Nafta""],[""Autoprísluš.""],[""Nafta""],[""Nafta""],[""Diesel +""],[""Provoz.nápl.""],[""Mytí vozidel""],[""Nafta""],[""Nafta""],[""Natural""],[""Nafta""],[""Nafta""],[""Nafta""],[""Natural Spec""],[""Nemrz.kapal.""],[""Natural +""],[""Nemrz.kapal.""],[""Natural""],[""Nafta""],[""Nafta""],[""Nafta""],[""Natural""],[""Mytí vozidel""],[""Nafta""],[""Nafta""],[""Oleje,tuky""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nemrz.kapal.""],[""Nafta""],[""Natural""],[""Nafta""],[""Nafta""],[""Mytí vozidel""],[""Nafta""],[""Nafta""],[""Nemrz.kapal.""],[""Diesel +""],[""Nafta""],[""Mytí vozidel""],[""Nafta""],[""Autoprísluš.""],[""Nafta""],[""Nafta""],[""Mytí vozidel""],[""Natural""],[""Natural +""],[""Nafta""],[""Nafta""],[""Natural""],[""Nafta Plus""],[""Nafta""],[""Nafta""],[""Natural""],[""Natural""],[""Nafta""],[""Nafta""],[""Nafta Plus""],[""Natural""],[""Natural""],[""Natural""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Natural""],[""Natural""],[""Natural""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Autokosmet.""],[""Autokosmet.""],[""Nemrz.kapal.""],[""Natural""],[""Natural""],[""Natural""],[""Nafta Plus""],[""Autoprísluš.""],[""Autokosmet.""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Natural""],[""Natural""],[""Natural""],[""Natural""],[""Natural""],[""Natural""],[""Natural Plus""],[""Natural""],[""Natural""],[""Natural""],[""Natural""],[""Natural""],[""Natural""],[""Natural Plus""],[""Diesel +""],[""Natural""],[""Natural""],[""Natural""],[""Natural""],[""Natural""],[""Natural""],[""Natural""],[""Natural""],[""Natural""],[""Nafta""],[""Nemrz.kapal.""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Natural""],[""Natural""],[""Nafta""],[""Nafta""],[""Natural""],[""Diesel +""],[""Nafta""],[""Natural""],[""Nafta""],[""Natural""],[""Nafta""],[""Natural""],[""Nafta""],[""Nafta""],[""Nafta""],[""Natural""],[""Natural""],[""Nafta""],[""Nafta""],[""Nafta""],[""Natural""],[""Nafta""],[""Natural""],[""Nafta""],[""Nafta""],[""Nafta""],[""Natural""],[""Natural""],[""Natural""],[""Oleje,tuky""],[""Nafta""],[""Natural""],[""Natural""],[""Additivum""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Natural""],[""Nafta""],[""Provoz.nápl.""],[""Mytí vozidel""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Natural""],[""Nafta""],[""Nafta""],[""Autokosmet.""],[""Diesel +""],[""Nafta""],[""Natural""],[""Dalnic.popl.""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Natural""],[""Mytí vozidel""],[""Nafta""],[""Nafta""],[""Nafta""],[""Natural""],[""Natural""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Dalnic.popl.""],[""Nafta""],[""Nafta""],[""Nafta""],[""Natural""],[""Nafta""],[""Provoz.nápl.""],[""Nafta""],[""Provoz.nápl.""],[""Nafta""],[""Nafta""],[""Natural""],[""Natural""],[""Natural""],[""Natural""],[""Natural""],[""Natural""],[""Natural""],[""Nafta""],[""Provoz.nápl.""],[""Natural""],[""Nafta""],[""Nafta""],[""Natural""],[""Natural""],[""Nafta""],[""Natural""],[""Nafta""],[""Nafta""],[""Nafta""],[""Mytí vozidel""],[""Natural""],[""Nafta""],[""Natural""],[""Nafta""],[""Natural""],[""Provoz.nápl.""],[""Nafta""],[""Nafta""],[""Nafta""],[""Natural Spec""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Zpr.nakupu""],[""Natural""],[""Natural""],[""Nafta""],[""Nafta""],[""Nafta""],[""Natural""],[""Nafta""],[""Nafta""],[""Mytí vozidel""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Natural""],[""Mytí vozidel""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Natural""],[""Nafta""],[""Nafta""],[""Mytí vozidel""],[""Nafta""],[""Natural""],[""Diesel +""],[""Nafta Plus""],[""Nafta""],[""Mytí vozidel""],[""Natural""],[""Zpr.nakupu""],[""Nafta""],[""Natural""],[""Nafta""],[""Nemrz.kapal.""],[""Nafta""],[""Nafta""],[""Nafta""],[""Natural""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Natural""],[""Oleje,tuky""],[""Nafta""],[""Autoprísluš.""],[""Provoz.nápl.""],[""Nafta""],[""Nafta""],[""Natural""],[""Natural""],[""Natural""],[""Diesel +""],[""Nafta""],[""Natural""],[""Natural""],[""Natural""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Natural""],[""Autokosmet.""],[""Natural""],[""Nafta""],[""Natural Plus""],[""Diesel +""],[""Nafta""],[""Nafta""],[""Mytí vozidel""],[""Mytí vozidel""],[""Nafta""],[""Nafta""],[""Diesel +""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Diesel +""],[""Nafta Plus""],[""Nafta""],[""Natural""],[""Natural""],[""Diesel +""],[""Natural""],[""Nafta""],[""Nafta""],[""Nafta""],[""Natural""],[""Natural""],[""Knihy,nov.""],[""Provoz.nápl.""],[""Nafta""],[""Natural""],[""Nafta""],[""Natural""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nemrz.kapal.""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Natural""],[""Nafta""],[""Nafta""],[""Nafta Plus""],[""Potraviny""],[""Provoz.nápl.""],[""Nafta""],[""Nafta""],[""Autoprísluš.""],[""Natural""],[""Natural""],[""Natural""],[""Natural""],[""Natural""],[""Nafta""],[""Nemrz.kapal.""],[""Natural""],[""Nafta""],[""Natural""],[""Natural""],[""Nafta""],[""Nemrz.kapal.""],[""Natural Spec""],[""Natural""],[""Nafta""],[""Nafta""],[""Natural""],[""Natural""],[""Mytí vozidel""],[""Nafta""],[""Natural Plus""],[""Nafta""],[""Nafta""],[""Nemrz.kapal.""],[""Nafta""],[""Natural""],[""Natural +""],[""Nafta""],[""Nafta""],[""Natural""],[""Nafta""],[""Provoz.nápl.""],[""Nafta""],[""Natural""],[""Nafta""],[""Diesel +""],[""Mytí vozidel""],[""Natural""],[""Nafta""],[""Nafta""],[""Nafta""],[""Natural""],[""Nafta""],[""Mytí vozidel""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Natural""],[""Nafta""],[""Nafta""],[""Natural""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Natural""],[""Provoz.nápl.""],[""Nafta""],[""Nafta""],[""Nafta""],[""Natural""],[""LPG""],[""Natural""],[""Natural""],[""Nafta""],[""Nafta""],[""Natural""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Diesel +""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Mytí vozidel""],[""Nafta Plus""],[""Natural""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Obcerstvení""],[""Nafta""],[""Nafta""],[""Natural Plus""],[""Natural""],[""Mytí vozidel""],[""Nafta""],[""Mytí vozidel""],[""Nafta""],[""Nemrz.kapal.""],[""Natural""],[""Natural""],[""Natural""],[""Natural""],[""Nafta""],[""Natural""],[""Nafta""],[""Nafta""],[""Natural""],[""Zboží nesp.""],[""Nafta""],[""Potraviny""],[""Natural""],[""Natural""],[""Nafta""],[""Nafta Plus""],[""Mytí vozidel""],[""Mytí vozidel""],[""Diesel +""],[""Natural""],[""Natural""],[""Nafta""],[""Natural""],[""Nafta""],[""Natural""],[""Nafta""],[""Diesel +""],[""Natural""],[""Nafta""],[""Nafta""],[""Nafta Plus""],[""Natural""],[""Natural""],[""Natural""],[""Nafta""],[""Nafta""],[""Natural""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Natural""],[""Nafta""],[""Nafta""],[""Natural""],[""Nafta""],[""Nafta""],[""Natural""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Natural""],[""Nafta""],[""Natural""],[""Potraviny""],[""Nafta""],[""Nafta""],[""Diesel +""],[""Potraviny""],[""Diesel +""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Natural""],[""Nemrz.kapal.""],[""Nafta""],[""Nafta""],[""Nafta""],[""Natural""],[""Nafta""],[""Nafta""],[""Natural""],[""Nafta""],[""Nafta""],[""Mytí vozidel""],[""Nafta""],[""Nafta""],[""Nafta""],[""Natural""],[""Natural""],[""Nafta""],[""Mytí vozidel""],[""Natural""],[""Nafta""],[""Nafta""],[""Nafta""],[""Oleje,tuky""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta Plus""],[""Natural""],[""Natural""],[""Nafta""],[""Natural""],[""Nafta""],[""Natural""],[""Natural""],[""Natural""],[""Nafta""],[""Natural""],[""Nafta""],[""Natural""],[""Natural""],[""Natural""],[""Nafta""],[""Nafta""],[""Natural""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Mytí vozidel""],[""Nafta""],[""Diesel +""],[""Nafta""],[""Mytí vozidel""],[""Nafta""],[""Nat.Super""],[""Nafta""],[""Nafta""],[""Natural""],[""Nafta""],[""Natural""],[""Mytí vozidel""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Mytí vozidel""],[""Natural""],[""Zpr.nakupu""],[""Nafta""],[""Natural""],[""Nafta""],[""Nafta""],[""Natural""],[""Natural""],[""Natural""],[""Nafta""],[""Nafta""],[""Nafta""],[""Natural""],[""Mytí vozidel""],[""Nafta""],[""Natural""],[""Natural""],[""Natural""],[""Natural""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Natural""],[""Natural Spec""],[""Nafta""],[""Provoz.nápl.""],[""Nafta""],[""Natural""],[""Diesel +""],[""Nafta""],[""Nafta""],[""Diesel +""],[""Nafta""],[""Natural""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Mytí vozidel""],[""Diesel +""],[""Nafta""],[""Natural""],[""Nafta""],[""Nafta""],[""Natural""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Natural""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Natural""],[""Mytí vozidel""],[""Nafta""],[""Natural""],[""Natural""],[""Nafta""],[""Provoz.nápl.""],[""Nafta""],[""Nafta""],[""Natural""],[""Nafta""],[""Natural""],[""Nafta""],[""Autokosmet.""],[""Mytí vozidel""],[""Nafta""],[""Nafta""],[""Natural""],[""Nafta""],[""Nafta""],[""Nafta""],[""Natural""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Oleje,tuky""],[""Nemrz.kapal.""],[""Diesel +""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Diesel +""],[""Nafta""],[""Nafta""],[""Nafta""],[""Natural""],[""Nafta""],[""Natural""],[""Natural""],[""Natural""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Natural""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta Plus""],[""Nafta""],[""Natural""],[""Nafta""],[""Nafta""],[""Nafta""],[""Diesel +""],[""LPG""],[""Diesel""],[""Nafta""],[""Natural""],[""Nafta""],[""Natural""],[""Natural""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Diesel""],[""Natural""],[""Diesel +""],[""Nafta""],[""Natural""],[""Dalnic.popl.""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Natural""],[""Nafta""],[""Mytí vozidel""],[""Nemrz.kapal.""],[""Nafta""],[""Nafta""],[""Natural""],[""Natural""],[""Nafta""],[""Natural""],[""Nafta""],[""Nemrz.kapal.""],[""Nafta""],[""Nafta""],[""Nafta Plus""],[""Provoz.nápl.""],[""Nafta""],[""Natural""],[""Nafta""],[""Natural""],[""Natural""],[""Mytí vozidel""],[""Diesel +""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Mytí vozidel""],[""Natural""],[""Provoz.nápl.""],[""Nafta""],[""Nafta""],[""Natural""],[""Natural""],[""Autokosmet.""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nafta""],[""Nemrz.kapal.""],[""Mytí vozidel""],[""Nafta""],[""Natural""],[""Nafta""],[""Nafta""],[""Natural""],[""Nafta""],[""Natural""],[""Nafta""],[""Nafta""],[""Nafta""],[""Natural""],[""LPG""],[""Natural""],[""Natural""],[""Natural""],[""Natural""],[""Mytí vozidel""],[""Nafta""],[""Nafta""],[""Diesel""],[""Natural""],[""Natural""],[""Diesel +""],[""Zboží nesp.""],[""Obcerstvení""],[""Natural""],[""LPG""],[""Nafta""],[""Diesel""],[""Diesel""],[""Umývanie voz""],[""Diesel aditiv""],[""Nafta""],[""Natural""],[""Nafta""],[""Provoz.nápl.""],[""Nafta""],[""Nafta""]]",[],0,0.000000,True,True,False,False,False,"Although the join structure and the '201309' filter mirror the gold SQL, the agent adds a DISTINCT clause, which can materially change the returned row set (collapsing duplicates) versus the gold query that returns one row per matching transaction. In addition, the agent's returned rows are empty, so semantic equivalence to the gold query's expected output cannot be established—especially given the extra to_char(t.date,'YYYYMM') condition that the gold SQL does not apply."
+debit_card_specializing:1509,1509,"Among the transactions made in the gas stations in the Czech Republic, how many of them are taken place after 2012/1/1?",Czech Republic can be represented as the Country value in the gasstations table is 'CZE',"SELECT COUNT(T1.transaction_id) FROM transactions_1k AS T1 INNER JOIN gasstations AS T2 ON T1.gas_station_id = T2.gas_station_id WHERE T2.country = 'CZE' AND TO_CHAR(CAST(T1.date AS TIMESTAMP), 'YYYY') >= '2012'",SELECT COUNT(*) AS transaction_count FROM transactions_1k t JOIN gasstations g ON t.gas_station_id = g.gas_station_id WHERE g.country = 'CZE' AND t.date > DATE '2012-01-01',[[933]],[[933]],1,1.000000,True,True,True,False,False,"The join (INNER JOIN on gas_station_id) and the country filter (country = 'CZE') match gold, and COUNT(*) vs COUNT(transaction_id) are equivalent for a one-row-per-station dimension. However, the date boundary differs materially: gold uses TO_CHAR(year) >= '2012', which includes transactions on 2012-01-01 (the entire day), while the generated SQL uses t.date > DATE '2012-01-01', which excludes 2012-01-01 (and the whole day if date is a DATE column). Whether the two queries return the same count depends on whether any CZE transaction falls on 2012-01-01, which cannot be established from the SQL and question context alone, so strict equivalence is not demonstrated."
+debit_card_specializing:1493,1493,"In February 2012, what percentage of customers consumed more than 528.3?",February 2012 refers to '201202' in yearmonth.date; The first 4 strings of the Date values in the yearmonth table can represent year; The 5th and 6th string of the date can refer to month.,"SELECT CAST(SUM(CASE WHEN consumption > 528.3 THEN 1 ELSE 0 END) AS REAL) * 100 / NULLIF(COUNT(customer_id), 0) FROM yearmonth WHERE date = '201202'","SELECT
+  ROUND(
+    100.0 * COUNT(*) FILTER (WHERE consumption > 528.3)
+    / NULLIF(COUNT(*), 0),
+    2
+  ) AS pct_customers_above_threshold
+FROM yearmonth
+WHERE date = '201202';",[[66.62300807683911]],"[[{""type"":""Decimal"",""value"":""66.62""}]]",0,0.000000,True,True,True,True,True,"The agent SQL and the gold SQL share the same filter (date = '201202'), the same measure (consumption > 528.3), and the same percentage formula (count above threshold * 100 / total count). The agent additionally wraps the result in ROUND(...,2) and uses COUNT(*) FILTER syntax instead of SUM(CASE...), which are syntactic and presentation-level differences that do not alter the semantic result beyond rounding precision."
+debit_card_specializing:1498,1498,What is the highest monthly consumption in the year 2012?,cast the consumption into float when perform calculation; The first 4 strings of the Date values in the yearmonth table can represent year; The 5th and 6th string of the date can refer to month.,SELECT SUM(CAST(consumption AS DOUBLE PRECISION)) FROM yearmonth WHERE SUBSTRING(date FROM 1 FOR 4) = '2012' GROUP BY SUBSTRING(date FROM 5 FOR 2) ORDER BY SUM(consumption) DESC NULLS LAST LIMIT 1,"SELECT
+  date AS year_month,
+  CAST(consumption AS DOUBLE PRECISION) AS consumption
+FROM yearmonth
+WHERE LEFT(date, 4) = '2012'
+ORDER BY CAST(consumption AS DOUBLE PRECISION) DESC
+LIMIT 1;",[[51787161.7399998]],"[[""201201"",445279.69]]",0,0.000000,True,False,True,False,False,"There is a material semantic difference. The gold SQL sums consumption per month for 2012, orders the monthly totals descending, and returns the top monthly sum. The agent's SQL performs no GROUP BY or SUM: it merely orders all 2012 rows by individual consumption and takes the maximum. These are equivalent only if the table has exactly one row per month, which cannot be established from the given context; since the gold SQL groups by month, equivalence cannot be assumed."
+debit_card_specializing:1490,1490,How many percent of LAM customer consumed more than 46.73?,Percentage of LAM customer consumed more than 46.73 = (Total no. of LAM customers who consumed more than 46.73 / Total no. of LAM customers) * 100.,"SELECT CAST(SUM(CASE WHEN T2.consumption > 46.73 THEN 1 ELSE 0 END) AS REAL) * 100 / NULLIF(COUNT(T1.customer_id), 0) FROM customers AS T1 INNER JOIN yearmonth AS T2 ON T1.customer_id = T2.customer_id WHERE T1.segment = 'LAM'","SELECT
+    ROUND(
+      COUNT(*) FILTER (WHERE customer_total_amount > 46.73) * 100.0
+      / NULLIF(COUNT(*), 0),
+      4
+    ) AS pct_lam_customers_over_threshold
+FROM (
+    SELECT
+        c.customer_id,
+        SUM(t.amount) AS customer_total_amount
+    FROM customers c
+    JOIN transactions_1k t
+      ON t.customer_id = c.customer_id
+    WHERE c.segment = 'LAM'
+    GROUP BY c.customer_id
+) AS customer_totals",[[98.5267932135058]],"[[{""type"":""Decimal"",""value"":""15.1515""}]]",0,0.000000,True,False,True,False,False,"The agent's SQL is not semantically equivalent to the gold SQL. The gold SQL joins with the yearmonth table and checks individual monthly consumption values (T2.consumption > 46.73), counting per-row. The agent instead sums all amounts per customer and checks if the cumulative total exceeds 46.73. The denominators also differ (distinct customers vs. all customer-month rows). These produce different results."
+debit_card_specializing:1486,1486,"Is it true that more SMEs pay in Czech koruna than in euros? If so, how many more?",Amount of more SMEs = Total of SMEs pay using Currency CZK - Total of SMEs pay using Currency EUR,SELECT SUM(CASE WHEN currency = 'CZK' THEN 1 ELSE 0 END) - SUM(CASE WHEN currency = 'EUR' THEN 1 ELSE 0 END) FROM customers WHERE segment = 'SME',"SELECT
+  SUM(CASE WHEN currency = 'CZK' THEN 1 ELSE 0 END) AS sme_czk_count,
+  SUM(CASE WHEN currency = 'EUR' THEN 1 ELSE 0 END) AS sme_eur_count,
+  SUM(CASE WHEN currency = 'CZK' THEN 1 ELSE 0 END)
+    - SUM(CASE WHEN currency = 'EUR' THEN 1 ELSE 0 END) AS diff_czk_minus_eur,
+  CASE
+    WHEN SUM(CASE WHEN currency = 'CZK' THEN 1 ELSE 0 END)
+       > SUM(CASE WHEN currency = 'EUR' THEN 1 ELSE 0 END) THEN 'Yes'
+    ELSE 'No'
+  END AS more_smes_pay_czk
+FROM customers
+WHERE segment = 'SME';",[[23505]],"[[25134,1629,23505,""Yes""]]",0,0.400000,True,True,True,True,True,"The Gold SQL computes SUM(CASE WHEN currency='CZK' ...) - SUM(CASE WHEN currency='EUR' ...) FROM customers WHERE segment='SME'. The agent's SQL computes the identical difference (third selected column) with the same filter, and additionally selects the component counts and a boolean indicator, which does not alter the core result. The SQLs are semantically equivalent."
+debit_card_specializing:1484,1484,"How many more ""discount"" gas stations does the Czech Republic have compared to Slovakia?","Czech Republic can be represented as the Country value in gasstations table is 'CZE'; Slovakia can be represented as the Country value in the gasstations table is 'SVK';  Computation of more ""discount"" gas stations= Total no. of discount gas stations in Czech Republic - Total no. of discount gas stations in Slovakia",SELECT SUM(CASE WHEN country = 'CZE' THEN 1 ELSE 0 END) - SUM(CASE WHEN country = 'SVK' THEN 1 ELSE 0 END) FROM gasstations WHERE segment = 'Discount',"SELECT
+  COUNT(*) FILTER (WHERE gs.country = 'CZE') AS cze_discount_stations,
+  COUNT(*) FILTER (WHERE gs.country = 'SVK') AS svk_discount_stations,
+  COUNT(*) FILTER (WHERE gs.country = 'CZE') - COUNT(*) FILTER (WHERE gs.country = 'SVK') AS difference
+FROM gasstations gs
+WHERE gs.segment = 'Discount';",[[176]],"[[235,59,176]]",0,0.500000,True,True,True,True,True,"The agent's SQL is semantically equivalent to the gold SQL. Both filter on segment = 'Discount' and compute COUNT(CZE) - COUNT(SVK). The agent uses COUNT(*) FILTER (WHERE ...) while gold uses SUM(CASE WHEN ... THEN 1 ELSE 0 END), but these are functionally identical. The agent additionally returns the individual counts as extra columns, which does not change the equivalence of the core computation."
+debit_card_specializing:1483,1483,How much did customer 6 consume in total between August and November 2013?,Between August And November 2013 refers to Between 201308 And 201311; The first 4 strings of the Date values in the yearmonth table can represent year; The 5th and 6th string of the date can refer to month.,SELECT SUM(consumption) FROM yearmonth WHERE customer_id = 6 AND date BETWEEN '201308' AND '201311',SELECT SUM(consumption) AS total_consumption FROM yearmonth WHERE customer_id = 6 AND date >= '201308' AND date <= '201311';,"[[{""type"":""Decimal"",""value"":""1224.96""}]]","[[{""type"":""Decimal"",""value"":""1224.96""}]]",1,1.000000,True,True,True,True,True,"The generated SQL is semantically equivalent to the gold SQL: same table, same filters (customer_id = 6 and inclusive date range over '201308'–'201311', with >=/<= being identical to BETWEEN), and the same SUM(consumption) selection; only the alias differs."
+debit_card_specializing:1482,1482,"Which of the three segments—SME, LAM and KAM—has the biggest and lowest percentage increases in consumption paid in EUR between 2012 and 2013?",Increase or Decrease = consumption for 2013 - consumption for 2012; Percentage of Increase = (Increase or Decrease / consumption for 2013) * 100%; The first 4 strings of the Date values in the yearmonth table can represent year,"SELECT CAST((SUM(CASE WHEN T1.segment = 'SME' AND T2.date LIKE '2013%' THEN T2.consumption ELSE 0 END) - SUM(CASE WHEN T1.segment = 'SME' AND T2.date LIKE '2012%' THEN T2.consumption ELSE 0 END)) AS REAL) * 100 / NULLIF(SUM(CASE WHEN T1.segment = 'SME' AND T2.date LIKE '2012%' THEN T2.consumption ELSE 0 END), 0), CAST(SUM(CASE WHEN T1.segment = 'LAM' AND T2.date LIKE '2013%' THEN T2.consumption ELSE 0 END) - SUM(CASE WHEN T1.segment = 'LAM' AND T2.date LIKE '2012%' THEN T2.consumption ELSE 0 END) AS REAL) * 100 / NULLIF(SUM(CASE WHEN T1.segment = 'LAM' AND T2.date LIKE '2012%' THEN T2.consumption ELSE 0 END), 0), CAST(SUM(CASE WHEN T1.segment = 'KAM' AND T2.date LIKE '2013%' THEN T2.consumption ELSE 0 END) - SUM(CASE WHEN T1.segment = 'KAM' AND T2.date LIKE '2012%' THEN T2.consumption ELSE 0 END) AS REAL) * 100 / NULLIF(SUM(CASE WHEN T1.segment = 'KAM' AND T2.date LIKE '2012%' THEN T2.consumption ELSE 0 END), 0) FROM customers AS T1 INNER JOIN yearmonth AS T2 ON T1.customer_id = T2.customer_id","WITH eur_customers AS (
+  SELECT customer_id, segment
+  FROM customers
+  WHERE currency = 'EUR'
+    AND segment IN ('SME', 'LAM', 'KAM')
+),
+consumption_by_year AS (
+  SELECT
+    c.segment,
+    LEFT(ym.date, 4) AS yr,
+    SUM(ym.consumption) AS total_consumption
+  FROM yearmonth ym
+  INNER JOIN eur_customers c ON c.customer_id = ym.customer_id
+  WHERE LEFT(ym.date, 4) IN ('2012', '2013')
+  GROUP BY c.segment, LEFT(ym.date, 4)
+),
+segment_totals AS (
+  SELECT
+    segment,
+    MAX(total_consumption) FILTER (WHERE yr = '2012') AS consumption_2012,
+    MAX(total_consumption) FILTER (WHERE yr = '2013') AS consumption_2013
+  FROM consumption_by_year
+  GROUP BY segment
+),
+segment_pct AS (
+  SELECT
+    segment,
+    consumption_2012,
+    consumption_2013,
+    consumption_2013 - consumption_2012 AS increase_or_decrease,
+    ROUND((consumption_2013 - consumption_2012) / NULLIF(consumption_2013, 0) * 100, 4) AS pct_increase
+  FROM segment_totals
+)
+SELECT
+  'Biggest percentage increase' AS result_type,
+  segment,
+  consumption_2012,
+  consumption_2013,
+  increase_or_decrease,
+  pct_increase
+FROM segment_pct
+WHERE pct_increase = (SELECT MAX(pct_increase) FROM segment_pct)
+UNION ALL
+SELECT
+  'Lowest percentage increase' AS result_type,
+  segment,
+  consumption_2012,
+  consumption_2013,
+  increase_or_decrease,
+  pct_increase
+FROM segment_pct
+WHERE pct_increase = (SELECT MIN(pct_increase) FROM segment_pct)
+ORDER BY pct_increase DESC;","[[545.4018808857365,681.5824507359695,708.1124296835194]]","[[""Biggest percentage increase"",""SME"",{""type"":""Decimal"",""value"":""869537.52""},{""type"":""Decimal"",""value"":""7258151.96""},{""type"":""Decimal"",""value"":""6388614.44""},{""type"":""Decimal"",""value"":""88.0198""}],[""Lowest percentage increase"",""LAM"",{""type"":""Decimal"",""value"":""676212.68""},{""type"":""Decimal"",""value"":""4326606.13""},{""type"":""Decimal"",""value"":""3650393.45""},{""type"":""Decimal"",""value"":""84.3708""}]]",0,0.000000,True,True,True,False,False,"Material differences exist between the agent SQL and the Gold SQL. The Gold SQL computes the percentage increase using consumption_2012 as the denominator (increase/2012*100), whereas the agent's SQL uses consumption_2013 as the denominator per the evidence text. This changes the computed values (and potentially the segment ranking) and is not semantically equivalent. Additionally, the agent adds a currency='EUR' filter not present in the Gold SQL, which further restricts the population."
+debit_card_specializing:1481,1481,"What is the difference in the annual average consumption of the customers with the least amount of consumption paid in CZK for 2013 between SME and LAM, LAM and KAM, and KAM and SME?",annual average consumption of customer with the lowest consumption in each segment = total consumption per year / the number of customer with lowest consumption in each segment; Difference in annual average = SME's annual average - LAM's annual average; Difference in annual average = LAM's annual average - KAM's annual average; Year 2013 can be presented as Between 201301 And 201312; The first 4 strings of the Date values in the yearmonth table can represent year.,"SELECT CAST(SUM(CASE WHEN T1.segment = 'SME' THEN T2.consumption ELSE 0 END) AS REAL) / NULLIF(COUNT(T1.customer_id), 0) - CAST(SUM(CASE WHEN T1.segment = 'LAM' THEN T2.consumption ELSE 0 END) AS REAL) / NULLIF(COUNT(T1.customer_id), 0), CAST(SUM(CASE WHEN T1.segment = 'LAM' THEN T2.consumption ELSE 0 END) AS REAL) / NULLIF(COUNT(T1.customer_id), 0) - CAST(SUM(CASE WHEN T1.segment = 'KAM' THEN T2.consumption ELSE 0 END) AS REAL) / NULLIF(COUNT(T1.customer_id), 0), CAST(SUM(CASE WHEN T1.segment = 'KAM' THEN T2.consumption ELSE 0 END) AS REAL) / NULLIF(COUNT(T1.customer_id), 0) - CAST(SUM(CASE WHEN T1.segment = 'SME' THEN T2.consumption ELSE 0 END) AS REAL) / NULLIF(COUNT(T1.customer_id), 0) FROM customers AS T1 INNER JOIN yearmonth AS T2 ON T1.customer_id = T2.customer_id WHERE T1.currency = 'CZK' AND T2.consumption = (SELECT MIN(consumption) FROM yearmonth) AND CAST(T2.date AS TEXT) BETWEEN '201301' AND '201312'","WITH czk_2013 AS (
+  SELECT ym.customer_id,
+         SUM(ym.consumption) AS annual_consumption
+  FROM yearmonth ym
+  JOIN customers c ON c.customer_id = ym.customer_id
+  WHERE c.currency = 'CZK'
+    AND ym.date BETWEEN '201301' AND '201312'
+  GROUP BY ym.customer_id
+),
+customer_segment AS (
+  SELECT ct.customer_id,
+         ct.annual_consumption,
+         c.segment
+  FROM czk_2013 ct
+  JOIN customers c ON c.customer_id = ct.customer_id
+  WHERE c.segment IN ('SME', 'LAM', 'KAM')
+),
+segment_min AS (
+  SELECT segment,
+         MIN(annual_consumption) AS min_consumption
+  FROM customer_segment
+  GROUP BY segment
+),
+lowest_customers AS (
+  SELECT cs.segment,
+         cs.annual_consumption
+  FROM customer_segment cs
+  JOIN segment_min sm
+    ON sm.segment = cs.segment
+   AND sm.min_consumption = cs.annual_consumption
+),
+segment_avg AS (
+  SELECT segment,
+         SUM(annual_consumption) / COUNT(*) AS annual_avg_consumption
+  FROM lowest_customers
+  GROUP BY segment
+),
+pivoted AS (
+  SELECT MAX(CASE WHEN segment = 'SME' THEN annual_avg_consumption END) AS sme_avg,
+         MAX(CASE WHEN segment = 'LAM' THEN annual_avg_consumption END) AS lam_avg,
+         MAX(CASE WHEN segment = 'KAM' THEN annual_avg_consumption END) AS kam_avg
+  FROM segment_avg
+)
+SELECT sme_avg - lam_avg AS sme_minus_lam,
+       lam_avg - kam_avg AS lam_minus_kam,
+       kam_avg - sme_avg AS kam_minus_sme
+FROM pivoted;","[[0.0,582092.875,-582092.875]]","[[{""type"":""Decimal"",""value"":""-14009.3400000000000000""},{""type"":""Decimal"",""value"":""6046.6200000000000000""},{""type"":""Decimal"",""value"":""7962.7200000000000000""}]]",0,0.000000,True,True,True,False,False,"Material differences exist. (1) Lowest consumption definition: the gold SQL filters individual records where T2.consumption = (SELECT MIN(consumption) FROM yearmonth) — a record-level global minimum — while the agent computes annual totals per customer first and finds the minimum annual consumption per segment. (2) Denominator: gold SQL divides by COUNT(T1.customer_id) across ALL matched rows (all segments), while the agent divides per-segment only. (3) The gold SQL does not filter to specific segments explicitly, relying on CASE WHEN for column selection, whereas the agent adds segment IN (...). These are not semantically equivalent."
+debit_card_specializing:1480,1480,What was the gas consumption peak month for SME customers in 2013?,Year 2013 can be presented as Between 201301 And 201312; The first 4 strings of the Date values in the yearmonth table can represent year; The 5th and 6th string of the date can refer to month.,SELECT SUBSTRING(T2.date FROM 5 FOR 2) FROM customers AS T1 INNER JOIN yearmonth AS T2 ON T1.customer_id = T2.customer_id WHERE SUBSTRING(T2.date FROM 1 FOR 4) = '2013' AND T1.segment = 'SME' GROUP BY SUBSTRING(T2.date FROM 5 FOR 2) ORDER BY SUM(T2.consumption) DESC NULLS LAST LIMIT 1,"SELECT ym.date AS year_month, SUM(ym.consumption) AS total_consumption
+FROM yearmonth ym
+JOIN customers c ON c.customer_id = ym.customer_id
+WHERE c.segment = 'SME'
+  AND ym.date BETWEEN '201301' AND '201312'
+GROUP BY ym.date
+ORDER BY total_consumption DESC
+LIMIT 1;","[[""04""]]","[[""201304"",{""type"":""Decimal"",""value"":""126047776.92""}]]",0,0.000000,True,True,True,True,True,"The two SQLs are semantically equivalent: both inner-join customers and yearmonth on customer_id, filter segment='SME' and year 2013 (BETWEEN '201301'-'201312' on a YYYYMM string equals SUBSTRING(date FROM 1 FOR 4)='2013'), group by month (full date within a single year is one row per month), sum consumption, and take the top 1. Selecting the full '201304' versus month '04' is a representational difference only. The only minor divergence is gold's NULLS LAST, which would matter only if a month's consumption were entirely NULL; no evidence of such data exists, so this is not a material difference."
+debit_card_specializing:1479,1479,Which year recorded the most consumption of gas paid in CZK?,The first 4 strings of the Date values in the yearmonth table can represent year.,SELECT SUBSTRING(T2.date FROM 1 FOR 4) FROM customers AS T1 INNER JOIN yearmonth AS T2 ON T1.customer_id = T2.customer_id WHERE T1.currency = 'CZK' GROUP BY SUBSTRING(T2.date FROM 1 FOR 4) ORDER BY SUM(T2.consumption) DESC NULLS LAST LIMIT 1,"SELECT LEFT(date, 4) AS year, SUM(consumption) AS total_consumption FROM yearmonth GROUP BY LEFT(date, 4) ORDER BY total_consumption DESC LIMIT 1","[[""2013""]]","[[""2013"",{""type"":""Decimal"",""value"":""3008566555.28""}]]",0,0.666667,False,True,True,False,False,"The gold SQL joins customers to yearmonth and filters T1.currency = 'CZK' before grouping by year and ordering by SUM(consumption). The agent's SQL omits the join and the CZK filter entirely, grouping over all currencies. This is a material difference, so the two are not semantically equivalent."
+debit_card_specializing:1476,1476,What was the difference in gas consumption between CZK-paying customers and EUR-paying customers in 2012?,cast the consumption into float when perform calculation; Year 2012 can be presented as Between 201201 And 201212; The first 4 strings of the Date values in the yearmonth table can represent year; Difference in Consumption = CZK customers consumption in 2012 - EUR customers consumption in 2012,SELECT SUM(CASE WHEN T1.currency = 'CZK' THEN CAST(T2.consumption AS DOUBLE PRECISION) ELSE 0 END) - SUM(CASE WHEN T1.currency = 'EUR' THEN CAST(T2.consumption AS DOUBLE PRECISION) ELSE 0 END) FROM customers AS T1 INNER JOIN yearmonth AS T2 ON T1.customer_id = T2.customer_id WHERE SUBSTRING(T2.date FROM 1 FOR 4) = '2012',"SELECT
+  SUM(CASE WHEN c.currency = 'CZK' THEN CAST(ym.consumption AS FLOAT) ELSE 0 END) AS czk_consumption_2012,
+  SUM(CASE WHEN c.currency = 'EUR' THEN CAST(ym.consumption AS FLOAT) ELSE 0 END) AS eur_consumption_2012,
+  SUM(CASE WHEN c.currency = 'CZK' THEN CAST(ym.consumption AS FLOAT) ELSE 0 END)
+    - SUM(CASE WHEN c.currency = 'EUR' THEN CAST(ym.consumption AS FLOAT) ELSE 0 END) AS consumption_difference
+FROM yearmonth ym
+JOIN customers c
+  ON c.customer_id = ym.customer_id
+WHERE ym.date BETWEEN '201201' AND '201212'",[[402524570.1699988]],"[[404716983.980001,2192413.809999997,402524570.170001]]",0,0.000000,True,True,True,True,True,"The agent's SQL performs the same INNER JOIN between yearmonth and customers on customer_id, applies an equivalent year-2012 filter (BETWEEN '201201' AND '201212' vs SUBSTRING(date FROM 1 FOR 4) = '2012', both endorsed by the evidence given YYYYMM date formatting), and computes the same SUM(CZK) − SUM(EUR) difference with consumption cast to a floating type. Selecting the two intermediate sums as extra columns does not break semantic equivalence."
+debit_card_specializing:1473,1473,What was the average monthly consumption of customers in SME for the year 2013?,Average Monthly consumption = AVG(Consumption) / 12; Year 2013 can be presented as Between 201301 And 201312; The first 4 strings of the Date values in the yearmonth table can represent year.,"SELECT AVG(T2.consumption) / NULLIF(12, 0) FROM customers AS T1 INNER JOIN yearmonth AS T2 ON T1.customer_id = T2.customer_id WHERE SUBSTRING(T2.date FROM 1 FOR 4) = '2013' AND T1.segment = 'SME'","SELECT
+  AVG(ym.consumption) / 12 AS avg_monthly_consumption_sme_2013
+FROM yearmonth AS ym
+JOIN customers AS c
+  ON ym.customer_id = c.customer_id
+WHERE c.segment = 'SME'
+  AND LEFT(ym.date, 4) = '2013';","[[{""type"":""Decimal"",""value"":""459.9562642870894243""}]]","[[{""type"":""Decimal"",""value"":""459.9562642870894243""}]]",1,1.000000,True,True,True,True,True,"The generated SQL joins yearmonth to customers on customer_id, filters segment='SME' and the first 4 characters of the date for '2013' (LEFT is equivalent to SUBSTRING FROM 1 FOR 4), and selects AVG(consumption)/12 (NULLIF(12,0) is a divide-by-zero guard that is numerically identical here). The calculation and selected result are equivalent to the gold SQL."
+debit_card_specializing:1471,1471,What is the ratio of customers who pay in EUR against customers who pay in CZK?,ratio of customers who pay in EUR against customers who pay in CZK = count(Currency = 'EUR') / count(Currency = 'CZK').,"SELECT CAST(SUM(CASE WHEN currency = 'EUR' THEN 1 ELSE 0 END) AS REAL) / NULLIF(SUM(CASE WHEN currency = 'CZK' THEN 1 ELSE 0 END), 0) FROM customers","SELECT
+  COUNT(*) FILTER (WHERE c.currency = 'EUR') AS eur_customer_count,
+  COUNT(*) FILTER (WHERE c.currency = 'CZK') AS czk_customer_count,
+  ROUND(
+    COUNT(*) FILTER (WHERE c.currency = 'EUR')::NUMERIC
+    / NULLIF(COUNT(*) FILTER (WHERE c.currency = 'CZK'), 0),
+    4
+  ) AS eur_to_czk_ratio
+FROM customers c
+WHERE c.currency IN ('EUR', 'CZK');",[[0.06572769953051644]],"[[2002,30459,{""type"":""Decimal"",""value"":""0.0657""}]]",0,0.000000,True,True,True,True,True,"The Gold SQL counts EUR and CZK via SUM(CASE...) across all rows; the agent's SQL counts the same EUR and CZK populations but restricts the table to those two currencies first. Since currencies other than EUR and CZK contribute to neither the numerator nor the denominator in the Gold SQL, both queries produce the identical ratio. The additional count columns and rounding do not affect semantic equivalence of the ratio computation."
+debit_card_specializing:1472,1472,"In 2012, who had the least consumption in LAM?",Year 2012 can be presented as Between 201201 And 201212; The first 4 strings of the Date values in the yearmonth table can represent year.,SELECT T1.customer_id FROM customers AS T1 INNER JOIN yearmonth AS T2 ON T1.customer_id = T2.customer_id WHERE T1.segment = 'LAM' AND SUBSTRING(T2.date FROM 1 FOR 4) = '2012' GROUP BY T1.customer_id ORDER BY SUM(T2.consumption) ASC NULLS FIRST LIMIT 1,"SELECT
+    ym.customer_id,
+    SUM(ym.consumption) AS total_consumption
+FROM yearmonth AS ym
+JOIN customers AS c
+    ON c.customer_id = ym.customer_id
+WHERE c.segment = 'LAM'
+  AND ym.date BETWEEN '201201' AND '201212'
+GROUP BY ym.customer_id
+ORDER BY total_consumption ASC
+LIMIT 1;",[[47273]],"[[47273,{""type"":""Decimal"",""value"":""0.74""}]]",0,0.666667,True,True,True,True,True,"Filters (LAM segment, 2012 date range), join, aggregation (SUM of consumption grouped by customer), ordering (ASC) and selection (LIMIT 1 customer_id) match the gold SQL. The date condition differs in form (BETWEEN '201201' AND '201212' vs SUBSTRING(date,1,4)='2012') but is equivalent per the evidence's stated YYYYMM convention; NULL handling is equivalent in the underlying engine's default ASC ordering, consistent with the gold's NULLS FIRST. Extra SELECT column does not affect equivalence."

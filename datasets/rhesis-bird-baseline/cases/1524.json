@@ -1,0 +1,19 @@
+{
+  "question": "What's the nationality of the customer who spent 548.4 in 2012/8/24?",
+  "score": 0.0,
+  "details": {
+    "reason": "Complete results differ from Gold SQL; BIRD Soft F1 = 0.0",
+    "BIRD_Soft_F1": 0.0,
+    "actual_sql": "SELECT c.customer_id,\n       c.segment,\n       c.currency\nFROM transactions_1k AS t\nJOIN customers AS c\n  ON c.customer_id = t.customer_id\nWHERE t.date = DATE '2012-08-24'\nGROUP BY c.customer_id, c.segment, c.currency\nHAVING ROUND(SUM(t.price), 2) = 548.40",
+    "gold_sql": "SELECT T2.country FROM transactions_1k AS T1 INNER JOIN gasstations AS T2 ON T1.gas_station_id = T2.gas_station_id WHERE T1.date = '2012-08-24' AND T1.price = '548.4'",
+    "actual_result": [],
+    "gold_result": [
+      [
+        "CZE"
+      ]
+    ],
+    "sql_error": null,
+    "scorer_ms": 4.531209000560921,
+    "max_parallel_workers_per_gather": 0
+  }
+}

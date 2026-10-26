@@ -1,0 +1,27 @@
+{
+  "question": "What was the gas consumption peak month for SME customers in 2013?",
+  "score": 0.0,
+  "details": {
+    "reason": "Complete results differ from Gold SQL; BIRD Soft F1 = 0.0",
+    "BIRD_Soft_F1": 0.0,
+    "actual_sql": "SELECT ym.date AS year_month, SUM(ym.consumption) AS total_consumption FROM yearmonth ym JOIN customers c ON c.customer_id = ym.customer_id WHERE c.segment = 'SME' AND ym.date LIKE '2013%' GROUP BY ym.date ORDER BY total_consumption DESC LIMIT 1;",
+    "gold_sql": "SELECT SUBSTRING(T2.date FROM 5 FOR 2) FROM customers AS T1 INNER JOIN yearmonth AS T2 ON T1.customer_id = T2.customer_id WHERE SUBSTRING(T2.date FROM 1 FOR 4) = '2013' AND T1.segment = 'SME' GROUP BY SUBSTRING(T2.date FROM 5 FOR 2) ORDER BY SUM(T2.consumption) DESC NULLS LAST LIMIT 1",
+    "actual_result": [
+      [
+        "201304",
+        {
+          "type": "Decimal",
+          "value": "126047776.92"
+        }
+      ]
+    ],
+    "gold_result": [
+      [
+        "04"
+      ]
+    ],
+    "sql_error": null,
+    "scorer_ms": 109.3445829974371,
+    "max_parallel_workers_per_gather": 0
+  }
+}

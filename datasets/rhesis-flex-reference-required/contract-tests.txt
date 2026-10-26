@@ -1,0 +1,17 @@
+test_all_six_projections_keep_gold_out_of_evidence_judge (test_rhesis_flex_metrics.FlexContractTests.test_all_six_projections_keep_gold_out_of_evidence_judge) ... ok
+test_empty_reference_stops_before_database_and_judge (test_rhesis_flex_metrics.FlexContractTests.test_empty_reference_stops_before_database_and_judge) ... ok
+test_expected_response_requires_usable_reference_for_each_variant (test_rhesis_flex_metrics.FlexContractTests.test_expected_response_requires_usable_reference_for_each_variant) ... ok
+test_frozen_configuration_drift_stops_before_sql_and_judge (test_rhesis_flex_metrics.FlexContractTests.test_frozen_configuration_drift_stops_before_sql_and_judge) ... ok
+test_judge_failure_has_no_fabricated_score_or_retry (test_rhesis_flex_metrics.FlexContractTests.test_judge_failure_has_no_fabricated_score_or_retry) ... ok
+test_llm_verdict_controls_score_even_when_execution_disagrees (test_rhesis_flex_metrics.FlexContractTests.test_llm_verdict_controls_score_even_when_execution_disagrees) ... ok
+test_native_error_zero_is_not_a_valid_judge_false (test_rhesis_flex_metrics.FlexContractTests.test_native_error_zero_is_not_a_valid_judge_false) ... ok
+test_parallel_calls_keep_distinct_audits (test_rhesis_flex_metrics.FlexContractTests.test_parallel_calls_keep_distinct_audits) ... ok
+test_parser_requires_one_final_boolean_and_has_no_text_match_path (test_rhesis_flex_metrics.FlexContractTests.test_parser_requires_one_final_boolean_and_has_no_text_match_path) ... ok
+test_provider_receives_frozen_parameters_and_no_automatic_retry (test_rhesis_flex_metrics.FlexContractTests.test_provider_receives_frozen_parameters_and_no_automatic_retry) ... ok
+test_reference_tampering_is_rejected_before_sql_or_judge (test_rhesis_flex_metrics.FlexContractTests.test_reference_tampering_is_rejected_before_sql_or_judge) ... ok
+test_upstream_result_truncation_keeps_complete_shape (test_rhesis_flex_metrics.FlexContractTests.test_upstream_result_truncation_keeps_complete_shape) ... ok
+
+----------------------------------------------------------------------
+Ran 12 tests in 0.117s
+
+OK

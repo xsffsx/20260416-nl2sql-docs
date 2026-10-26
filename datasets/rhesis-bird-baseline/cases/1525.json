@@ -1,0 +1,26 @@
+{
+  "question": "What is the percentage of the customers who used EUR in 2012/8/25?",
+  "score": 0.0,
+  "details": {
+    "reason": "Complete results differ from Gold SQL; BIRD Soft F1 = 0.0",
+    "BIRD_Soft_F1": 0.0,
+    "actual_sql": "SELECT\n  ROUND(\n    COUNT(DISTINCT t.customer_id) FILTER (WHERE c.currency = 'EUR')::numeric\n    / NULLIF(COUNT(DISTINCT t.customer_id), 0) * 100,\n    2\n  ) AS eur_customer_pct\nFROM transactions_1k t\nJOIN customers c ON c.customer_id = t.customer_id\nWHERE t.date = DATE '2012-08-25';",
+    "gold_sql": "SELECT CAST(SUM(CASE WHEN T2.currency = 'EUR' THEN 1 ELSE 0 END) AS REAL) * 100 / NULLIF(COUNT(T1.customer_id), 0) FROM transactions_1k AS T1 INNER JOIN customers AS T2 ON T1.customer_id = T2.customer_id WHERE T1.date = '2012-08-25'",
+    "actual_result": [
+      [
+        {
+          "type": "Decimal",
+          "value": "2.70"
+        }
+      ]
+    ],
+    "gold_result": [
+      [
+        1.6470588235294117
+      ]
+    ],
+    "sql_error": null,
+    "scorer_ms": 8.906750001187902,
+    "max_parallel_workers_per_gather": 0
+  }
+}

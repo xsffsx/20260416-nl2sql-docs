@@ -1,0 +1,65 @@
+{
+  "run_id": "f8ed743c-efdb-410c-a706-15610dbeb2e4",
+  "run_name": "pristine-jaeger",
+  "rhesis_status": "Completed",
+  "launch_surface": "Rhesis Test Set UI",
+  "execution_mode": "Parallel",
+  "metric_source": "Test Set Metrics",
+  "metric": "BIRD Official Execution Accuracy",
+  "metric_id": "bf03f75d-ecfe-4778-9ae9-7d9ceacd0f6e",
+  "items": 30,
+  "execution_accuracy_passed": 7,
+  "execution_accuracy_rate": 0.23333333333333334,
+  "soft_f1_mean": 0.2802028218694886,
+  "metric_errors": 0,
+  "sql_execution_errors": 0,
+  "question_only_requests_verified": 30,
+  "empty_snapshot_sql_pairs": 0,
+  "empty_provider_audits_verified": 30,
+  "empty_generation_correction_inputs_verified": 30,
+  "runtime_bundle_hash": "50c0cc65c8c8fcd8aaac472f897ab6e1453ca8e8588380cec92bd8126ec7e0f7",
+  "database_tables_verified_after_run": [
+    {
+      "table": "customers",
+      "rows": 32461,
+      "typed_content_sha256": "1060429f2e2f96650be22465811ce3d4eb45db9cb3613220230cae3b25110d07"
+    },
+    {
+      "table": "gasstations",
+      "rows": 5716,
+      "typed_content_sha256": "157f1e1851a3c7ab7536c1be116564700928fd136163f7358c178989855137e2"
+    },
+    {
+      "table": "products",
+      "rows": 591,
+      "typed_content_sha256": "73e0b1ac46730f8208a29c589fd70a146b1d283b105e950bcdf3ae8e04799a6f"
+    },
+    {
+      "table": "transactions_1k",
+      "rows": 1000,
+      "typed_content_sha256": "dabd8b121b33e6f206fbc4bcf1a073d6753b591380fb3b54c3c9f28433b9aa2f"
+    },
+    {
+      "table": "yearmonth",
+      "rows": 383282,
+      "typed_content_sha256": "921f087634150377d1ef01a3b84c348cf38299f5bf14b3c29f6bae868194dab5"
+    }
+  ],
+  "sql_timeout_ms": 30000,
+  "scorer_max_parallel_workers_per_gather": 0,
+  "official_revision": "abd11b6db92a1c9f809b32f7564c7c71b34d67f0",
+  "official_ex_sha256": "da1bbcd4530be83692d7c650c814ea9704bb710d0c953eb75d02ccb38233cf89",
+  "official_soft_f1_sha256": "ba2700ee09b0c34d7e203788544757e6e6d6c99c0425bb92b3daa3927eee29bf",
+  "connector_sha256": "2e914192806b2ed78ed9d46230a45875814db7625e0160ebfb4256cbd1450d44",
+  "external_comparison": "30-case question-only POC subset; not directly comparable to full official benchmark scores",
+  "provider_weight_revision": "not disclosed",
+  "executed_connector_source": "executed-connector.py",
+  "gold_self_checks_passed": 30,
+  "rhesis_batch_concurrency_config": 10,
+  "celery_worker_concurrency_config": 8,
+  "observed_max_inflight": null,
+  "rhesis_batch_wall_seconds": 167.9,
+  "rhesis_native_metric_reconciliation": "30/30 scores and verdicts match official functions on archived complete results",
+  "soft_f1_ui_surface": "per-case metric reason; aggregate in summary.json",
+  "preflight_ui_checks_enabled": false
+}
